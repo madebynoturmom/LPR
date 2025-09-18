@@ -1,3 +1,13 @@
+
+export const guestPassHistory = sqliteTable('guest_pass_history', {
+	id: text('id').primaryKey(),
+	plateNumber: text('plate_number').notNull(),
+	visitTime: integer('visit_time', { mode: 'timestamp' }).notNull(),
+	durationMinutes: integer('duration_minutes').notNull(),
+	revokedAt: integer('revoked_at', { mode: 'timestamp' }).notNull()
+});
+
+export type GuestPassHistory = typeof guestPassHistory.$inferSelect;
 export * from './vehicle';
 export * from './event';
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';

@@ -18,16 +18,17 @@ export const actions: Actions = {
     }
     // Try admin table first
     let found: any = null;
-    let isAdmin = false;
+    let userRole: string | null = null;
     const admins = await db.select().from(admin).where(eq(admin.username, username));
     if (admins.length > 0) {
       found = admins[0];
-      isAdmin = true;
+      userRole = 'admin';
     } else {
       // Try user table (for residents/others)
       const users = await db.select().from(user).where(eq(user.username, username));
       if (users.length > 0) {
         found = users[0];
+        userRole = found.role; // 'guard' or 'resident'
       }
     }
     if (!found) {
@@ -48,7 +49,16 @@ export const actions: Actions = {
       expiresAt
     });
     cookies.set('auth-session', sessionToken, { path: '/', httpOnly: true });
-    throw redirect(303, isAdmin ? '/admin/dashboard' : '/');
+    // Redirect based on role
+    if (userRole === 'admin') {
+      throw redirect(303, '/admin/dashboard');
+    } else if (userRole === 'guard') {
+      throw redirect(303, '/guard/dashboard');
+    } else if (userRole === 'resident') {
+      throw redirect(303, '/user/dashboard');
+    } else {
+      throw redirect(303, '/'); // fallback
+    }
   }
 };
 
