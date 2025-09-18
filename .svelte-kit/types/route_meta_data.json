@@ -1,0 +1,81 @@
+{
+	"/": [
+		"src/routes/+page.server.ts"
+	],
+	"/admin/dashboard": [
+		"src/routes/admin/dashboard/+page.server.ts"
+	],
+	"/admin/dashboard/admins": [
+		"src/routes/admin/dashboard/admins/+page.server.ts"
+	],
+	"/admin/dashboard/admins/create": [
+		"src/routes/admin/dashboard/admins/create/+page.server.ts"
+	],
+	"/admin/dashboard/events": [
+		"src/routes/admin/dashboard/events/+page.server.ts"
+	],
+	"/admin/dashboard/guards": [
+		"src/routes/admin/dashboard/guards/+page.server.ts"
+	],
+	"/admin/dashboard/guards/create": [
+		"src/routes/admin/dashboard/guards/create/+page.server.ts"
+	],
+	"/admin/dashboard/guests": [
+		"src/routes/admin/dashboard/guests/+page.server.ts"
+	],
+	"/admin/dashboard/residents": [
+		"src/routes/admin/dashboard/residents/+page.server.ts"
+	],
+	"/admin/dashboard/residents/create": [
+		"src/routes/admin/dashboard/residents/create/+page.server.ts"
+	],
+	"/admin/dashboard/residents/[id]": [
+		"src/routes/admin/dashboard/residents/[id]/+page.server.ts"
+	],
+	"/admin/dashboard/residents/[id]/delete": [
+		"src/routes/admin/dashboard/residents/[id]/delete/+server.ts"
+	],
+	"/admin/dashboard/residents/[id]/edit": [
+		"src/routes/admin/dashboard/residents/[id]/edit/+page.server.ts"
+	],
+	"/admin/dashboard/settings": [
+		"src/routes/admin/dashboard/settings/+page.server.ts"
+	],
+	"/admin/dashboard/vehicles": [
+		"src/routes/admin/dashboard/vehicles/+page.server.ts"
+	],
+	"/admin/dashboard/vehicles/create": [
+		"src/routes/admin/dashboard/vehicles/create/+page.server.ts"
+	],
+	"/login": [
+		"src/routes/login/+page.server.ts"
+	],
+	"/logout": [
+		"src/routes/logout/+page.server.ts"
+	],
+	"/user/dashboard": [],
+	"/user/dashboard/food-delivery": [
+		"src/routes/user/dashboard/food-delivery/+page.server.ts"
+	],
+	"/user/dashboard/guests": [
+		"src/routes/user/dashboard/guests/+page.server.ts"
+	],
+	"/user/dashboard/guests/create": [
+		"src/routes/user/dashboard/guests/create/+page.server.ts"
+	],
+	"/user/dashboard/profile": [
+		"src/routes/user/dashboard/profile/+page.server.ts"
+	],
+	"/user/dashboard/vehicles": [
+		"src/routes/user/dashboard/vehicles/+page.server.ts"
+	],
+	"/user/dashboard/vehicles/create": [
+		"src/routes/user/dashboard/vehicles/create/+page.server.ts"
+	],
+	"/user/dashboard/vehicles/[id]/delete": [
+		"src/routes/user/dashboard/vehicles/[id]/delete/+page.server.ts"
+	],
+	"/user/dashboard/vehicles/[id]/edit": [
+		"src/routes/user/dashboard/vehicles/[id]/edit/+page.server.ts"
+	]
+}

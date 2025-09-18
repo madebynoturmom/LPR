@@ -1,0 +1,11 @@
+// @ts-nocheck
+import { db } from '$lib/server/db';
+import { user } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+import type { PageServerLoad } from './$types';
+
+export const load = async ({ params }: Parameters<PageServerLoad>[0]) => {
+  const id = params.id;
+  const resident = await db.select().from(user).where(eq(user.id, id)).then(rows => rows[0]);
+  return { resident };
+};
