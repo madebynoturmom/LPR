@@ -34,7 +34,6 @@ declare module '$env/static/private' {
 	export const npm_node_execpath: string;
 	export const SHLVL: string;
 	export const npm_config_noproxy: string;
-	export const MOTD_SHOWN: string;
 	export const HOME: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const VSCODE_IPC_HOOK_CLI: string;
@@ -75,6 +74,7 @@ declare module '$env/static/private' {
 	export const LESSCLOSE: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_NONCE: string;
+	export const GIT_PAGER: string;
 	export const npm_config_globalconfig: string;
 	export const npm_config_init_module: string;
 	export const PWD: string;
@@ -125,7 +125,6 @@ declare module '$env/dynamic/private' {
 		npm_node_execpath: string;
 		SHLVL: string;
 		npm_config_noproxy: string;
-		MOTD_SHOWN: string;
 		HOME: string;
 		TERM_PROGRAM_VERSION: string;
 		VSCODE_IPC_HOOK_CLI: string;
@@ -166,6 +165,7 @@ declare module '$env/dynamic/private' {
 		LESSCLOSE: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_NONCE: string;
+		GIT_PAGER: string;
 		npm_config_globalconfig: string;
 		npm_config_init_module: string;
 		PWD: string;
