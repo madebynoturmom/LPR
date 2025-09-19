@@ -2,7 +2,8 @@ import { db } from '$lib/server/db';
 import { guestPass as guestPassTable } from '$lib/server/db/schema';
 import { v4 as uuidv4 } from 'uuid';
 import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+import { eq } from 'drizzle-orm';
 
 function getUserIdFromSession(cookies: any): string | null {
   return 'R001'; // Replace with real session logic
@@ -30,4 +31,12 @@ export const actions: Actions = {
       return fail(500, { error: 'Failed to issue pass.' });
     }
   }
+};
+
+export const load: PageServerLoad = async ({ cookies }) => {
+  const userId = getUserIdFromSession(cookies);
+  if (!userId) return { foodDeliveryPasses: [] };
+
+  const foodDeliveryPasses = await db.select().from(guestPassTable).where(eq(guestPassTable.type, 'food_delivery'));
+  return { foodDeliveryPasses };
 };

@@ -43,6 +43,7 @@
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/bcryptjs": "^2.4.6",
 		"@types/better-sqlite3": "^7.6.12",
+		"@types/deep-eql": "^4.0.2",
 		"@types/node": "^22",
 		"@types/nodemailer": "^7.0.1",
 		"@vitest/browser": "^3.2.3",

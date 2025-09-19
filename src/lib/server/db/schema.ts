@@ -1,3 +1,4 @@
+import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
 export const guestPassHistory = sqliteTable('guest_pass_history', {
 	id: text('id').primaryKey(),
@@ -10,7 +11,6 @@ export const guestPassHistory = sqliteTable('guest_pass_history', {
 export type GuestPassHistory = typeof guestPassHistory.$inferSelect;
 export * from './vehicle';
 export * from './event';
-import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
 export const user = sqliteTable('user', {
 	id: text('id').primaryKey(),
@@ -53,7 +53,9 @@ export const guestPass = sqliteTable('guest_pass', {
     id: text('id').primaryKey(),
     plateNumber: text('plate_number').notNull(),
     visitTime: integer('visit_time', { mode: 'timestamp' }).notNull(),
-    durationMinutes: integer('duration_minutes').notNull()
+    durationMinutes: integer('duration_minutes').notNull(),
+    revokedAt: integer('revoked_at', { mode: 'timestamp' }), // Added for admin dashboard functionality
+    type: text('type')
 });
 
 
@@ -67,3 +69,12 @@ export const guard = sqliteTable('guard', {
 });
 
 export type Guard = typeof guard.$inferSelect;
+
+export const vehicle = sqliteTable('vehicle', {
+    id: text('id').primaryKey(),
+    plateNumber: text('plate_number').notNull(),
+    ownerId: text('owner_id').notNull(),
+    model: text('model').notNull(),
+    makeYear: integer('make_year').notNull(),
+    accessTime: integer('access_time', { mode: 'timestamp' })
+});

@@ -31,7 +31,8 @@ export const nodes = [
 	() => import('./nodes/25'),
 	() => import('./nodes/26'),
 	() => import('./nodes/27'),
-	() => import('./nodes/28')
+	() => import('./nodes/28'),
+	() => import('./nodes/29')
 ];
 
 export const server_loads = [];
@@ -56,13 +57,14 @@ export const dictionary = {
 		"/logout": [~19],
 		"/user/dashboard": [20,[2]],
 		"/user/dashboard/food-delivery": [~21,[2]],
-		"/user/dashboard/guests": [~22,[2]],
-		"/user/dashboard/guests/create": [~23,[2]],
-		"/user/dashboard/profile": [~24,[2]],
-		"/user/dashboard/vehicles": [~25,[2]],
-		"/user/dashboard/vehicles/create": [~28,[2]],
-		"/user/dashboard/vehicles/[id]/delete": [~26,[2]],
-		"/user/dashboard/vehicles/[id]/edit": [~27,[2]]
+		"/user/dashboard/food-delivery/create": [22,[2]],
+		"/user/dashboard/guests": [~23,[2]],
+		"/user/dashboard/guests/create": [~24,[2]],
+		"/user/dashboard/profile": [~25,[2]],
+		"/user/dashboard/vehicles": [~26,[2]],
+		"/user/dashboard/vehicles/create": [~29,[2]],
+		"/user/dashboard/vehicles/[id]/delete": [~27,[2]],
+		"/user/dashboard/vehicles/[id]/edit": [~28,[2]]
 	};
 
 export const hooks = {

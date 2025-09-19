@@ -4,6 +4,7 @@
 </script>
 
 <div class="vehicle-page-container">
+  <a href="/user/dashboard" class="back-btn">&larr; Back to Dashboard</a>
   <h2>Your Vehicles</h2>
   <a href="/user/dashboard/vehicles/create" class="add-btn">+ Add Vehicle</a>
   {#if vehicles.length === 0}
@@ -12,8 +13,10 @@
     <ul class="vehicle-list">
       {#each vehicles as v}
         <li>
-          <strong>{v.model}</strong> ({v.makeYear})<br />
-          Plate: {v.plateNumber}<br />
+          <strong>Plate: {v.plateNumber}</strong><br />
+          {#if v.accessTime}
+            Last Access: {v.accessTime}<br />
+          {/if}
           <a href={`/user/dashboard/vehicles/${v.id}/edit`} class="edit-link">Edit</a>
           <a href={`/user/dashboard/vehicles/${v.id}/delete`} class="delete-link">Delete</a>
         </li>
@@ -68,4 +71,17 @@
     margin-left: 1rem;
     box-sizing: border-box;
   }
+.back-btn {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  background: #e0e0e0;
+  color: #000;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+}
+.back-btn:hover {
+  background: #d6d6d6;
+}
 </style>

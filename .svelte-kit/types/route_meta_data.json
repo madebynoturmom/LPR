@@ -47,6 +47,12 @@
 	"/admin/dashboard/vehicles/create": [
 		"src/routes/admin/dashboard/vehicles/create/+page.server.ts"
 	],
+	"/api/food-delivery/create": [
+		"src/routes/api/food-delivery/create/+server.ts"
+	],
+	"/api/recent-activity": [
+		"src/routes/api/recent-activity/+server.ts"
+	],
 	"/login": [
 		"src/routes/login/+page.server.ts"
 	],
@@ -57,6 +63,7 @@
 	"/user/dashboard/food-delivery": [
 		"src/routes/user/dashboard/food-delivery/+page.server.ts"
 	],
+	"/user/dashboard/food-delivery/create": [],
 	"/user/dashboard/guests": [
 		"src/routes/user/dashboard/guests/+page.server.ts"
 	],

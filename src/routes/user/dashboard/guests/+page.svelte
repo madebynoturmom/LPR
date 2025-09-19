@@ -4,6 +4,7 @@
 </script>
 
 <div class="guest-page-container">
+  <a href="/user/dashboard" class="back-btn">&larr; Back to Dashboard</a>
   <h2>Your Guest Passes</h2>
   <a href="/user/dashboard/guests/create" class="add-btn">+ Create Guest Pass</a>
   {#if guestPasses.length === 0}
@@ -41,6 +42,19 @@
     margin-right: auto;
     margin-top: 3rem;
     box-sizing: border-box;
+  }
+  .back-btn {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    background: #e0e0e0;
+    color: #000;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .back-btn:hover {
+    background: #d6d6d6;
   }
   .add-btn {
     display: inline-block;

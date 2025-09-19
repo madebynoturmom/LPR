@@ -6,6 +6,8 @@
   import './logout-button.css';
   import { page } from '$app/stores';
   import { get } from 'svelte/store';
+  import type { guestPass, vehicle } from '$lib/server/db/schema';
+
   // Sidebar navigation links for user dashboard
    // Use $page in template for reactivity
    // This allows the sidebar link highlighting to work reactively
@@ -20,6 +22,29 @@
   // Dummy user info, replace with real user data if available
   let userProfilePic = '/default-profile.png';
   let userName = 'Resident';
+
+  export const recentActivity = {
+    activeGuestPasses: 0,
+    activeFoodDeliveryPasses: 0,
+    recentCarAccess: ''
+  };
+
+  import type { LoadEvent } from '@sveltejs/kit';
+
+  export async function load({ fetch }: LoadEvent) {
+    const response = await fetch('/api/recent-activity');
+    const data = await response.json();
+
+    return {
+      props: {
+        recentActivity: {
+          activeGuestPasses: data.activeGuestPasses,
+          activeFoodDeliveryPasses: data.activeFoodDeliveryPasses,
+          recentCarAccess: data.recentCarAccess
+        }
+      }
+    };
+  }
 </script>
 
 <div class="user-layout">
@@ -210,6 +235,7 @@
 .sidebar-backdrop:focus {
   outline: 2px solid #1976d2;
 }
+
 @media (max-width: 900px) {
   .user-layout {
     flex-direction: column;
