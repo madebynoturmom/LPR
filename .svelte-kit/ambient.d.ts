@@ -27,6 +27,8 @@
  */
 declare module '$env/static/private' {
 	export const DATABASE_URL: string;
+	export const NODE_ENV: string;
+	export const PORT: string;
 	export const LESSOPEN: string;
 	export const USER: string;
 	export const npm_config_user_agent: string;
@@ -35,9 +37,12 @@ declare module '$env/static/private' {
 	export const SHLVL: string;
 	export const npm_config_noproxy: string;
 	export const HOME: string;
+	export const OLDPWD: string;
 	export const TERM_PROGRAM_VERSION: string;
+	export const NVM_BIN: string;
 	export const VSCODE_IPC_HOOK_CLI: string;
 	export const npm_package_json: string;
+	export const NVM_INC: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const npm_config_userconfig: string;
@@ -47,6 +52,7 @@ declare module '$env/static/private' {
 	export const COLORTERM: string;
 	export const WSL_DISTRO_NAME: string;
 	export const COLOR: string;
+	export const NVM_DIR: string;
 	export const WAYLAND_DISPLAY: string;
 	export const LOGNAME: string;
 	export const NAME: string;
@@ -78,15 +84,17 @@ declare module '$env/static/private' {
 	export const npm_config_init_module: string;
 	export const PWD: string;
 	export const npm_execpath: string;
+	export const NVM_CD_FLAGS: string;
 	export const XDG_DATA_DIRS: string;
 	export const npm_config_global_prefix: string;
 	export const npm_command: string;
 	export const WSL2_GUI_APPS_ENABLED: string;
 	export const HOSTTYPE: string;
+	export const NVM_RC_VERSION: string;
 	export const WSLENV: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const NODE_ENV: string;
+	export const VITE_USER_NODE_ENV: string;
 }
 
 /**
@@ -117,6 +125,8 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		DATABASE_URL: string;
+		NODE_ENV: string;
+		PORT: string;
 		LESSOPEN: string;
 		USER: string;
 		npm_config_user_agent: string;
@@ -125,9 +135,12 @@ declare module '$env/dynamic/private' {
 		SHLVL: string;
 		npm_config_noproxy: string;
 		HOME: string;
+		OLDPWD: string;
 		TERM_PROGRAM_VERSION: string;
+		NVM_BIN: string;
 		VSCODE_IPC_HOOK_CLI: string;
 		npm_package_json: string;
+		NVM_INC: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		npm_config_userconfig: string;
@@ -137,6 +150,7 @@ declare module '$env/dynamic/private' {
 		COLORTERM: string;
 		WSL_DISTRO_NAME: string;
 		COLOR: string;
+		NVM_DIR: string;
 		WAYLAND_DISPLAY: string;
 		LOGNAME: string;
 		NAME: string;
@@ -168,15 +182,17 @@ declare module '$env/dynamic/private' {
 		npm_config_init_module: string;
 		PWD: string;
 		npm_execpath: string;
+		NVM_CD_FLAGS: string;
 		XDG_DATA_DIRS: string;
 		npm_config_global_prefix: string;
 		npm_command: string;
 		WSL2_GUI_APPS_ENABLED: string;
 		HOSTTYPE: string;
+		NVM_RC_VERSION: string;
 		WSLENV: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		NODE_ENV: string;
+		VITE_USER_NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

@@ -1,13 +1,9 @@
-test-results
-node_modules
-
 # Output
 .output
 .vercel
 .netlify
 .wrangler
 
-/build
 
 # OS
 .DS_Store
