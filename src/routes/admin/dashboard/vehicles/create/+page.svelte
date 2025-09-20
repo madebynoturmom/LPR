@@ -24,7 +24,7 @@
       <select name="ownerId" required>
         <option value="">Select owner</option>
         {#each users as user}
-          <option value={user.id}>{user.name} ({user.houseNumber})</option>
+          <option value={user.id}>{user.name} ({user.houseAddress})</option>
         {/each}
       </select>
     </label>

@@ -4,15 +4,12 @@ import { vehicle as vehicleTable } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { v4 as uuidv4 } from 'uuid';
 import type { Actions } from './$types';
-
-function getUserIdFromSession(cookies: any): string | null {
-  return 'R001'; // Replace with real session logic
-}
+import { eq } from 'drizzle-orm';
 
 export const actions = {
-  default: async ({ request, cookies }: import('./$types').RequestEvent) => {
-    const userId = getUserIdFromSession(cookies);
-    if (!userId) return fail(401, { error: 'Not authenticated.' });
+  default: async ({ request, locals }: import('./$types').RequestEvent) => {
+    const user = locals.user;
+    if (!user) return fail(401, { error: 'Not authenticated.' });
     const form = await request.formData();
     const model = form.get('model')?.toString();
     const makeYear = Number(form.get('makeYear'));
@@ -20,18 +17,25 @@ export const actions = {
     if (!model || !makeYear || !plateNumber) {
       return fail(400, { error: 'All fields are required.' });
     }
+
+    // Check if plate number already exists
+    const existingVehicle = await db.select().from(vehicleTable).where(eq(vehicleTable.plateNumber, plateNumber)).get();
+    if (existingVehicle) {
+      return fail(400, { error: 'A vehicle with this plate number already exists.' });
+    }
+
     try {
       await db.insert(vehicleTable).values({
         id: uuidv4(),
         model,
         makeYear,
         plateNumber,
-        ownerId: userId
+        ownerId: user.id
       });
-      return { success: true };
     } catch (e) {
       return fail(500, { error: 'Failed to add vehicle.' });
     }
+    throw redirect(303, '/user/dashboard/vehicles');
   }
 };
 ;null as any as Actions;

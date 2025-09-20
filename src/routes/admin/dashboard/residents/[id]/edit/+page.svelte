@@ -20,7 +20,7 @@
       <label>Email<input name="email" type="email" value={resident.email} required /></label>
       <label>Phone Number<input name="phone" value={resident.phone} required /></label>
       <label>Car Number<input name="carNumber" value={resident.carNumber} required /></label>
-      <label>House Number<input name="houseNumber" value={resident.houseNumber} required /></label>
+      <label>House Address<input name="houseAddress" value={resident.houseAddress} required /></label>
       <button type="submit" class="btn btn-update">Update Resident</button>
     </form>
   {:else}

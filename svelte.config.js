@@ -7,7 +7,7 @@ const config = {
   preprocess: mdsvex(),
   kit: {
     adapter: adapter(),
-    csrf: { checkOrigin: false }
+    csrf: { trustedOrigins: ['*'] }
   },
   extensions: ['.svelte', '.svx']
 };

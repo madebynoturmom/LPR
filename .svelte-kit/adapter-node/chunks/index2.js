@@ -1,5 +1,5 @@
 import { t as to_class } from "./attributes.js";
-import { r as run_all, d as define_property, b as deferred, o as object_prototype, c as array_prototype, g as get_descriptor, e as get_prototype_of, i as is_array, f as is_extensible, h as index_of, n as noop } from "./utils2.js";
+import { r as run_all, d as define_property, b as deferred, o as object_prototype, c as array_prototype, g as get_descriptor, e as get_prototype_of, i as is_array, h as is_extensible, j as index_of, n as noop } from "./utils2.js";
 import { b as safe_equals, e as equals, c as set_ssr_context, d as ssr_context, p as push$1, f as pop$1 } from "./context.js";
 import { e as escape_html } from "./escaping.js";
 const DEV = false;
@@ -2082,6 +2082,9 @@ function head(renderer, fn) {
     renderer2.push(BLOCK_CLOSE);
   }, "head");
 }
+function stringify(value) {
+  return typeof value === "string" ? value : value == null ? "" : value + "";
+}
 function attr_class(value, hash, directives) {
   var result = to_class(value, hash, directives);
   return result ? ` class="${escape_html(result, true)}"` : "";
@@ -2155,13 +2158,14 @@ export {
   render as S,
   experimental_async_ssr as T,
   head as U,
-  attr_class as V,
-  ensure_array_like as W,
-  store_get as X,
+  store_get as V,
+  attr_class as W,
+  ensure_array_like as X,
   slot as Y,
   unsubscribe_stores as Z,
   bind_props as _,
   HYDRATION_END as a,
+  stringify as a0,
   HYDRATION_START as b,
   HYDRATION_START_ELSE as c,
   get as d,

@@ -1,20 +1,7 @@
 <script lang="ts">
   export let data;
+  export let form;
   let { vehicle } = data;
-  let error = '';
-  let success = false;
-
-  async function handleDelete() {
-    const res = await fetch('', { method: 'POST' });
-    const result = await res.json();
-    if (result.success) {
-      success = true;
-      error = '';
-    } else {
-      error = result.error || 'Failed to delete vehicle.';
-      success = false;
-    }
-  }
 </script>
 
 <h2>Delete Vehicle</h2>
@@ -23,12 +10,14 @@
   <li><strong>{vehicle.model}</strong> ({vehicle.makeYear})</li>
   <li>Plate: {vehicle.plateNumber}</li>
 </ul>
-<button on:click={handleDelete} class="delete-btn">Delete</button>
-{#if success}
+<form method="POST">
+  <button type="submit" class="delete-btn">Delete</button>
+</form>
+{#if form?.success}
   <div class="success">Vehicle deleted!</div>
 {/if}
-{#if error}
-  <div class="error">{error}</div>
+{#if form?.error}
+  <div class="error">{form.error}</div>
 {/if}
 
 <style>

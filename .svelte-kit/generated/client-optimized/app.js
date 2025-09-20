@@ -32,39 +32,42 @@ export const nodes = [
 	() => import('./nodes/26'),
 	() => import('./nodes/27'),
 	() => import('./nodes/28'),
-	() => import('./nodes/29')
+	() => import('./nodes/29'),
+	() => import('./nodes/30'),
+	() => import('./nodes/31')
 ];
 
-export const server_loads = [];
+export const server_loads = [3];
 
 export const dictionary = {
-		"/": [~3],
-		"/admin/dashboard": [~4],
-		"/admin/dashboard/admins": [~5],
-		"/admin/dashboard/admins/create": [6],
-		"/admin/dashboard/events": [~7],
-		"/admin/dashboard/guards": [~8],
-		"/admin/dashboard/guards/create": [9],
-		"/admin/dashboard/guests": [~10],
-		"/admin/dashboard/residents": [~11],
-		"/admin/dashboard/residents/create": [14],
-		"/admin/dashboard/residents/[id]": [~12],
-		"/admin/dashboard/residents/[id]/edit": [~13],
-		"/admin/dashboard/settings": [~15],
-		"/admin/dashboard/vehicles": [~16],
-		"/admin/dashboard/vehicles/create": [~17],
-		"/login": [~18],
-		"/logout": [19],
-		"/user/dashboard": [20,[2]],
-		"/user/dashboard/food-delivery": [~21,[2]],
-		"/user/dashboard/food-delivery/create": [22,[2]],
-		"/user/dashboard/guests": [~23,[2]],
-		"/user/dashboard/guests/create": [24,[2]],
-		"/user/dashboard/profile": [~25,[2]],
-		"/user/dashboard/vehicles": [~26,[2]],
-		"/user/dashboard/vehicles/create": [29,[2]],
-		"/user/dashboard/vehicles/[id]/delete": [~27,[2]],
-		"/user/dashboard/vehicles/[id]/edit": [~28,[2]]
+		"/": [~4],
+		"/admin/dashboard": [~5,[2]],
+		"/admin/dashboard/admins": [~6,[2]],
+		"/admin/dashboard/admins/create": [7,[2]],
+		"/admin/dashboard/events": [~8,[2]],
+		"/admin/dashboard/guards": [~9,[2]],
+		"/admin/dashboard/guards/create": [10,[2]],
+		"/admin/dashboard/guests": [~11,[2]],
+		"/admin/dashboard/residents": [~12,[2]],
+		"/admin/dashboard/residents/create": [15,[2]],
+		"/admin/dashboard/residents/[id]": [~13,[2]],
+		"/admin/dashboard/residents/[id]/edit": [~14,[2]],
+		"/admin/dashboard/settings": [~16,[2]],
+		"/admin/dashboard/vehicles": [~17,[2]],
+		"/admin/dashboard/vehicles/create": [~18,[2]],
+		"/login": [~19],
+		"/logout": [20],
+		"/user/dashboard": [~21,[3]],
+		"/user/dashboard/food-delivery": [~22,[3]],
+		"/user/dashboard/food-delivery/create": [23,[3]],
+		"/user/dashboard/guests": [~24,[3]],
+		"/user/dashboard/guests/create": [25,[3]],
+		"/user/dashboard/history": [~26,[3]],
+		"/user/dashboard/profile": [~27,[3]],
+		"/user/dashboard/vehicles": [~28,[3]],
+		"/user/dashboard/vehicles/create": [31,[3]],
+		"/user/dashboard/vehicles/[id]/delete": [~29,[3]],
+		"/user/dashboard/vehicles/[id]/edit": [~30,[3]]
 	};
 
 export const hooks = {

@@ -10,22 +10,47 @@ const actions = {
   create: async (event) => {
     const { request, locals } = event;
     const user = locals.user;
-    if (!user || user.role !== "guard" && user.role !== "resident") {
-      return fail(403, { error: "Only guards or residents can create guest passes." });
+    if (!user || user.role !== "guard" && user.role !== "resident" && user.role !== "admin") {
+      return fail(403, { error: "Only guards, residents, or admins can create guest passes." });
     }
+    console.log("User Role:", user.role);
     const form = await request.formData();
     const plateNumber = form.get("plateNumber")?.toString().trim();
+    const name = form.get("name")?.toString().trim();
+    const phone = form.get("phone")?.toString().trim();
     const visitTime = form.get("visitTime")?.toString();
     const durationMinutes = Number(form.get("durationMinutes"));
-    if (!plateNumber || !visitTime || !durationMinutes) {
+    if (!plateNumber || !name || !phone || !visitTime || !durationMinutes) {
       return fail(400, { error: "All fields are required." });
     }
+    const id = v4();
     await db.insert(guestPass).values({
-      id: v4(),
+      id,
       plateNumber,
       visitTime: new Date(visitTime),
-      durationMinutes
+      durationMinutes,
+      status: "active",
+      userId: user.id,
+      type: "visitors",
+      name,
+      phone
     });
+    setTimeout(async () => {
+      const client = db.$client;
+      client.prepare(
+        `UPDATE guest_pass SET status = 'expired' WHERE id = ? AND status != 'revoked'`
+      ).run(id);
+      client.prepare(
+        `INSERT INTO guest_pass_history (id, plate_number, visit_time, duration_minutes, status, user_id, type, revoked_at, name, phone)
+				SELECT id, plate_number, visit_time, duration_minutes, 'expired', user_id, type, strftime('%s', 'now'), name, phone
+				FROM guest_pass
+				WHERE id = ? AND status = 'expired'`
+      ).run(id);
+      client.prepare(
+        `DELETE FROM guest_pass WHERE id = ? AND status = 'expired'`
+      ).run(id);
+      console.log("Guest pass expired:", id);
+    }, durationMinutes * 60 * 1e3);
     return { success: true };
   },
   delete: async ({ request }) => {

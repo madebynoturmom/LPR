@@ -6,7 +6,10 @@ const POST = async ({ request }) => {
     const formData = await request.formData();
     const plateNumber = formData.get("plateNumber")?.toString();
     const durationMinutes = parseInt(formData.get("durationMinutes")?.toString() || "0", 10);
-    if (!plateNumber || isNaN(durationMinutes) || durationMinutes <= 0) {
+    const userId = formData.get("userId")?.toString();
+    const name = formData.get("name")?.toString();
+    const phone = formData.get("phone")?.toString();
+    if (!plateNumber || isNaN(durationMinutes) || durationMinutes <= 0 || !userId || !name || !phone) {
       return json({ success: false, error: "Invalid input data" }, { status: 400 });
     }
     await db.insert(guestPass).values({
@@ -14,7 +17,11 @@ const POST = async ({ request }) => {
       plateNumber,
       durationMinutes,
       visitTime: /* @__PURE__ */ new Date(),
-      type: "food_delivery"
+      type: "food_delivery",
+      userId,
+      status: "active",
+      name,
+      phone
     });
     return json({ success: true });
   } catch (error) {

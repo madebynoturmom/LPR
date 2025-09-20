@@ -1,4 +1,4 @@
-import { W as ensure_array_like, _ as bind_props } from "../../../../../chunks/index2.js";
+import { X as ensure_array_like, a0 as stringify, _ as bind_props } from "../../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../../chunks/escaping.js";
 import { a as attr } from "../../../../../chunks/attributes.js";
 function _page($$renderer, $$props) {
@@ -15,7 +15,7 @@ function _page($$renderer, $$props) {
       const each_array = ensure_array_like(foodDeliveryPasses);
       for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
         let f = each_array[$$index];
-        $$renderer2.push(`<li class="svelte-1asa6rd"><strong>Plate:</strong> ${escape_html(f.plateNumber)}<br/> <strong>Visit Time:</strong> ${escape_html(new Date(f.visitTime).toLocaleString())}<br/> <strong>Duration:</strong> ${escape_html(f.durationMinutes)} minutes<br/> <form method="POST" action="?/revoke" style="display:inline"><input type="hidden" name="id"${attr("value", f.id)}/> <button type="submit" class="revoke-btn svelte-1asa6rd">Revoke</button></form> <form method="POST" action="?/extend" class="extend-form"><input type="hidden" name="id"${attr("value", f.id)}/> <input type="number" name="duration" min="1" step="1"${attr("value", f.durationMinutes)} class="duration-input" required/> <button type="submit" class="extend-btn svelte-1asa6rd">Extend</button></form></li>`);
+        $$renderer2.push(`<li class="svelte-1asa6rd"><strong>Plate:</strong> ${escape_html(f.plateNumber)}<br/> <strong>Visit Time:</strong> ${escape_html(new Date(f.visitTime).toLocaleString())}<br/> <strong>Duration:</strong> ${escape_html(f.durationMinutes)} minutes<br/> <form method="POST" action="?/revoke" style="display:inline"><input type="hidden" name="id"${attr("value", f.id)}/> <button type="submit" class="revoke-btn svelte-1asa6rd">Revoke</button></form> <form method="POST" action="?/extend" class="extend-form"><input type="hidden" name="id"${attr("value", f.id)}/> <label${attr("for", `extend-${stringify(f.id)}`)} class="extend-label">Add minutes:</label> <input${attr("id", `extend-${stringify(f.id)}`)} type="number" name="duration" min="1" step="1" placeholder="30" class="duration-input" required/> <button type="submit" class="extend-btn svelte-1asa6rd">Extend</button></form></li>`);
       }
       $$renderer2.push(`<!--]--></ul>`);
     }

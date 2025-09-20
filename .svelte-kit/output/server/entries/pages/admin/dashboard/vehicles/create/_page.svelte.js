@@ -1,4 +1,4 @@
-import { $ as maybe_selected, W as ensure_array_like, _ as bind_props } from "../../../../../../chunks/index2.js";
+import { $ as maybe_selected, X as ensure_array_like, _ as bind_props } from "../../../../../../chunks/index2.js";
 import { a as attr } from "../../../../../../chunks/attributes.js";
 import { e as escape_html } from "../../../../../../chunks/escaping.js";
 function _page($$renderer, $$props) {
@@ -17,7 +17,7 @@ function _page($$renderer, $$props) {
     const each_array = ensure_array_like(users);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let user = each_array[$$index];
-      $$renderer2.push(`<option${attr("value", user.id)}${maybe_selected($$renderer2, user.id)}>${escape_html(user.name)} (${escape_html(user.houseNumber)})</option>`);
+      $$renderer2.push(`<option${attr("value", user.id)}${maybe_selected($$renderer2, user.id)}>${escape_html(user.name)} (${escape_html(user.houseAddress)})</option>`);
     }
     $$renderer2.push(`<!--]--></select></label> <label class="svelte-a019ei">Car Model: <input name="model" required/></label> <label class="svelte-a019ei">Make Year: <input name="makeYear" type="number" min="1900" max="2100" required/></label> <button type="submit" class="btn btn-update svelte-a019ei">Add Vehicle</button></form></section>`);
     bind_props($$props, { data });

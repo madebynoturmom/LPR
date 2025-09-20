@@ -13,12 +13,12 @@ const actions = {
     const email = form.get("email")?.toString().trim();
     const phone = form.get("phone")?.toString().trim();
     const carNumber = form.get("carNumber")?.toString().trim();
-    const houseNumber = form.get("houseNumber")?.toString().trim();
-    if (!name || !email || !phone || !carNumber || !houseNumber) {
+    const houseAddress = form.get("houseAddress")?.toString().trim();
+    if (!name || !email || !phone || !carNumber || !houseAddress) {
       return fail(400, { error: "All fields are required." });
     }
     try {
-      await db.update(user).set({ name, email, phone, carNumber, houseNumber }).where(eq(user.id, params.id));
+      await db.update(user).set({ name, email, phone, carNumber, houseAddress }).where(eq(user.id, params.id));
       throw redirect(303, "/admin/dashboard/residents");
     } catch (e) {
       return fail(500, { error: "Failed to update resident." });

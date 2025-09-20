@@ -1,0 +1,1 @@
+ALTER TABLE `user` RENAME COLUMN "house_number" TO "house_address";

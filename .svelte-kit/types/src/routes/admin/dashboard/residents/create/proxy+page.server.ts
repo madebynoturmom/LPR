@@ -16,9 +16,9 @@ export const actions = {
     const email = form.get('email')?.toString().trim();
     const phone = form.get('phone')?.toString().trim();
     const carNumber = form.get('carNumber')?.toString().trim();
-    const houseNumber = form.get('houseNumber')?.toString().trim();
+    const houseAddress = form.get('houseAddress')?.toString().trim();
 
-    if (!name || !email || !phone || !carNumber || !houseNumber) {
+    if (!name || !email || !phone || !carNumber || !houseAddress) {
       return fail(400, { error: 'All fields are required.' });
     }
 
@@ -48,7 +48,7 @@ export const actions = {
         email,
         phone,
         carNumber,
-        houseNumber
+        houseAddress
       });
       // Send the plainPassword to the resident's email address
       // await sendEmail(email, 'Your Resident Account', `Welcome! Your password is: ${plainPassword}`);

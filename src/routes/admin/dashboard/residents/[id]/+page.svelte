@@ -13,7 +13,7 @@
       <li><strong>Email:</strong> {resident.email}</li>
       <li><strong>Phone:</strong> {resident.phone}</li>
       <li><strong>Car Number:</strong> {resident.carNumber}</li>
-      <li><strong>House Number:</strong> {resident.houseNumber}</li>
+      <li><strong>House Address:</strong> {resident.houseAddress}</li>
     </ul>
   {:else}
     <div class="error">Resident not found.</div>

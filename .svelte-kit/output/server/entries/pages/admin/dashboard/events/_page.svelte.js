@@ -1,4 +1,4 @@
-import { W as ensure_array_like, _ as bind_props } from "../../../../../chunks/index2.js";
+import { X as ensure_array_like, _ as bind_props } from "../../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../../chunks/escaping.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {

@@ -1,41 +1,43 @@
 <script lang="ts">
+  export let form;
   let plateNumber = '';
+  let name = '';
+  let phone = '';
+  let visitTime = '';
   let durationMinutes = 60;
-  let success = false;
-  let error = '';
-
-  async function handleSubmit(event: Event) {
-    event.preventDefault();
-    const form = new FormData(event.target as HTMLFormElement);
-    const res = await fetch('', { method: 'POST', body: form });
-    const result = await res.json();
-    if (result.success) {
-      success = true;
-      error = '';
-      plateNumber = '';
-      durationMinutes = 60;
-    } else {
-      error = result.error || 'Failed to create guest pass.';
-      success = false;
-    }
-  }
 </script>
 
 <h2>Create Guest Pass</h2>
-<form on:submit|preventDefault={handleSubmit}>
-  <label>Plate Number <input name="plateNumber" bind:value={plateNumber} required /></label>
-  <label>Duration (minutes) <input name="durationMinutes" type="number" bind:value={durationMinutes} min="10" max="1440" required /></label>
-  <button type="submit">Create Pass</button>
+<form method="POST" class="guest-form">
+  <label>
+    Plate Number:
+    <input name="plateNumber" bind:value={plateNumber} required />
+  </label>
+  <label>
+    Name:
+    <input name="name" bind:value={name} required />
+  </label>
+  <label>
+    Phone:
+    <input name="phone" bind:value={phone} required />
+  </label>
+  <label>
+    Visit Time:
+    <input name="visitTime" type="datetime-local" bind:value={visitTime} required />
+  </label>
+  <label>
+    Duration (minutes):
+    <input name="durationMinutes" type="number" bind:value={durationMinutes} min="10" max="480" required />
+  </label>
+  <button type="submit" class="btn">Create Guest Pass</button>
 </form>
-{#if success}
-  <div class="success">Guest pass created!</div>
-{/if}
-{#if error}
-  <div class="error">{error}</div>
+
+{#if form?.error}
+  <div class="error">{form.error}</div>
 {/if}
 
 <style>
-form {
+.guest-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -46,7 +48,7 @@ label {
   flex-direction: column;
   font-weight: 500;
 }
-button {
+.btn {
   background: #1976d2;
   color: #fff;
   border: none;
@@ -56,13 +58,10 @@ button {
   cursor: pointer;
   transition: background 0.2s;
 }
-button:hover {
+.btn:hover {
   background: #1565c0;
 }
-.success {
-  color: #1976d2;
-  margin-top: 1rem;
-}
+
 .error {
   color: #b00;
   margin-top: 1rem;

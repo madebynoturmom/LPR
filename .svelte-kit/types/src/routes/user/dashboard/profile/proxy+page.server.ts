@@ -4,56 +4,50 @@ import { user as userTable } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
-import crypto from 'crypto';
+import { sha256 } from '@oslojs/crypto/sha2';
+import { encodeHexLowerCase } from '@oslojs/encoding';
 import fs from 'fs';
 import path from 'path';
 
-// Dummy session logic: replace with real session extraction
-function getUserIdFromSession(cookies: any): string | null {
-  // In production, decode the session cookie and fetch userId
-  return 'R001'; // For demo
-}
-
-export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
-  const userId = getUserIdFromSession(cookies);
-  if (!userId) throw redirect(303, '/login');
-  const users = await db.select().from(userTable).where(eq(userTable.id, userId));
+export const load = async ({ locals }: Parameters<PageServerLoad>[0]) => {
+  const user = locals.user;
+  if (!user) throw redirect(303, '/login');
+  const users = await db.select().from(userTable).where(eq(userTable.id, user.id));
   if (!users.length) throw redirect(303, '/login');
-  const user = users[0];
-  return { user };
+  const userData = users[0];
+  return { user: userData };
 };
 
 export const actions = {
-  default: async ({ request, cookies }: import('./$types').RequestEvent) => {
-    const userId = getUserIdFromSession(cookies);
-    if (!userId) return fail(401, { error: 'Not authenticated.' });
+  default: async ({ request, locals }: import('./$types').RequestEvent) => {
+    const user = locals.user;
+    if (!user) return fail(401, { error: 'Not authenticated.' });
     const form = await request.formData();
     const name = form.get('name')?.toString();
     const email = form.get('email')?.toString();
     const username = form.get('username')?.toString();
     const password = form.get('password')?.toString();
     const phone = form.get('phone')?.toString();
-    const houseNumber = form.get('houseNumber')?.toString();
-    const carNumber = form.get('carNumber')?.toString();
+    const houseAddress = form.get('houseAddress')?.toString();
     let profilePic = undefined;
     const file = form.get('profilePicture') as File | null;
     if (file && file.size > 0) {
       const uploadDir = path.resolve('static/uploads');
       if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-      const fileName = `user_${userId}_${Date.now()}_${file.name}`;
+      const fileName = `user_${user.id}_${Date.now()}_${file.name}`;
       const filePath = path.join(uploadDir, fileName);
       const buffer = Buffer.from(await file.arrayBuffer());
       fs.writeFileSync(filePath, buffer);
       profilePic = `/uploads/${fileName}`;
     }
-    const updateData: Record<string, any> = { name, email, username, phone, houseNumber, carNumber };
+    const updateData: Record<string, any> = { name, email, username, phone, houseAddress };
     if (profilePic) updateData.profilePic = profilePic;
     if (password && password.length > 0) {
-      updateData.passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+      updateData.passwordHash = encodeHexLowerCase(sha256(new TextEncoder().encode(password)));
     }
     await db.update(userTable)
       .set(updateData)
-      .where(eq(userTable.id, userId));
+      .where(eq(userTable.id, user.id));
     return { success: true };
   }
 };

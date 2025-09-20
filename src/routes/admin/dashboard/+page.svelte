@@ -1,14 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Chart from 'chart.js/auto';
+  import { page } from '$app/stores';
+  import { writable } from 'svelte/store';
+
   export let data: {
     residents: number;
     guards: number;
     vehicles: number;
     users: number;
+    admins: number;
     guests: number;
     events: number;
     guestStats?: { date: string; count: number }[];
+    activeGuestPasses: number;
+    activeFoodDeliveryPasses: number;
+    recentCarAccess: string;
     adminUsername?: string;
     adminProfilePic?: string;
   };
@@ -16,7 +23,7 @@
     { label: 'Residents', value: data.residents, link: '/admin/dashboard/residents' },
     { label: 'Guards', value: data.guards, link: '/admin/dashboard/guards' },
     { label: 'Vehicles', value: data.vehicles, link: '/admin/dashboard/vehicles' },
-    { label: 'Admins', value: data.users, link: '/admin/dashboard/admins' },
+    { label: 'Admins', value: data.admins, link: '/admin/dashboard/admins' },
     { label: 'Guests', value: data.guests, link: '/admin/dashboard/guests' },
     { label: 'Events', value: data.events, link: '/admin/dashboard/events' }
   ];
@@ -57,32 +64,34 @@
       });
     }
   });
+
+  const sidebarOpen = writable(false);
+
+  function toggleSidebar() {
+    sidebarOpen.update((value) => !value);
+  }
+
+  let userProfilePic = '/default-profile.png';
+  let userName = 'Admin';
+
+  export let recentActivity = {
+    activeGuestPasses: data.activeGuestPasses,
+    activeFoodDeliveryPasses: data.activeFoodDeliveryPasses,
+    recentCarAccess: data.recentCarAccess
+  };
 </script>
 
 <div class="admin-layout">
-  <form method="POST" action="/logout" class="logout-form">
-    <button class="logout-btn" type="submit">Logout</button>
-  </form>
-  <aside class="sidebar">
-    <div class="admin-profile">
-      {#if data.adminProfilePic}
-        <img src={data.adminProfilePic} alt={data.adminUsername ?? 'Admin'} class="profile-pic" />
-      {:else}
-        <div class="profile-pic placeholder">{data.adminUsername?.charAt(0)?.toUpperCase() ?? 'A'}</div>
-      {/if}
-      <div class="admin-username">{data.adminUsername ?? 'Admin'}</div>
-    </div>
-    <nav>
-      {#each navLinks as nav}
-        <a href={nav.link} class="sidebar-link">{nav.label}</a>
-      {/each}
-    </nav>
-    <a href="/admin/dashboard/settings" class="settings-icon" title="Account Settings" aria-label="Account Settings">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#232946" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.6 5a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 5.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19 8.6a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></svg>
-    </a>
-  </aside>
   <main class="dashboard-main">
-    <h1>Dashboard Overview</h1>
+    <h1 class="dashboard-title">Dashboard Overview</h1>
+    <div class="recent-activity-card">
+      <h3>Recent Activity</h3>
+      <ul>
+        <li><strong>Active Guest Passes:</strong> {recentActivity.activeGuestPasses}</li>
+        <li><strong>Active Food Delivery Passes:</strong> {recentActivity.activeFoodDeliveryPasses}</li>
+        <li><strong>Recent Car Access:</strong> {recentActivity.recentCarAccess}</li>
+      </ul>
+    </div>
     <div class="stats-grid">
       {#each stats as stat}
         <a href={stat.link} class="stat-card">
@@ -95,212 +104,154 @@
       <h2>Guest Passes Issued (Last 7 Days)</h2>
       <canvas bind:this={chartCanvas} width="600" height="220"></canvas>
     </div>
+    <div class="dashboard-cards-row">
+      <a href="/admin/dashboard/vehicles" class="dashboard-card">
+        <h2>Vehicles</h2>
+        <p>Manage registered vehicles.</p>
+      </a>
+      <a href="/admin/dashboard/guests" class="dashboard-card">
+        <h2>Guest Passes</h2>
+        <p>View and manage guest passes.</p>
+      </a>
+      <a href="/admin/dashboard/food-delivery" class="dashboard-card">
+        <h2>Food Delivery</h2>
+        <p>Grant access for food delivery riders.</p>
+      </a>
+    </div>
   </main>
 </div>
 
 <style>
 .admin-layout {
   display: flex;
-  min-height: 100vh;
+  flex-direction: row;
+  height: 100vh;
+  min-height: 0;
+  width: 100vw;
   background: #f4f6fb;
 }
-.sidebar {
-  width: 220px;
-  background: #232946;
-  color: #fff;
-  padding: 2rem 1rem;
+
+.dashboard-main {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2.5rem 2rem 2.5rem 2.5rem;
+  background: #f4f6fb;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  box-sizing: border-box;
 }
-.admin-profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-  width: 100%;
-}
-.profile-pic {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #fff;
-  border: 2px solid #1976d2;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: #232946;
-}
-.profile-pic.placeholder {
-  background: #1976d2;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.2rem;
-  font-weight: 700;
-}
-.admin-username {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  text-align: center;
-  word-break: break-all;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.1rem;
-  margin-bottom: 1.2rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-.sidebar-link:hover {
-  background: #393e6e;
-}
-.logout-btn {
-  margin-top: 2rem;
-  background: #e57373;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  align-self: stretch;
-}
-.logout-btn:hover {
-  background: #c62828;
-}
-.dashboard-main {
-  flex: 1;
-  padding: 3rem 2rem;
-}
-.dashboard-main h1 {
-  margin-bottom: 2rem;
-  color: #232946;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-.stat-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 2rem 1.5rem;
-  text-align: center;
-  text-decoration: none;
-  color: #232946;
-  transition: box-shadow 0.2s, transform 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.stat-card:hover {
-  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.12);
-  transform: translateY(-2px) scale(1.03);
-}
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.3rem;
-}
-.stat-label {
-  font-size: 1.1rem;
-  color: #555;
-}
-.guest-graph-card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 2rem 1.5rem;
-  margin-top: 2rem;
-  max-width: 700px;
-}
-.guest-graph-card h2 {
+.dashboard-title {
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+}
+.recent-activity-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.dashboard-cards-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.dashboard-card {
+  flex: 1;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+.dashboard-card:hover {
+  transform: scale(1.05);
 }
 @media (max-width: 900px) {
   .admin-layout {
     flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding: 1rem 0.5rem;
+    height: 100vh;
+    min-height: 0;
   }
   .dashboard-main {
-    padding: 2rem 0.5rem;
+    padding: 1.5rem 0.5rem;
+    height: calc(100vh - 0px);
+    min-height: 0;
+    overflow-y: auto;
   }
 }
-  .sidebar {
+  .admin-layout {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    height: 100vh;
-    position: relative;
+    gap: 1rem;
   }
-  .settings-icon {
-    margin-top: auto;
-    margin-bottom: 1.5rem;
-    align-self: center;
+
+  @media (min-width: 768px) {
+    .admin-layout {
+      flex-direction: row;
+    }
+  }
+
+  .dashboard-main {
+    flex: 3;
+    padding: 1rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-card {
     background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 8px;
-    transition: box-shadow 0.2s, background 0.2s;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .guest-graph-card {
+    margin-top: 2rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+
+    .dashboard-main {
+      padding: 0.5rem;
+    }
+
+    .stat-card {
+      padding: 0.5rem;
+    }
+  }
+
+
+  .dashboard-card {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-  }
-  .settings-icon:hover {
-    background: #e3e6f0;
-    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.12);
-  }
-  .logout-form {
-    position: absolute;
-    top: 24px;
-    right: 32px;
-    z-index: 20;
-  }
-  .logout-btn {
-    margin-top: 0;
-  }
-  .settings-icon {
-    align-self: flex-end;
-    margin-bottom: 1.2rem;
+    padding: 1rem;
     background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 8px;
-    transition: box-shadow 0.2s, background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-  }
-  .settings-icon:hover {
-    background: #e3e6f0;
-    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
   }
 </style>

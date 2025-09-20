@@ -27,7 +27,6 @@
  */
 declare module '$env/static/private' {
 	export const DATABASE_URL: string;
-	export const NODE_ENV: string;
 	export const PORT: string;
 	export const LESSOPEN: string;
 	export const USER: string;
@@ -80,6 +79,7 @@ declare module '$env/static/private' {
 	export const LESSCLOSE: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_NONCE: string;
+	export const GIT_PAGER: string;
 	export const npm_config_globalconfig: string;
 	export const npm_config_init_module: string;
 	export const PWD: string;
@@ -90,11 +90,9 @@ declare module '$env/static/private' {
 	export const npm_command: string;
 	export const WSL2_GUI_APPS_ENABLED: string;
 	export const HOSTTYPE: string;
-	export const NVM_RC_VERSION: string;
 	export const WSLENV: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const VITE_USER_NODE_ENV: string;
 }
 
 /**
@@ -125,7 +123,6 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		DATABASE_URL: string;
-		NODE_ENV: string;
 		PORT: string;
 		LESSOPEN: string;
 		USER: string;
@@ -178,6 +175,7 @@ declare module '$env/dynamic/private' {
 		LESSCLOSE: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_NONCE: string;
+		GIT_PAGER: string;
 		npm_config_globalconfig: string;
 		npm_config_init_module: string;
 		PWD: string;
@@ -188,11 +186,9 @@ declare module '$env/dynamic/private' {
 		npm_command: string;
 		WSL2_GUI_APPS_ENABLED: string;
 		HOSTTYPE: string;
-		NVM_RC_VERSION: string;
 		WSLENV: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		VITE_USER_NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

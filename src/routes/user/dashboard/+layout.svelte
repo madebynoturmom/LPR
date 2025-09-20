@@ -17,11 +17,12 @@
     { label: 'Profile', link: '/user/dashboard/profile' },
     { label: 'Vehicles', link: '/user/dashboard/vehicles' },
     { label: 'Guest Passes', link: '/user/dashboard/guests' },
-    { label: 'Food Delivery', link: '/user/dashboard/food-delivery' }
+    { label: 'Food Delivery', link: '/user/dashboard/food-delivery' },
+    { label: 'Pass History', link: '/user/dashboard/history' }
   ];
-  // Dummy user info, replace with real user data if available
-  let userProfilePic = '/default-profile.png';
-  let userName = 'Resident';
+  // Load user data from page data
+  $: userProfilePic = $page.data.user?.profilePic || '/default-profile.png';
+  $: userName = $page.data.user?.name || 'Resident';
 
   export const recentActivity = {
     activeGuestPasses: 0,
@@ -29,27 +30,26 @@
     recentCarAccess: ''
   };
 
-  import type { LoadEvent } from '@sveltejs/kit';
-
-  export async function load({ fetch }: LoadEvent) {
-    const response = await fetch('/api/recent-activity');
-    const data = await response.json();
-
-    return {
-      props: {
-        recentActivity: {
-          activeGuestPasses: data.activeGuestPasses,
-          activeFoodDeliveryPasses: data.activeFoodDeliveryPasses,
-          recentCarAccess: data.recentCarAccess
-        }
-      }
-    };
-  }
+  // Remove the load function - data should be loaded in page components
 </script>
 
 <div class="user-layout">
   <button class="sidebar-toggle" on:click={toggleSidebar} aria-label="Open sidebar">
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#232946" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <button
+    type="button"
+    class="sidebar-toggle"
+    on:click={toggleSidebar}
+    aria-label="Open sidebar"
+    tabindex="0"
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { toggleSidebar(); } }}
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
   </button>
   {#if sidebarOpen}
     <button
@@ -213,10 +213,22 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background: none;
+  background: #232946;
+  color: #fff;
   border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
   z-index: 1100;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: background 0.2s;
+}
+.sidebar-toggle:hover {
+  background: #1a1f3a;
+}
+.sidebar-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 .sidebar-backdrop {
   position: fixed;

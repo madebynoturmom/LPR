@@ -14,18 +14,18 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 
 
 // Extend App.Locals to include user with role
-declare global {
-       namespace App {
-	       interface Locals {
-		       user: {
-			       id: string;
-			       username: string;
-			       role: 'admin' | 'guard' | 'resident';
-		       } | null;
-		       session: import('$lib/server/db/schema').Session | null;
-	       }
-       }
-}
+// declare global {
+//        namespace App {
+// 	       interface Locals {
+// 		       user: {
+// 			       id: string;
+// 			       username: string;
+// 			       role: 'admin' | 'guard' | 'resident';
+// 		       } | null;
+// 		       session: import('$lib/server/db/schema').Session | null;
+// 	       }
+//        }
+// }
 
 const handleAuth: Handle = async ({ event, resolve }) => {
        const sessionToken = event.cookies.get(auth.sessionCookieName);

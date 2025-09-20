@@ -1,27 +1,6 @@
 <script lang="ts">
   export let data;
   let { foodDeliveryPasses } = data;
-
-  let plateNumber = '';
-  let durationMinutes = 30;
-  let success = false;
-  let error = '';
-
-  async function handleSubmit(event: Event) {
-    event.preventDefault();
-    const form = new FormData(event.target as HTMLFormElement);
-    const res = await fetch('/api/food-delivery/create', { method: 'POST', body: form });
-    const result = await res.json();
-    if (result.success) {
-      success = true;
-      error = '';
-      plateNumber = '';
-      durationMinutes = 30;
-    } else {
-      error = result.error || 'Failed to issue pass.';
-      success = false;
-    }
-  }
 </script>
 
 <div class="food-delivery-page-container">
@@ -43,7 +22,8 @@
           </form>
           <form method="POST" action="?/extend" class="extend-form">
             <input type="hidden" name="id" value={f.id} />
-            <input type="number" name="duration" min="1" step="1" value={f.durationMinutes} class="duration-input" required />
+            <label for="extend-{f.id}" class="extend-label">Add minutes:</label>
+            <input id="extend-{f.id}" type="number" name="duration" min="1" step="1" placeholder="30" class="duration-input" required />
             <button type="submit" class="extend-btn">Extend</button>
           </form>
         </li>

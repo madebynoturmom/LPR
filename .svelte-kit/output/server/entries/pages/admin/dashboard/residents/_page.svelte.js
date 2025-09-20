@@ -1,4 +1,4 @@
-import { W as ensure_array_like, _ as bind_props } from "../../../../../chunks/index2.js";
+import { X as ensure_array_like, _ as bind_props } from "../../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../../chunks/escaping.js";
 import { a as attr } from "../../../../../chunks/attributes.js";
 function _page($$renderer, $$props) {
@@ -9,7 +9,7 @@ function _page($$renderer, $$props) {
     const each_array = ensure_array_like(residents);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let resident = each_array[$$index];
-      $$renderer2.push(`<tr><td class="svelte-130yy4t">${escape_html(resident.name)}</td><td class="svelte-130yy4t">${escape_html(resident.email)}</td><td class="svelte-130yy4t">${escape_html(resident.phone)}</td><td class="svelte-130yy4t">${escape_html(resident.carNumber)}</td><td class="svelte-130yy4t">${escape_html(resident.houseNumber)}</td><td class="svelte-130yy4t"><a${attr("href", `/admin/dashboard/residents/${resident.id}/edit`)} class="edit-btn svelte-130yy4t">Edit</a> <form method="POST" style="display:inline"><button type="submit" class="delete-btn svelte-130yy4t">Delete</button></form></td></tr>`);
+      $$renderer2.push(`<tr><td class="svelte-130yy4t">${escape_html(resident.name)}</td><td class="svelte-130yy4t">${escape_html(resident.email)}</td><td class="svelte-130yy4t">${escape_html(resident.phone)}</td><td class="svelte-130yy4t">${escape_html(resident.carNumber)}</td><td class="svelte-130yy4t">${escape_html(resident.houseAddress)}</td><td class="svelte-130yy4t"><a${attr("href", `/admin/dashboard/residents/${resident.id}/edit`)} class="edit-btn svelte-130yy4t">Edit</a> <form method="POST" style="display:inline"><button type="submit" class="delete-btn svelte-130yy4t">Delete</button></form></td></tr>`);
     }
     $$renderer2.push(`<!--]--></tbody></table></section>`);
     bind_props($$props, { data });

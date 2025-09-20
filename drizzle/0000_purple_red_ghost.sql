@@ -64,3 +64,11 @@ CREATE TABLE `event_log` (
 	`details` text,
 	`timestamp` integer NOT NULL
 );
+CREATE TABLE `guest_pass_history` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`guest_id` INTEGER NOT NULL,
+	`pass_issued_at` DATETIME NOT NULL,
+	`pass_expires_at` DATETIME NOT NULL,
+	`status` TEXT NOT NULL,
+	FOREIGN KEY (`guest_id`) REFERENCES `guest_pass`(`id`)
+);

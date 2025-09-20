@@ -5,7 +5,12 @@ export const guestPassHistory = sqliteTable('guest_pass_history', {
 	plateNumber: text('plate_number').notNull(),
 	visitTime: integer('visit_time', { mode: 'timestamp' }).notNull(),
 	durationMinutes: integer('duration_minutes').notNull(),
-	revokedAt: integer('revoked_at', { mode: 'timestamp' }).notNull()
+	status: text('status', { enum: ['active', 'expired', 'revoked'] }).notNull(),
+	userId: text('user_id').notNull(),
+	type: text('type', { enum: ['visitors', 'food_delivery'] }).notNull(),
+	revokedAt: integer('revoked_at', { mode: 'timestamp' }).notNull(),
+	name: text('name'),
+	phone: text('phone')
 });
 
 export type GuestPassHistory = typeof guestPassHistory.$inferSelect;
@@ -23,7 +28,7 @@ export const user = sqliteTable('user', {
 	email: text('email'),
 	phone: text('phone'),
 	carNumber: text('car_number'),
-	houseNumber: text('house_number'),
+	houseAddress: text('house_address'),
 	profilePic: text('profile_pic')
 });
 
@@ -50,14 +55,18 @@ export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
  
 export const guestPass = sqliteTable('guest_pass', {
-    id: text('id').primaryKey(),
-    plateNumber: text('plate_number').notNull(),
-    visitTime: integer('visit_time', { mode: 'timestamp' }).notNull(),
-    durationMinutes: integer('duration_minutes').notNull(),
-    revokedAt: integer('revoked_at', { mode: 'timestamp' }), // Added for admin dashboard functionality
-    type: text('type')
+	id: text('id').primaryKey(),
+	plateNumber: text('plate_number').notNull(),
+	visitTime: integer('visit_time', { mode: 'timestamp' }).notNull(),
+	durationMinutes: integer('duration_minutes').notNull(),
+	status: text('status', { enum: ['active', 'expired', 'revoked'] }).notNull(),
+	userId: text('user_id').notNull(), // Ensure userId is non-nullable
+	type: text('type', { enum: ['visitors', 'food_delivery'] }).notNull().default('visitors'),
+	name: text('name').notNull(),
+	phone: text('phone').notNull()
 });
 
+export type GuestPass = typeof guestPass.$inferSelect;
 
 export const guard = sqliteTable('guard', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
@@ -72,7 +81,7 @@ export type Guard = typeof guard.$inferSelect;
 
 export const vehicle = sqliteTable('vehicle', {
     id: text('id').primaryKey(),
-    plateNumber: text('plate_number').notNull(),
+    plateNumber: text('plate_number').notNull().unique(),
     ownerId: text('owner_id').notNull(),
     model: text('model').notNull(),
     makeYear: integer('make_year').notNull(),

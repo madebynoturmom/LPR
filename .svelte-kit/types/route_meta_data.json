@@ -59,30 +59,49 @@
 	"/logout": [
 		"src/routes/logout/+page.server.ts"
 	],
-	"/user/dashboard": [],
-	"/user/dashboard/food-delivery": [
-		"src/routes/user/dashboard/food-delivery/+page.server.ts"
+	"/user/dashboard": [
+		"src/routes/user/dashboard/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
-	"/user/dashboard/food-delivery/create": [],
+	"/user/dashboard/food-delivery": [
+		"src/routes/user/dashboard/food-delivery/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
+	],
+	"/user/dashboard/food-delivery/create": [
+		"src/routes/user/dashboard/food-delivery/create/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
+	],
 	"/user/dashboard/guests": [
-		"src/routes/user/dashboard/guests/+page.server.ts"
+		"src/routes/user/dashboard/guests/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/guests/create": [
-		"src/routes/user/dashboard/guests/create/+page.server.ts"
+		"src/routes/user/dashboard/guests/create/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
+	],
+	"/user/dashboard/history": [
+		"src/routes/user/dashboard/history/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/profile": [
-		"src/routes/user/dashboard/profile/+page.server.ts"
+		"src/routes/user/dashboard/profile/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/vehicles": [
-		"src/routes/user/dashboard/vehicles/+page.server.ts"
+		"src/routes/user/dashboard/vehicles/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/vehicles/create": [
-		"src/routes/user/dashboard/vehicles/create/+page.server.ts"
+		"src/routes/user/dashboard/vehicles/create/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/vehicles/[id]/delete": [
-		"src/routes/user/dashboard/vehicles/[id]/delete/+page.server.ts"
+		"src/routes/user/dashboard/vehicles/[id]/delete/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/vehicles/[id]/edit": [
-		"src/routes/user/dashboard/vehicles/[id]/edit/+page.server.ts"
+		"src/routes/user/dashboard/vehicles/[id]/edit/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
 	]
 }

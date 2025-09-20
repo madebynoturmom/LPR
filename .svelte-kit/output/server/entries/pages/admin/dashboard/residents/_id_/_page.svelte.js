@@ -11,7 +11,7 @@ function _page($$renderer, $$props) {
     $$renderer2.push(`<section class="resident-detail-section svelte-1ttskn9"><button type="button" class="back-btn svelte-1ttskn9">← Back</button> <h2>Resident Details</h2> `);
     if (resident) {
       $$renderer2.push("<!--[-->");
-      $$renderer2.push(`<ul class="resident-detail-list svelte-1ttskn9"><li class="svelte-1ttskn9"><strong>Name:</strong> ${escape_html(resident.name)}</li> <li class="svelte-1ttskn9"><strong>Email:</strong> ${escape_html(resident.email)}</li> <li class="svelte-1ttskn9"><strong>Phone:</strong> ${escape_html(resident.phone)}</li> <li class="svelte-1ttskn9"><strong>Car Number:</strong> ${escape_html(resident.carNumber)}</li> <li class="svelte-1ttskn9"><strong>House Number:</strong> ${escape_html(resident.houseNumber)}</li></ul>`);
+      $$renderer2.push(`<ul class="resident-detail-list svelte-1ttskn9"><li class="svelte-1ttskn9"><strong>Name:</strong> ${escape_html(resident.name)}</li> <li class="svelte-1ttskn9"><strong>Email:</strong> ${escape_html(resident.email)}</li> <li class="svelte-1ttskn9"><strong>Phone:</strong> ${escape_html(resident.phone)}</li> <li class="svelte-1ttskn9"><strong>Car Number:</strong> ${escape_html(resident.carNumber)}</li> <li class="svelte-1ttskn9"><strong>House Address:</strong> ${escape_html(resident.houseAddress)}</li></ul>`);
     } else {
       $$renderer2.push("<!--[!-->");
       $$renderer2.push(`<div class="error">Resident not found.</div>`);

@@ -38,7 +38,7 @@
           <td>{resident.email}</td>
           <td>{resident.phone}</td>
           <td>{resident.carNumber}</td>
-          <td>{resident.houseNumber}</td>
+          <td>{resident.houseAddress}</td>
           <td>
             <a href={`/admin/dashboard/residents/${resident.id}/edit`} class="edit-btn">Edit</a>
             <form method="POST" style="display:inline" on:submit|preventDefault={() => deleteResident(resident.id)}>

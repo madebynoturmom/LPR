@@ -22,7 +22,8 @@
           </form>
     <form method="POST" action="?/extend" class="extend-form">
       <input type="hidden" name="id" value={g.id} />
-      <input type="number" name="duration" min="1" step="1" value={g.durationMinutes} class="duration-input" required />
+      <label for="extend-{g.id}" class="extend-label">Add minutes:</label>
+      <input id="extend-{g.id}" type="number" name="duration" min="1" step="1" placeholder="30" class="duration-input" required />
       <button type="submit" class="extend-btn">Extend</button>
     </form>
   </li>

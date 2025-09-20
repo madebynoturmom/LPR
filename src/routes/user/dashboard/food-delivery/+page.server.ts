@@ -1,42 +1,77 @@
 import { db } from '$lib/server/db';
-import { guestPass as guestPassTable } from '$lib/server/db/schema';
+import { guestPass as guestPassTable, user, guestPassHistory } from '$lib/server/db/schema';
 import { v4 as uuidv4 } from 'uuid';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { eq } from 'drizzle-orm';
-
-function getUserIdFromSession(cookies: any): string | null {
-  return 'R001'; // Replace with real session logic
-}
+import { eq, and, sql, desc } from 'drizzle-orm';
 
 export const actions: Actions = {
-  default: async ({ request, cookies }) => {
-    const userId = getUserIdFromSession(cookies);
-    if (!userId) return fail(401, { error: 'Not authenticated.' });
+  revoke: async ({ request, locals }) => {
+    const user = locals.user;
+    if (!user) return fail(401, { error: 'Not authenticated.' });
     const form = await request.formData();
-    const plateNumber = form.get('plateNumber')?.toString();
-    const durationMinutes = Number(form.get('durationMinutes'));
-    if (!plateNumber || !durationMinutes) {
-      return fail(400, { error: 'All fields are required.' });
-    }
-    try {
-      await db.insert(guestPassTable).values({
-        id: userId, // Use userId as the id for the guest pass
-        plateNumber,
-        visitTime: new Date(),
-        durationMinutes
-      });
-      return { success: true };
-    } catch (e) {
-      return fail(500, { error: 'Failed to issue pass.' });
-    }
+    const id = form.get('id')?.toString();
+    if (!id) return fail(400, { error: 'Missing food delivery pass id' });
+    // Find the food delivery pass
+    const pass = await db.select().from(guestPassTable).where(eq(guestPassTable.id, id)).get();
+    if (!pass || pass.userId !== user.id) return fail(403, { error: 'Food delivery pass not found or not owned by you' });
+    // Move to history
+    await db.insert(guestPassHistory).values({
+      id: pass.id,
+      plateNumber: pass.plateNumber,
+      visitTime: pass.visitTime,
+      durationMinutes: pass.durationMinutes,
+      status: pass.status,
+      userId: user.id, // User who revoked
+      type: pass.type,
+      revokedAt: new Date(),
+      name: pass.name,
+      phone: pass.phone
+    });
+    // Delete from active
+    await db.delete(guestPassTable).where(eq(guestPassTable.id, id));
+    // Redirect to refresh
+    throw redirect(303, '/user/dashboard/food-delivery');
+  },
+  extend: async ({ request, locals }) => {
+    const user = locals.user;
+    if (!user) return fail(401, { error: 'Not authenticated.' });
+    const form = await request.formData();
+    const id = form.get('id')?.toString();
+    const additionalMinutes = Number(form.get('duration'));
+    if (!id || !additionalMinutes || isNaN(additionalMinutes)) return fail(400, { error: 'Missing or invalid data' });
+    // Check ownership
+    const pass = await db.select().from(guestPassTable).where(eq(guestPassTable.id, id)).get();
+    if (!pass || pass.userId !== user.id) return fail(403, { error: 'Food delivery pass not found or not owned by you' });
+    // Add the additional time to the existing duration
+    const newDuration = pass.durationMinutes + additionalMinutes;
+    await db.update(guestPassTable)
+      .set({ durationMinutes: newDuration })
+      .where(eq(guestPassTable.id, id));
+    throw redirect(303, '/user/dashboard/food-delivery');
   }
 };
 
-export const load: PageServerLoad = async ({ cookies }) => {
-  const userId = getUserIdFromSession(cookies);
-  if (!userId) return { foodDeliveryPasses: [] };
+export const load: PageServerLoad = async ({ locals }) => {
+  const user = locals.user;
+  if (!user) return { foodDeliveryPasses: [] };
 
-  const foodDeliveryPasses = await db.select().from(guestPassTable).where(eq(guestPassTable.type, 'food_delivery'));
+  // Get all active food delivery passes, then filter for non-expired ones
+  const allFoodDeliveryPasses = await db.select().from(guestPassTable).where(
+    and(
+      eq(guestPassTable.userId, user.id),
+      eq(guestPassTable.type, 'food_delivery'),
+      eq(guestPassTable.status, 'active')
+    )
+  ).orderBy(desc(guestPassTable.visitTime));
+  
+  // Filter for active passes (not expired)
+  const now = Math.floor(Date.now() / 1000); // Current time in seconds
+  const foodDeliveryPasses = allFoodDeliveryPasses.filter(pass => {
+    const visitTimeSeconds = Math.floor(pass.visitTime.getTime() / 1000);
+    const expirationTime = visitTimeSeconds + (pass.durationMinutes * 60);
+    return now < expirationTime;
+  });
+  
   return { foodDeliveryPasses };
 };

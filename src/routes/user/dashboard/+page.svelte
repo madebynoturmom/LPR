@@ -1,9 +1,19 @@
 <script lang="ts">
-  export let recentActivity = {
-    activeGuestPasses: 0,
-    activeFoodDeliveryPasses: 0,
-    recentCarAccess: 'N/A'
+  import type { GuestPass } from '$lib/server/db/schema';
+
+  export let data: {
+    recentActivity: {
+      activeGuestPasses: number;
+      activeFoodDeliveryPasses: number;
+      recentCarAccess: string;
+    };
+    activeGuestPasses: GuestPass[];
+    activeFoodDeliveryPasses: GuestPass[];
   };
+
+  export let recentActivity = data.recentActivity;
+  export let activeGuestPasses = data.activeGuestPasses;
+  export let activeFoodDeliveryPasses = data.activeFoodDeliveryPasses;
 </script>
 
 <h1 class="dashboard-title">Dashboard Overview</h1>
@@ -16,6 +26,58 @@
     <li><strong>Recent Car Access:</strong> {recentActivity.recentCarAccess}</li>
   </ul>
 </div>
+
+{#if activeGuestPasses.length > 0}
+<div class="active-passes-card">
+  <h3>Your Active Guest Passes</h3>
+  <div class="passes-list">
+    {#each activeGuestPasses as pass}
+      <div class="pass-item">
+        <div class="pass-info">
+          <div class="pass-plate"><strong>{pass.plateNumber}</strong></div>
+          {#if pass.name}
+            <div class="pass-detail">Name: {pass.name}</div>
+          {/if}
+          {#if pass.phone}
+            <div class="pass-detail">Phone: {pass.phone}</div>
+          {/if}
+          <div class="pass-detail">Visit: {new Date(pass.visitTime).toLocaleString()}</div>
+          <div class="pass-detail">Duration: {pass.durationMinutes} minutes</div>
+        </div>
+        <div class="pass-actions">
+          <a href="/user/dashboard/guests" class="manage-link">Manage</a>
+        </div>
+      </div>
+    {/each}
+  </div>
+</div>
+{/if}
+
+{#if activeFoodDeliveryPasses.length > 0}
+<div class="active-passes-card">
+  <h3>Your Active Food Delivery Passes</h3>
+  <div class="passes-list">
+    {#each activeFoodDeliveryPasses as pass}
+      <div class="pass-item">
+        <div class="pass-info">
+          <div class="pass-plate"><strong>{pass.plateNumber}</strong></div>
+          {#if pass.name}
+            <div class="pass-detail">Name: {pass.name}</div>
+          {/if}
+          {#if pass.phone}
+            <div class="pass-detail">Phone: {pass.phone}</div>
+          {/if}
+          <div class="pass-detail">Visit: {new Date(pass.visitTime).toLocaleString()}</div>
+          <div class="pass-detail">Duration: {pass.durationMinutes} minutes</div>
+        </div>
+        <div class="pass-actions">
+          <a href="/user/dashboard/food-delivery" class="manage-link">Manage</a>
+        </div>
+      </div>
+    {/each}
+  </div>
+</div>
+{/if}
 
 <div class="dashboard-cards-row">
   <a href="/user/dashboard/vehicles" class="dashboard-card">
@@ -33,9 +95,7 @@
 </div>
 
 <style>
-  :global(body) {
-    overflow: hidden;
-  }
+  /* Removed global body overflow hidden to prevent layout issues */
   .dashboard-title {
     font-size: 2.5rem;
     font-weight: 700;
@@ -119,6 +179,63 @@
   }
   .dashboard-card:nth-child(3) h2::before {
     background-image: url('/static/icons/food-delivery.svg'); /* Icon for Food Delivery */
+  }
+  .active-passes-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 600px;
+  }
+  .active-passes-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #232946;
+  }
+  .passes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .pass-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #175cd3;
+  }
+  .pass-info {
+    flex: 1;
+  }
+  .pass-plate {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #232946;
+  }
+  .pass-detail {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+  .pass-actions {
+    margin-left: 1rem;
+  }
+  .manage-link {
+    color: #175cd3;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid #175cd3;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  .manage-link:hover {
+    background-color: #175cd3;
+    color: white;
   }
   @media (max-width: 1100px) {
     .dashboard-cards-row {

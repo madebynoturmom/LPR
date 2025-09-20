@@ -13,6 +13,14 @@
 			<input name="plateNumber" required />
 		</label>
 		<label>
+			Name:
+			<input name="name" required />
+		</label>
+		<label>
+			Phone:
+			<input name="phone" required />
+		</label>
+		<label>
 			Visit Time:
 			<input name="visitTime" type="datetime-local" required />
 		</label>
@@ -28,6 +36,8 @@
 			<thead>
 				<tr>
 					<th>Plate Number</th>
+					<th>Name</th>
+					<th>Phone</th>
 					<th>Visit Time</th>
 					<th>Duration (min)</th>
 					<th>Actions</th>
@@ -37,6 +47,8 @@
 				{#each passes as pass}
 					<tr>
 						<td>{pass.plateNumber}</td>
+						<td>{pass.name}</td>
+						<td>{pass.phone}</td>
 						<td>{new Date(pass.visitTime).toLocaleString()}</td>
 						<td>{pass.durationMinutes}</td>
 						<td>
