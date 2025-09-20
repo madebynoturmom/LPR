@@ -5,9 +5,16 @@
   let success = null;
 </script>
 
-<section class="admin-section">
-  <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard/residents'}>&larr; Back</button>
-  <h2>Edit Resident</h2>
+ 
+
+<div class="subpage-container">
+  <div class="subpage-card">
+    <div class="subpage-header">
+      <div>
+        <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard/residents'}>&larr; Back</button>
+        <h2 class="subpage-title">Edit Resident</h2>
+      </div>
+    </div>
   {#if error}
     <div class="error">{error}</div>
   {/if}
@@ -26,38 +33,11 @@
   {:else}
     <div class="error">Resident not found.</div>
   {/if}
-</section>
+  </div>
+</div>
 
 <style>
-.admin-section {
-  max-width: 900px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-.back-btn {
-  margin-bottom: 1rem;
-}
-.resident-form label {
-  display: block;
-  margin-bottom: 1rem;
-}
-.resident-form input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
-  border: 1px solid #bdbdbd;
-  border-radius: 4px;
-}
-.btn-update {
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.3rem;
-  cursor: pointer;
-}
+.resident-form label { display: block; margin-bottom: 1rem; }
+.resident-form input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #bdbdbd; border-radius: 4px; }
+.btn-update { background: #1976d2; color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.3rem; cursor: pointer; }
 </style>

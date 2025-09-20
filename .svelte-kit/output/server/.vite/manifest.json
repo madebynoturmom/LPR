@@ -20,12 +20,17 @@
     "file": "chunks/auth.js",
     "name": "auth",
     "imports": [
-      "_index3.js"
+      "_index3.js",
+      "_email.js"
     ]
   },
   "_context.js": {
     "file": "chunks/context.js",
     "name": "context"
+  },
+  "_email.js": {
+    "file": "chunks/email.js",
+    "name": "email"
   },
   "_environment.js": {
     "file": "chunks/environment.js",
@@ -43,7 +48,7 @@
     "file": "chunks/index.js",
     "name": "index",
     "imports": [
-      "_utils2.js",
+      "_escaping.js",
       "_context.js"
     ]
   },
@@ -52,9 +57,8 @@
     "name": "index",
     "imports": [
       "_attributes.js",
-      "_utils2.js",
-      "_context.js",
-      "_escaping.js"
+      "_escaping.js",
+      "_context.js"
     ]
   },
   "_index3.js": {
@@ -66,7 +70,7 @@
     "name": "internal",
     "imports": [
       "_index2.js",
-      "_utils2.js",
+      "_escaping.js",
       "_context.js",
       "_environment.js"
     ],
@@ -90,7 +94,7 @@
     "file": "chunks/state.svelte.js",
     "name": "state.svelte",
     "imports": [
-      "_utils2.js"
+      "_escaping.js"
     ]
   },
   "_stores.js": {
@@ -105,10 +109,6 @@
   },
   "_utils.js": {
     "file": "chunks/utils.js",
-    "name": "utils"
-  },
-  "_utils2.js": {
-    "file": "chunks/utils2.js",
     "name": "utils"
   },
   "node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
@@ -179,7 +179,7 @@
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.BUZxOO6U.css"
+      "_app/immutable/assets/_layout.BhLAbWSv.css"
     ]
   },
   "src/routes/+page.server.ts": {
@@ -187,6 +187,15 @@
     "name": "entries/pages/_page.server.ts",
     "src": "src/routes/+page.server.ts",
     "isEntry": true
+  },
+  "src/routes/admin/dashboard/+layout.server.ts": {
+    "file": "entries/pages/admin/dashboard/_layout.server.ts.js",
+    "name": "entries/pages/admin/dashboard/_layout.server.ts",
+    "src": "src/routes/admin/dashboard/+layout.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js"
+    ]
   },
   "src/routes/admin/dashboard/+layout.svelte": {
     "file": "entries/pages/admin/dashboard/_layout.svelte.js",
@@ -201,7 +210,7 @@
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.BO-Mczo0.css"
+      "_app/immutable/assets/_layout.w0BPJsK9.css"
     ]
   },
   "src/routes/admin/dashboard/+page.server.ts": {
@@ -220,7 +229,6 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_utils2.js",
       "_exports.js",
       "_utils.js",
       "_attributes.js",
@@ -228,7 +236,7 @@
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DkgmTxDY.css"
+      "_app/immutable/assets/_page.D2A5auvc.css"
     ]
   },
   "src/routes/admin/dashboard/admins/+page.server.ts": {
@@ -247,10 +255,11 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
+      "_escaping.js",
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.MIloi5yZ.css"
+      "_app/immutable/assets/_page.DMSCsXDq.css"
     ]
   },
   "src/routes/admin/dashboard/admins/create/+page.server.ts": {
@@ -274,7 +283,7 @@
       "_state.svelte.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.B7oZy8PB.css"
+      "_app/immutable/assets/_page.DKBv__qu.css"
     ]
   },
   "src/routes/admin/dashboard/events/+page.server.ts": {
@@ -296,7 +305,7 @@
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.BRYy26hY.css"
+      "_app/immutable/assets/_page.DFhwXHc2.css"
     ]
   },
   "src/routes/admin/dashboard/guards/+page.server.ts": {
@@ -315,10 +324,11 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_escaping.js"
+      "_escaping.js",
+      "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.Wa_G3UM1.css"
+      "_app/immutable/assets/_page.CYNzSrRu.css"
     ]
   },
   "src/routes/admin/dashboard/guards/create/+page.server.ts": {
@@ -336,7 +346,7 @@
     "src": "src/routes/admin/dashboard/guards/create/+page.svelte",
     "isEntry": true,
     "css": [
-      "_app/immutable/assets/_page.B5cHOmNV.css"
+      "_app/immutable/assets/_page.lUCd4BbX.css"
     ]
   },
   "src/routes/admin/dashboard/guests/+page.server.ts": {
@@ -359,7 +369,16 @@
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.YLoYO1Ix.css"
+      "_app/immutable/assets/_page.BvxMG4p2.css"
+    ]
+  },
+  "src/routes/admin/dashboard/guests/[id]/extend/+server.ts": {
+    "file": "entries/endpoints/admin/dashboard/guests/_id_/extend/_server.ts.js",
+    "name": "entries/endpoints/admin/dashboard/guests/_id_/extend/_server.ts",
+    "src": "src/routes/admin/dashboard/guests/[id]/extend/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js"
     ]
   },
   "src/routes/admin/dashboard/residents/+page.server.ts": {
@@ -378,11 +397,11 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_escaping.js",
-      "_attributes.js"
+      "_attributes.js",
+      "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.CdzZ43dc.css"
+      "_app/immutable/assets/_page.QdKNH1CY.css"
     ]
   },
   "src/routes/admin/dashboard/residents/[id]/+page.server.ts": {
@@ -407,7 +426,7 @@
       "_state.svelte.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.Dx5DOKPL.css"
+      "_app/immutable/assets/_page.CDIXWxuu.css"
     ]
   },
   "src/routes/admin/dashboard/residents/[id]/delete/+server.ts": {
@@ -438,7 +457,7 @@
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DNPrmxmj.css"
+      "_app/immutable/assets/_page.CYcyRZx8.css"
     ]
   },
   "src/routes/admin/dashboard/residents/create/+page.server.ts": {
@@ -447,7 +466,8 @@
     "src": "src/routes/admin/dashboard/residents/create/+page.server.ts",
     "isEntry": true,
     "imports": [
-      "_index3.js"
+      "_index3.js",
+      "_email.js"
     ]
   },
   "src/routes/admin/dashboard/residents/create/+page.svelte": {
@@ -456,7 +476,7 @@
     "src": "src/routes/admin/dashboard/residents/create/+page.svelte",
     "isEntry": true,
     "css": [
-      "_app/immutable/assets/_page.o_R4P_hM.css"
+      "_app/immutable/assets/_page.D8-PX_gG.css"
     ]
   },
   "src/routes/admin/dashboard/settings/+page.server.ts": {
@@ -479,10 +499,11 @@
       "_exports.js",
       "_utils.js",
       "_attributes.js",
-      "_state.svelte.js"
+      "_state.svelte.js",
+      "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.DSsgAKWg.css"
+      "_app/immutable/assets/_page.EWDonvfx.css"
     ]
   },
   "src/routes/admin/dashboard/vehicles/+page.server.ts": {
@@ -501,11 +522,11 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_escaping.js",
-      "_attributes.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.Csni5dJ0.css"
+      "_exports.js",
+      "_utils.js",
+      "_attributes.js",
+      "_state.svelte.js",
+      "_escaping.js"
     ]
   },
   "src/routes/admin/dashboard/vehicles/create/+page.server.ts": {
@@ -528,7 +549,7 @@
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.31Kf0vJD.css"
+      "_app/immutable/assets/_page.BoZT4lOe.css"
     ]
   },
   "src/routes/api/food-delivery/create/+server.ts": {
@@ -556,7 +577,8 @@
     "isEntry": true,
     "imports": [
       "_index3.js",
-      "_auth.js"
+      "_auth.js",
+      "_email.js"
     ]
   },
   "src/routes/login/+page.svelte": {
@@ -565,10 +587,14 @@
     "src": "src/routes/login/+page.svelte",
     "isEntry": true,
     "imports": [
-      "_attributes.js"
+      "_attributes.js",
+      "_escaping.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.NJqmu5VW.css"
+      "_app/immutable/assets/_page._94_Grtu.css"
     ]
   },
   "src/routes/logout/+page.server.ts": {
@@ -603,11 +629,12 @@
     "imports": [
       "_index2.js",
       "_stores.js",
+      "_index.js",
       "_attributes.js",
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.B3jJJPDi.css"
+      "_app/immutable/assets/_layout.3aK3_JQn.css"
     ]
   },
   "src/routes/user/dashboard/+page.server.ts": {
@@ -626,11 +653,10 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_utils2.js",
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.5q9J2IHQ.css"
+      "_app/immutable/assets/_page.KCYWcOlN.css"
     ]
   },
   "src/routes/user/dashboard/food-delivery/+page.server.ts": {

@@ -1,5 +1,5 @@
 import { b as base64_encode, t as text_decoder, e as base64_decode } from "./utils.js";
-const BROWSER = false;
+const DEV = false;
 const escaped = {
   "<": "\\u003C",
   "\\": "\\\\",
@@ -502,21 +502,21 @@ function create_remote_cache_key(id, payload) {
   return id + "/" + payload;
 }
 export {
-  BROWSER as B,
   DevalueError as D,
   INVALIDATED_PARAM as I,
   TRAILING_SLASH_PARAM as T,
   is_plain_object as a,
   stringify_string as b,
   escaped as c,
-  stringify$1 as d,
+  DEV as d,
   enumerable_symbols as e,
-  stringify as f,
+  stringify$1 as f,
   get_type as g,
-  create_remote_cache_key as h,
+  stringify as h,
   is_primitive as i,
-  stringify_remote_arg as j,
-  parse as k,
+  create_remote_cache_key as j,
+  stringify_remote_arg as k,
+  parse as l,
   parse_remote_arg as p,
   stringify_key as s
 };

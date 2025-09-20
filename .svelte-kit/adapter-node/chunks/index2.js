@@ -1,7 +1,6 @@
 import { t as to_class } from "./attributes.js";
-import { r as run_all, d as define_property, b as deferred, o as object_prototype, c as array_prototype, g as get_descriptor, e as get_prototype_of, i as is_array, h as is_extensible, j as index_of, n as noop } from "./utils2.js";
+import { r as run_all, d as define_property, b as deferred, o as object_prototype, c as array_prototype, g as get_descriptor, f as get_prototype_of, i as is_array, h as is_extensible, j as index_of, n as noop, e as escape_html } from "./escaping.js";
 import { b as safe_equals, e as equals, c as set_ssr_context, d as ssr_context, p as push$1, f as pop$1 } from "./context.js";
-import { e as escape_html } from "./escaping.js";
 const DEV = false;
 const DERIVED = 1 << 1;
 const EFFECT = 1 << 2;
@@ -2136,7 +2135,7 @@ function maybe_selected(renderer, value) {
   return value === renderer.local.select_value ? " selected" : "";
 }
 export {
-  maybe_selected as $,
+  bind_props as $,
   EFFECT_PRESERVED as A,
   Batch as B,
   COMMENT_NODE as C,
@@ -2163,9 +2162,9 @@ export {
   ensure_array_like as X,
   slot as Y,
   unsubscribe_stores as Z,
-  bind_props as _,
+  stringify as _,
   HYDRATION_END as a,
-  stringify as a0,
+  maybe_selected as a0,
   HYDRATION_START as b,
   HYDRATION_START_ELSE as c,
   get as d,

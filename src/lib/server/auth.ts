@@ -1,9 +1,10 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import { sendEmail } from './email';
 
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
@@ -18,13 +19,16 @@ export function generateSessionToken() {
 
 export async function createSession(token: string, userId: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
 	const session: table.Session = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+		// Drizzle sqlite timestamp columns accept Date objects and map them to integer
+		expiresAt: expiresAt as unknown as Date
 	};
 	await db.insert(table.session).values(session);
-	return session;
+	// return a session object with expiresAt as Date for callers
+	return { ...session, expiresAt };
 }
 
 export async function validateSessionToken(token: string) {
@@ -41,18 +45,25 @@ export async function validateSessionToken(token: string) {
 	if (adminResult.length > 0) {
 		const { session, admin } = adminResult[0];
 		const user = { id: admin.id, username: admin.username, role: 'admin' as const };
-		const sessionExpired = Date.now() >= session.expiresAt.getTime();
+		// normalize expiresAt (DB returns integer timestamp)
+		if (typeof session.expiresAt === 'number') {
+			session.expiresAt = new Date(session.expiresAt as unknown as number) as unknown as Date;
+		}
+		const sessionExpired = Date.now() >= (session.expiresAt as Date).getTime();
 		if (sessionExpired) {
 			await db.delete(table.session).where(eq(table.session.id, session.id));
 			return { session: null, user: null };
 		}
-		const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
+		const renewSession = Date.now() >= (session.expiresAt as Date).getTime() - DAY_IN_MS * 15;
 		if (renewSession) {
-			session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+			const newExpires = new Date(Date.now() + DAY_IN_MS * 30);
+			session.expiresAt = newExpires as unknown as Date;
+			// write Date to DB; Drizzle will convert Date -> integer timestamp
 			await db
 				.update(table.session)
-				.set({ expiresAt: session.expiresAt })
+				.set({ expiresAt: newExpires as unknown as Date })
 				.where(eq(table.session.id, session.id));
+			session.expiresAt = newExpires;
 		}
 		return { session, user };
 	}
@@ -69,18 +80,25 @@ export async function validateSessionToken(token: string) {
 		return { session: null, user: null };
 	}
 	const { session, user } = userResult[0];
-	const sessionExpired = Date.now() >= session.expiresAt.getTime();
+	// normalize expiresAt (DB returns integer timestamp)
+	if (typeof session.expiresAt === 'number') {
+		session.expiresAt = new Date(session.expiresAt as unknown as number) as unknown as Date;
+	}
+	const sessionExpired = Date.now() >= (session.expiresAt as Date).getTime();
 	if (sessionExpired) {
 		await db.delete(table.session).where(eq(table.session.id, session.id));
 		return { session: null, user: null };
 	}
-	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
+	const renewSession = Date.now() >= (session.expiresAt as Date).getTime() - DAY_IN_MS * 15;
 	if (renewSession) {
-		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+		const newExpires = new Date(Date.now() + DAY_IN_MS * 30);
+		session.expiresAt = newExpires as unknown as Date;
+		// write Date to DB; Drizzle will convert Date -> integer timestamp
 		await db
 			.update(table.session)
-			.set({ expiresAt: session.expiresAt })
+			.set({ expiresAt: newExpires as unknown as Date })
 			.where(eq(table.session.id, session.id));
+		session.expiresAt = newExpires;
 	}
 	return { session, user };
 }
@@ -103,3 +121,4 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
 		path: '/'
 	});
 }
+

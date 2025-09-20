@@ -16,7 +16,7 @@ export const actions = {
     // Delete all sessions for the admin first
     await db.delete(sessionTable).where(eq(sessionTable.userId, id));
     await db.delete(adminTable).where(eq(adminTable.id, id));
-    return { success: true };
+    throw redirect(303, '/admin/dashboard/admins?deleted=1');
   },
 
   updateAdmin: async (event: import('@sveltejs/kit').RequestEvent) => {

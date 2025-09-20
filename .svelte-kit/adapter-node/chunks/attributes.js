@@ -17,6 +17,9 @@ function attr(name, value, is_boolean = false) {
 const whitespace = [..." 	\n\r\f \v\uFEFF"];
 function to_class(value, hash, directives) {
   var classname = value == null ? "" : "" + value;
+  if (hash) {
+    classname = classname ? classname + " " + hash : hash;
+  }
   if (directives) {
     for (var key in directives) {
       if (directives[key]) {

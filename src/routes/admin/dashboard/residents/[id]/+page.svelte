@@ -4,9 +4,16 @@
   let resident = data.resident;
 </script>
 
-<section class="resident-detail-section">
-  <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard/residents'}>&larr; Back</button>
-  <h2>Resident Details</h2>
+ 
+
+<div class="subpage-container">
+  <div class="subpage-card">
+    <div class="subpage-header">
+      <div>
+        <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard/residents'}>&larr; Back</button>
+        <h2 class="subpage-title">Resident Details</h2>
+      </div>
+    </div>
   {#if resident}
     <ul class="resident-detail-list">
       <li><strong>Name:</strong> {resident.name}</li>
@@ -18,26 +25,10 @@
   {:else}
     <div class="error">Resident not found.</div>
   {/if}
-</section>
+  </div>
+</div>
 
 <style>
-.resident-detail-section {
-  max-width: 600px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-.back-btn {
-  margin-bottom: 1rem;
-}
-.resident-detail-list {
-  list-style: none;
-  padding: 0;
-}
-.resident-detail-list li {
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
+.resident-detail-list { list-style: none; padding: 0; }
+.resident-detail-list li { margin-bottom: 1rem; font-size: 1.1rem; }
 </style>

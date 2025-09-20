@@ -59,6 +59,12 @@ const session = sqliteTable("session", {
   userId: text("user_id").notNull(),
   expiresAt: integer("expires_at", { mode: "timestamp" }).notNull()
 });
+const otp = sqliteTable("otp", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  code: text("code").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull()
+});
 const guestPass = sqliteTable("guest_pass", {
   id: text("id").primaryKey(),
   plateNumber: text("plate_number").notNull(),
@@ -95,6 +101,7 @@ const schema = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   guard,
   guestPass,
   guestPassHistory,
+  otp,
   session,
   user,
   vehicle
@@ -104,13 +111,14 @@ if (!dbUrl) throw new Error("DATABASE_URL is not set");
 const client = new Database(dbUrl);
 const db = drizzle(client, { schema });
 export {
-  guard as a,
-  admin as b,
+  admin as a,
+  guard as b,
   vehicle as c,
   db as d,
   eventLog as e,
   guestPassHistory as f,
   guestPass as g,
+  otp as o,
   session as s,
   user as u,
   vehicle$1 as v

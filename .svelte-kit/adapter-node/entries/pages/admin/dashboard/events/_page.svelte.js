@@ -1,10 +1,10 @@
-import { X as ensure_array_like, _ as bind_props } from "../../../../../chunks/index2.js";
+import { X as ensure_array_like, $ as bind_props } from "../../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../../chunks/escaping.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let data = $$props["data"];
     let events = data?.events ?? [];
-    $$renderer2.push(`<section class="admin-section svelte-swm1bl"><button type="button" class="back-btn svelte-swm1bl">← Back</button> <h2>Event Logs</h2> `);
+    $$renderer2.push(`<div class="subpage-container"><div class="subpage-card"><div class="subpage-header"><div><button type="button" class="back-btn svelte-swm1bl">← Back</button> <h2 class="subpage-title">Event Logs</h2></div></div> `);
     if (events.length > 0) {
       $$renderer2.push("<!--[-->");
       $$renderer2.push(`<table class="event-table svelte-swm1bl"><thead><tr><th class="svelte-swm1bl">Type</th><th class="svelte-swm1bl">User</th><th class="svelte-swm1bl">Details</th><th class="svelte-swm1bl">Timestamp</th></tr></thead><tbody><!--[-->`);
@@ -18,7 +18,7 @@ function _page($$renderer, $$props) {
       $$renderer2.push("<!--[!-->");
       $$renderer2.push(`<p>No event logs found.</p>`);
     }
-    $$renderer2.push(`<!--]--></section>`);
+    $$renderer2.push(`<!--]--></div></div>`);
     bind_props($$props, { data });
   });
 }

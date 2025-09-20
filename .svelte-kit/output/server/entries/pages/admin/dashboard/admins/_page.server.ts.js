@@ -1,6 +1,6 @@
-import { d as db, b as admin, s as session } from "../../../../../chunks/index3.js";
+import { d as db, a as admin, s as session } from "../../../../../chunks/index3.js";
 import { eq } from "drizzle-orm";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 const load = async () => {
   const admins = await db.select().from(admin);
   return { admins };
@@ -12,7 +12,7 @@ const actions = {
     if (typeof id !== "string") return fail(400, { error: "Invalid admin ID" });
     await db.delete(session).where(eq(session.userId, id));
     await db.delete(admin).where(eq(admin.id, id));
-    return { success: true };
+    throw redirect(303, "/admin/dashboard/admins?deleted=1");
   },
   updateAdmin: async (event) => {
     const form = await event.request.formData();

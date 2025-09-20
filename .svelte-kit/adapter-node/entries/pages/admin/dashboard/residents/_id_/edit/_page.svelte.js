@@ -1,10 +1,10 @@
-import { _ as bind_props } from "../../../../../../../chunks/index2.js";
+import { $ as bind_props } from "../../../../../../../chunks/index2.js";
 import { a as attr } from "../../../../../../../chunks/attributes.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let data = $$props["data"];
     let resident = data.resident;
-    $$renderer2.push(`<section class="admin-section svelte-tqj8l2"><button type="button" class="back-btn svelte-tqj8l2">← Back</button> <h2>Edit Resident</h2> `);
+    $$renderer2.push(`<div class="subpage-container"><div class="subpage-card"><div class="subpage-header"><div><button type="button" class="back-btn">← Back</button> <h2 class="subpage-title">Edit Resident</h2></div></div> `);
     {
       $$renderer2.push("<!--[!-->");
     }
@@ -20,7 +20,7 @@ function _page($$renderer, $$props) {
       $$renderer2.push("<!--[!-->");
       $$renderer2.push(`<div class="error">Resident not found.</div>`);
     }
-    $$renderer2.push(`<!--]--></section>`);
+    $$renderer2.push(`<!--]--></div></div>`);
     bind_props($$props, { data });
   });
 }

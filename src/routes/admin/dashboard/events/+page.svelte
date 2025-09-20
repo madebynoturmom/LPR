@@ -4,9 +4,16 @@
   let events = data?.events ?? [];
 </script>
 
-<section class="admin-section">
-  <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard'}>&larr; Back</button>
-  <h2>Event Logs</h2>
+ 
+
+<div class="subpage-container">
+  <div class="subpage-card">
+    <div class="subpage-header">
+      <div>
+        <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard'}>&larr; Back</button>
+        <h2 class="subpage-title">Event Logs</h2>
+      </div>
+    </div>
   {#if events.length > 0}
     <table class="event-table">
       <thead>
@@ -31,17 +38,10 @@
   {:else}
     <p>No event logs found.</p>
   {/if}
-</section>
+  </div>
+</div>
 
 <style>
-.admin-section {
-  max-width: 900px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
 .back-btn {
   margin-bottom: 1rem;
   background: #eee;

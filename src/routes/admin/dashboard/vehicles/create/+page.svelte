@@ -5,9 +5,16 @@
   let success = null;
 </script>
 
-<section class="admin-section">
-  <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard/vehicles'}>&larr; Back</button>
-  <h2>Add Vehicle</h2>
+ 
+
+<div class="subpage-container">
+  <div class="subpage-card">
+    <div class="subpage-header">
+      <div>
+        <button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard/vehicles'}>&larr; Back</button>
+        <h2 class="subpage-title">Add Vehicle</h2>
+      </div>
+    </div>
   {#if error}
     <div class="error">{error}</div>
   {/if}
@@ -38,17 +45,10 @@
     </label>
     <button type="submit" class="btn btn-update">Add Vehicle</button>
   </form>
-</section>
+  </div>
+</div>
 
 <style>
-.admin-section {
-  max-width: 500px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
 .back-btn {
   margin-bottom: 1rem;
   background: #eee;
@@ -91,4 +91,5 @@
   color: #080;
   margin-bottom: 1rem;
 }
+  .vehicle-form { max-width: 600px; }
 </style>

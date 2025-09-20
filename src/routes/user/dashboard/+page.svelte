@@ -14,9 +14,25 @@
   export let recentActivity = data.recentActivity;
   export let activeGuestPasses = data.activeGuestPasses;
   export let activeFoodDeliveryPasses = data.activeFoodDeliveryPasses;
+
+  // reference to hero container so we can dispatch a DOM event that bubbles
+  let heroEl: HTMLElement | null = null;
+
+  function dispatchToggle() {
+    const ev = new CustomEvent('toggleSidebar', { bubbles: true });
+    heroEl?.dispatchEvent(ev);
+  }
 </script>
 
-<h1 class="dashboard-title">Dashboard Overview</h1>
+<!-- Move hero into the index page so subpages don't render it -->
+<div class="dashboard-hero-page" bind:this={heroEl}>
+  <div class="hero-inner-page">
+    <button class="hero-hamburger-page" on:click={dispatchToggle} aria-label="Open sidebar">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <h1 class="hero-title-page">Dashboard Overview</h1>
+  </div>
+</div>
 
 <div class="recent-activity-card">
   <h3>Recent Activity</h3>
@@ -81,48 +97,52 @@
 
 <div class="dashboard-cards-row">
   <a href="/user/dashboard/vehicles" class="dashboard-card">
+    <div class="card-icon">🚗</div>
     <h2>Vehicles</h2>
     <p>Manage your registered vehicles.</p>
   </a>
   <a href="/user/dashboard/guests" class="dashboard-card">
+    <div class="card-icon">👤</div>
     <h2>Guest Passes</h2>
     <p>View and manage your guest passes.</p>
   </a>
   <a href="/user/dashboard/food-delivery" class="dashboard-card">
+    <div class="card-icon">🍱</div>
     <h2>Food Delivery</h2>
     <p>Grant access for food delivery riders.</p>
   </a>
 </div>
 
 <style>
-  /* Removed global body overflow hidden to prevent layout issues */
-  .dashboard-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    margin-top: 3rem;
-    margin-left: 1rem;
-    color: #232946;
-  }
+
   .recent-activity-card {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
-    margin-bottom: 2rem;
+    margin: 0 auto 2rem auto;
     width: 100%;
-    max-width: 400px;
-    flex: 1 1 auto; /* Added flex property */
+    /* never exceed the viewport minus small gutters */
+    max-width: min(760px, calc(100vw - 32px));
+    box-sizing: border-box;
+    overflow: auto; /* allow internal scroll if content is unexpectedly wide */
+    flex: 0 0 auto; /* centered fixed width card */
   }
   .recent-activity-card h3 {
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 0;
     font-size: 1.2rem;
     color: #232946;
+    padding-left: 0; /* avoid adding extra width on small screens */
   }
   .recent-activity-card ul {
     list-style: none;
     padding: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
   }
+  /* Be defensive: make sure list items wrap instead of stretch container */
+  .recent-activity-card li { overflow-wrap: break-word; word-break: break-word; }
   .recent-activity-card li {
     margin-bottom: 0.5rem;
     font-size: 1rem;
@@ -130,10 +150,12 @@
   }
   .dashboard-cards-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive design */
-    gap: 0.5rem;
-    max-width: 100%;
-    margin-bottom: 1rem;
+    grid-template-columns: 1fr; /* default mobile: single column */
+    gap: 1rem;
+    max-width: 760px;
+    margin: 0 auto 1rem auto;
+    padding: 0 1rem;
+    align-items: stretch;
   }
   .dashboard-card {
     background: #fff;
@@ -143,11 +165,19 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    align-items: center; /* Center content */
+  align-items: center; /* Center content */
     cursor: pointer; /* Make cards clickable */
     transition: transform 0.2s, box-shadow 0.2s;
     text-decoration: none; /* Remove underline from links */
     color: inherit; /* Inherit text color */
+    min-height: 120px; /* ensure visual consistency */
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .dashboard-card .card-icon {
+    font-size: 1.4rem;
+    display: block;
+    margin: 0 auto 0.35rem auto;
   }
   .dashboard-card:hover {
     transform: scale(1.05); /* Add hover effect */
@@ -237,29 +267,58 @@
     background-color: #175cd3;
     color: white;
   }
-  @media (max-width: 1100px) {
+  @media (max-width: 720px) {
     .dashboard-cards-row {
-      flex-direction: column;
-      margin-top: auto;
-      align-items: stretch;
+      grid-template-columns: 1fr; /* single column on narrow viewports */
+      gap: 1rem;
+      padding: 0 1rem;
     }
     .dashboard-card {
-      font-size: 10;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      margin-top: 1rem;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 520px; /* limit card width so it doesn't hug the right edge */
       color: #232946;
     }
-    .dashboard-title {
-      font-size: 2rem;
-      display: flex;
-      flex-direction: row;
-      gap: 1rem;
-      max-width: 100vw;
-      flex-wrap: wrap;
-      align-items: stretch;
-      justify-content: flex-start;
-      margin-bottom: 1rem;
-    }
   }
+
+  @media (min-width: 721px) {
+    .dashboard-cards-row {
+      grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet+ */
+      max-width: 880px;
+    }
+    .recent-activity-card { max-width: 600px; }
+  }
+
+  /* Hero (page-level) */
+  .dashboard-hero-page {
+    width: 100%;
+    margin: 0 0 1.25rem 0;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+  .hero-inner-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+  }
+  .hero-title-page {
+    font-size: 1.25rem;
+    margin: 0;
+    color: #111827;
+  }
+  .hero-hamburger-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    cursor: pointer;
+  }
+  .hero-hamburger-page:active { transform: scale(0.98); }
 </style>

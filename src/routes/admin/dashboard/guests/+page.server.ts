@@ -2,6 +2,7 @@ import { guestPass } from '$lib/server/db/schema';
 import { db } from '$lib/server/db';
 import { v4 as uuidv4 } from 'uuid';
 import { fail } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -72,6 +73,6 @@ export const actions: Actions = {
 		const id = form.get('id')?.toString();
 		if (!id) return fail(400, { error: 'Missing pass ID.' });
 		await db.delete(guestPass).where(eq(guestPass.id, id));
-		return { success: true };
+		throw redirect(303, '/admin/dashboard/guests?deleted=1');
 	}
 };

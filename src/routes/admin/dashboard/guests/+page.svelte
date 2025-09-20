@@ -1,13 +1,117 @@
 
-<script>
-	export let data;
-	let passes = data?.passes ?? [];
+<script lang="ts">
+	export let data: any;
+	let passes: any[] = data?.passes ?? [];
+
+	type Pass = { id?: string; plateNumber?: string; name?: string; phone?: string; visitTime?: string; durationMinutes?: number; [k: string]: any };
+	let selectedPass: Pass | null = null;
+	let error: string | null = null;
+
+// accordion + delete toast state
+import { onMount } from 'svelte';
+let expandedId: string | null = null;
+let showToast = false;
+let toastProgress = 0;
+let extendingId: string | null = null;
+let extendMinutes: number = 30;
+
+function toggleExpand(id: string) { expandedId = expandedId === id ? null : id; }
+
+onMount(() => {
+	try {
+		const url = new URL(window.location.href);
+		if (url.searchParams.get('deleted') === '1') {
+			showDeleteToast();
+			url.searchParams.delete('deleted');
+			window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+		}
+	} catch (e) {}
+});
+
+function showDeleteToast() {
+	showToast = true;
+	toastProgress = 0;
+	const duration = 3000;
+	const start = Date.now();
+	const tick = () => {
+		const elapsed = Date.now() - start;
+		toastProgress = Math.min(100, Math.round((elapsed / duration) * 100));
+		if (elapsed < duration) requestAnimationFrame(tick);
+		else setTimeout(() => (showToast = false), 120);
+	};
+	requestAnimationFrame(tick);
+}
+
+	function openEdit(pass: Pass) {
+		selectedPass = { ...pass };
+		error = null;
+	}
+
+	function formatDate(dt: string | undefined) {
+		if (!dt) return '—';
+		try {
+			const d = new Date(dt);
+			return d.toLocaleString();
+		} catch (e) {
+			return String(dt);
+		}
+	}
+
+	async function submitExtend(pass: Pass) {
+		try {
+			const id = pass.id;
+			const fd = new FormData();
+			fd.append('id', String(id));
+			fd.append('minutes', String(extendMinutes));
+			const res = await fetch(`/admin/dashboard/guests/${id}/extend`, { method: 'POST', body: fd });
+			if (!res.ok) {
+				error = 'Failed to extend pass';
+				return;
+			}
+			// try parse updated pass from response
+			let updated: any = null;
+			try { updated = await res.json(); } catch (e) {}
+			const idx = passes.findIndex(p => String(p.id) === String(id));
+			if (idx !== -1) {
+				if (updated?.pass) passes[idx] = { ...passes[idx], ...updated.pass };
+				else passes[idx].durationMinutes = (Number(passes[idx].durationMinutes) || 0) + Number(extendMinutes);
+			}
+			extendingId = null;
+		} catch (e) {
+			error = 'Failed to extend pass';
+		}
+	}
+
+	function cancelEdit(): void {
+		selectedPass = null;
+		error = null;
+	}
+
+	async function submitEdit(e: Event) {
+		e.preventDefault();
+		const form = e.target as HTMLFormElement;
+		const fd = new FormData(form);
+		const id = selectedPass?.id;
+		const res = await fetch(`/admin/dashboard/guests/${id}/edit`, { method: 'POST', body: fd });
+		if (!res.ok) { error = 'Failed to update guest pass'; return; }
+		const idx = passes.findIndex(p => String(p.id) === String(id));
+		if (idx !== -1) passes[idx] = { ...passes[idx], ...Object.fromEntries(fd as any) };
+		selectedPass = null;
+	}
 </script>
 
-<section class="admin-section">
-		<button type="button" class="back-btn" on:click={() => window.location.href = '/admin/dashboard'}>&larr; Back</button>
-	<h2>Manage Guest Passes</h2>
-	<form method="POST" action="?/create" class="guest-form">
+
+ 
+
+<div class="subpage-container">
+	<div class="subpage-card">
+		<div class="subpage-header">
+			<div>
+				<h2 class="subpage-title">Manage Guest Passes</h2>
+			</div>
+		</div>
+
+	<form method="POST" action="?/create" class="vehicle-form">
 		<label>
 			Plate Number:
 			<input name="plateNumber" required />
@@ -31,71 +135,83 @@
 		<button type="submit" class="btn btn-update">Create Pass</button>
 	</form>
 	<h3>Active Guest Passes</h3>
+	{#if selectedPass}
+		<div class="edit-card">
+			<form class="edit-form subpage-form" on:submit={submitEdit}>
+				<input type="hidden" name="id" value={selectedPass.id} />
+				<label>Plate Number<input name="plateNumber" value={selectedPass.plateNumber} required /></label>
+				<label>Name<input name="name" value={selectedPass.name} required /></label>
+				<label>Phone<input name="phone" value={selectedPass.phone} required /></label>
+				<label>Visit Time<input name="visitTime" type="datetime-local" value={selectedPass.visitTime} required /></label>
+				<label>Duration<input name="durationMinutes" type="number" value={selectedPass.durationMinutes} required /></label>
+				<div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+					<button type="submit" class="btn btn-update">Update</button>
+					<button type="button" class="btn btn-ghost" on:click={cancelEdit}>Cancel</button>
+				</div>
+			</form>
+		</div>
+	{/if}
 	{#if passes.length > 0}
-		<table class="guest-table">
-			<thead>
-				<tr>
-					<th>Plate Number</th>
-					<th>Name</th>
-					<th>Phone</th>
-					<th>Visit Time</th>
-					<th>Duration (min)</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each passes as pass}
-					<tr>
-						<td>{pass.plateNumber}</td>
-						<td>{pass.name}</td>
-						<td>{pass.phone}</td>
-						<td>{new Date(pass.visitTime).toLocaleString()}</td>
-						<td>{pass.durationMinutes}</td>
-						<td>
-							<form method="POST" action="?/delete" style="display:inline">
-								<input type="hidden" name="id" value={pass.id} />
-								<button type="submit" class="btn btn-delete">Delete</button>
-							</form>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+		<div class="resident-list">
+			{#each passes as pass}
+				<div class="resident-item {expandedId === pass.id ? 'expanded' : ''}">
+					<button class="resident-summary" on:click={() => toggleExpand(pass.id)}>
+						<div class="resident-name">{pass.name}</div>
+						<div class="resident-house">{pass.plateNumber}</div>
+						<div class="chev">{expandedId === pass.id ? '▾' : '▸'}</div>
+					</button>
+					{#if expandedId === pass.id}
+						<div class="resident-details">
+							<div class="detail-row"><strong>Plate:</strong> {pass.plateNumber}</div>
+							<div class="detail-row"><strong>Name:</strong> {pass.name}</div>
+							<div class="detail-row"><strong>Phone:</strong> {pass.phone}</div>
+							<div class="detail-row"><strong>Visit:</strong> {formatDate(pass.visitTime)}</div>
+							<div class="detail-row"><strong>Duration:</strong> {pass.durationMinutes} minutes</div>
+							<div class="detail-actions">
+								{#if extendingId === String(pass.id)}
+									<input class="extend-input" type="number" min="1" bind:value={extendMinutes} />
+									<button type="button" class="edit-btn" on:click={() => submitExtend(pass)}>Apply</button>
+									<button type="button" class="btn btn-ghost" on:click={() => { extendingId = null; }}>Cancel</button>
+								{:else}
+									<button type="button" class="edit-btn" on:click={() => { extendingId = String(pass.id); extendMinutes = 30; }}>Extend</button>
+									<form method="POST" action="?/delete" style="display:inline">
+										<input type="hidden" name="id" value={pass.id} />
+										<button type="submit" class="delete-btn">Delete</button>
+									</form>
+								{/if}
+							</div>
+							
+						</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
 	{:else}
 		<p>No guest passes found.</p>
 	{/if}
-</section>
+	</div>
+</div>
 
 <style>
-.admin-section {
-	max-width: 900px;
-	margin: 3rem auto;
-	padding: 2rem;
-	background: #fff;
-	border-radius: 10px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-.back-btn {
-	margin-bottom: 1rem;
-	background: #eee;
-	border: none;
-	padding: 0.5rem 1rem;
-	border-radius: 4px;
-	cursor: pointer;
-}
-.back-btn:hover {
-	background: #ddd;
-}
-.guest-form {
+
+.vehicle-form {
 	display: flex;
-	gap: 2rem;
+	flex-direction: column;
+	gap: 1.2rem;
 	margin-bottom: 2rem;
 }
-.guest-form label {
+.vehicle-form label {
 	display: flex;
 	flex-direction: column;
 	font-weight: 500;
 }
+.vehicle-form input{
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #e6eef8;
+	border-radius: 8px;
+	background: #fff;
+}
+.vehicle-form { max-width: 600px; }
 .btn {
 	padding: 0.4rem 1rem;
 	border-radius: 4px;
@@ -108,22 +224,60 @@
 	color: #232946;
 	margin-right: 0.5rem;
 }
-.btn-delete {
-	background: #232946;
-	color: #fff;
+/* delete button uses .delete-btn in list cards */
+
+/* guest table removed in favor of cards */
+
+/* Guest passes list cards */
+.resident-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.9rem;
+	margin-top: 1.25rem;
 }
-.guest-table {
+.resident-item {
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 8px 22px rgba(16,24,40,0.04);
+	border: 1px solid rgba(16,24,40,0.04);
+	overflow: hidden;
+	transition: transform 0.12s ease, box-shadow 0.12s ease;
+	max-width: 480px;
+}
+.resident-item:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(16,24,40,0.06); }
+.resident-summary {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 0.5rem;
+	align-items: center;
+	padding: 0.85rem 1rem;
+	background: transparent;
+	border: none;
 	width: 100%;
-	border-collapse: collapse;
-	margin-top: 2rem;
-}
-.guest-table th, .guest-table td {
-	padding: 0.75rem 1rem;
-	border-bottom: 1px solid #eee;
 	text-align: left;
+	cursor: pointer;
 }
-.guest-table th {
-		background: #f7f8fa;
-		font-weight: 600;
-	}
-	</style>
+
+.extend-input { width: 5.5rem; padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid #d1d5db; }
+.resident-name { font-weight: 700; font-size: 1rem; color: #0f172a; }
+.resident-house { color: #6b7280; font-size: 0.95rem; margin-top: 0.15rem; }
+.chev { color: #9ca3af; margin-left: 0.5rem; font-size: 1.1rem; }
+.resident-details { padding: 0.85rem 1rem; background: #f8fafc; display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid rgba(16,24,40,0.03); }
+.detail-row { color: #374151; font-size: 0.95rem; }
+.detail-actions { margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center; }
+.edit-btn { background: #1976d2; color: #fff; padding: 0.45rem 0.8rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
+.delete-btn { background: #ef4444; color: #fff; padding: 0.45rem 0.8rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
+
+@media (max-width: 700px) {
+	.vehicle-form { grid-template-columns: 1fr; gap: 0.5rem 0; }
+	.vehicle-form button[type="submit"] { justify-self: stretch; width: 100%; }
+	.resident-item { max-width: 100%; }
+}
+</style>
+
+{#if showToast}
+  <div class="toast-wrap" role="status" aria-live="polite">
+    <div class="toast">Guest pass deleted</div>
+    <div class="toast-progress"><div class="toast-bar" style="width:{toastProgress}%"></div></div>
+  </div>
+{/if}

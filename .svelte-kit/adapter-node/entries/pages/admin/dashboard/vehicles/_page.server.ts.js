@@ -1,6 +1,6 @@
 import { d as db, c as vehicle, u as user } from "../../../../../chunks/index3.js";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 const load = async () => {
   const vehiclesRaw = await db.select().from(vehicle).all();
   const users = await db.select().from(user).all();
@@ -17,7 +17,7 @@ const actions = {
     const id = form.get("id")?.toString();
     if (!id) return fail(400, { error: "Missing vehicle ID." });
     await db.delete(vehicle).where(eq(vehicle.id, id));
-    return { success: true };
+    throw redirect(303, "/admin/dashboard/vehicles?deleted=1");
   }
 };
 export {

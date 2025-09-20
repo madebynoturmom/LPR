@@ -7,6 +7,8 @@ const load = async ({ locals }) => {
   const users = await db.select().from(user).where(eq(user.id, user$1.id));
   if (!users.length) throw redirect(303, "/login");
   const userData = users[0];
+  console.log("Layout load - user data:", userData);
+  console.log("Layout load - profile pic:", userData.profilePic);
   return { user: userData };
 };
 export {

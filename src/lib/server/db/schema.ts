@@ -52,6 +52,15 @@ export const session = sqliteTable('session', {
 
 export type Session = typeof session.$inferSelect;
 
+export const otp = sqliteTable('otp', {
+	id: text('id').primaryKey(),
+	email: text('email').notNull(),
+	code: text('code').notNull(),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
+});
+
+export type Otp = typeof otp.$inferSelect;
+
 export type User = typeof user.$inferSelect;
  
 export const guestPass = sqliteTable('guest_pass', {

@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { encodeBase64url, encodeHexLowerCase } from "@oslojs/encoding";
-import { d as db, s as session, b as admin, u as user } from "./index3.js";
+import { d as db, s as session, a as admin, u as user } from "./index3.js";
+import "./email.js";
 const DAY_IN_MS = 1e3 * 60 * 60 * 24;
 const sessionCookieName = "auth-session";
 function generateSessionToken() {
@@ -11,13 +12,15 @@ function generateSessionToken() {
 }
 async function createSession(token, userId) {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+  const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
   const session$1 = {
     id: sessionId,
     userId,
-    expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+    // Drizzle sqlite timestamp columns accept Date objects and map them to integer
+    expiresAt
   };
   await db.insert(session).values(session$1);
-  return session$1;
+  return { ...session$1, expiresAt };
 }
 async function validateSessionToken(token) {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
@@ -28,6 +31,9 @@ async function validateSessionToken(token) {
   if (adminResult.length > 0) {
     const { session: session2, admin: admin2 } = adminResult[0];
     const user2 = { id: admin2.id, username: admin2.username, role: "admin" };
+    if (typeof session2.expiresAt === "number") {
+      session2.expiresAt = new Date(session2.expiresAt);
+    }
     const sessionExpired2 = Date.now() >= session2.expiresAt.getTime();
     if (sessionExpired2) {
       await db.delete(session).where(eq(session.id, session2.id));
@@ -35,8 +41,10 @@ async function validateSessionToken(token) {
     }
     const renewSession2 = Date.now() >= session2.expiresAt.getTime() - DAY_IN_MS * 15;
     if (renewSession2) {
-      session2.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-      await db.update(session).set({ expiresAt: session2.expiresAt }).where(eq(session.id, session2.id));
+      const newExpires = new Date(Date.now() + DAY_IN_MS * 30);
+      session2.expiresAt = newExpires;
+      await db.update(session).set({ expiresAt: newExpires }).where(eq(session.id, session2.id));
+      session2.expiresAt = newExpires;
     }
     return { session: session2, user: user2 };
   }
@@ -48,6 +56,9 @@ async function validateSessionToken(token) {
     return { session: null, user: null };
   }
   const { session: session$1, user: user$1 } = userResult[0];
+  if (typeof session$1.expiresAt === "number") {
+    session$1.expiresAt = new Date(session$1.expiresAt);
+  }
   const sessionExpired = Date.now() >= session$1.expiresAt.getTime();
   if (sessionExpired) {
     await db.delete(session).where(eq(session.id, session$1.id));
@@ -55,8 +66,10 @@ async function validateSessionToken(token) {
   }
   const renewSession = Date.now() >= session$1.expiresAt.getTime() - DAY_IN_MS * 15;
   if (renewSession) {
-    session$1.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-    await db.update(session).set({ expiresAt: session$1.expiresAt }).where(eq(session.id, session$1.id));
+    const newExpires = new Date(Date.now() + DAY_IN_MS * 30);
+    session$1.expiresAt = newExpires;
+    await db.update(session).set({ expiresAt: newExpires }).where(eq(session.id, session$1.id));
+    session$1.expiresAt = newExpires;
   }
   return { session: session$1, user: user$1 };
 }

@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { vehicle, user } from '$lib/server/db/schema';
 import { v4 as uuidv4 } from 'uuid';
 import { eq } from 'drizzle-orm/sql/expressions/conditions';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load = async () => {
@@ -25,7 +25,7 @@ export const actions = {
     const id = form.get('id')?.toString();
     if (!id) return fail(400, { error: 'Missing vehicle ID.' });
     await db.delete(vehicle).where(eq(vehicle.id, id));
-    return { success: true };
+    throw redirect(303, '/admin/dashboard/vehicles?deleted=1');
   }
 };
 ;null as any as PageServerLoad;;null as any as Actions;

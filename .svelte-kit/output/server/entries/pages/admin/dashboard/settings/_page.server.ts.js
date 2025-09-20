@@ -1,5 +1,5 @@
 import { redirect } from "@sveltejs/kit";
-import { d as db, b as admin } from "../../../../../chunks/index3.js";
+import { d as db, a as admin } from "../../../../../chunks/index3.js";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 import fs from "fs";

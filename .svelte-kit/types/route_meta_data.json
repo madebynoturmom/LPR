@@ -3,49 +3,67 @@
 		"src/routes/+page.server.ts"
 	],
 	"/admin/dashboard": [
-		"src/routes/admin/dashboard/+page.server.ts"
+		"src/routes/admin/dashboard/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/admins": [
-		"src/routes/admin/dashboard/admins/+page.server.ts"
+		"src/routes/admin/dashboard/admins/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/admins/create": [
-		"src/routes/admin/dashboard/admins/create/+page.server.ts"
+		"src/routes/admin/dashboard/admins/create/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/events": [
-		"src/routes/admin/dashboard/events/+page.server.ts"
+		"src/routes/admin/dashboard/events/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/guards": [
-		"src/routes/admin/dashboard/guards/+page.server.ts"
+		"src/routes/admin/dashboard/guards/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/guards/create": [
-		"src/routes/admin/dashboard/guards/create/+page.server.ts"
+		"src/routes/admin/dashboard/guards/create/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/guests": [
-		"src/routes/admin/dashboard/guests/+page.server.ts"
+		"src/routes/admin/dashboard/guests/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
+	],
+	"/admin/dashboard/guests/[id]/extend": [
+		"src/routes/admin/dashboard/guests/[id]/extend/+server.ts"
 	],
 	"/admin/dashboard/residents": [
-		"src/routes/admin/dashboard/residents/+page.server.ts"
+		"src/routes/admin/dashboard/residents/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/residents/create": [
-		"src/routes/admin/dashboard/residents/create/+page.server.ts"
+		"src/routes/admin/dashboard/residents/create/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/residents/[id]": [
-		"src/routes/admin/dashboard/residents/[id]/+page.server.ts"
+		"src/routes/admin/dashboard/residents/[id]/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/residents/[id]/delete": [
 		"src/routes/admin/dashboard/residents/[id]/delete/+server.ts"
 	],
 	"/admin/dashboard/residents/[id]/edit": [
-		"src/routes/admin/dashboard/residents/[id]/edit/+page.server.ts"
+		"src/routes/admin/dashboard/residents/[id]/edit/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/settings": [
-		"src/routes/admin/dashboard/settings/+page.server.ts"
+		"src/routes/admin/dashboard/settings/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/vehicles": [
-		"src/routes/admin/dashboard/vehicles/+page.server.ts"
+		"src/routes/admin/dashboard/vehicles/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/admin/dashboard/vehicles/create": [
-		"src/routes/admin/dashboard/vehicles/create/+page.server.ts"
+		"src/routes/admin/dashboard/vehicles/create/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
 	],
 	"/api/food-delivery/create": [
 		"src/routes/api/food-delivery/create/+server.ts"

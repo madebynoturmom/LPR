@@ -12,5 +12,8 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   if (!users.length) throw redirect(303, '/login');
 
   const userData = users[0];
+  console.log('Layout load - user data:', userData);
+  console.log('Layout load - profile pic:', userData.profilePic);
+  
   return { user: userData };
 };

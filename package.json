@@ -21,6 +21,7 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"expire-passes": "tsx scripts/expire-guest-passes.ts",
+		"test-email": "tsx scripts/test-email.ts",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},

@@ -3,7 +3,9 @@ import { db } from '$lib/server/db';
 import { guestPass } from '$lib/server/db/schema';
 import { v4 as uuidv4 } from 'uuid';
 
-export const POST = async ({ request }) => {
+import type { RequestEvent } from '@sveltejs/kit';
+
+export const POST = async ({ request }: RequestEvent) => {
   try {
     const formData = await request.formData();
     const plateNumber = formData.get('plateNumber')?.toString();

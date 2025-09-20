@@ -1,4 +1,4 @@
-import { d as db, b as admin } from "../../../../../../chunks/index3.js";
+import { d as db, a as admin } from "../../../../../../chunks/index3.js";
 import { fail, redirect } from "@sveltejs/kit";
 import path from "path";
 import fs from "fs";

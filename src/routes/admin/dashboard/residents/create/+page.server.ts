@@ -2,6 +2,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { user } from '$lib/server/db/schema';
+import { eventLog } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import type { Actions } from './$types';
 import { sha256 } from '@oslojs/crypto/sha2';
@@ -55,7 +56,24 @@ export const actions: Actions = {
       });
       // Send the plainPassword to the resident's email address
       // await sendEmail(email, 'Your Resident Account', `Welcome! Your password is: ${plainPassword}`);
-      throw redirect(303, '/admin/dashboard/residents');
+
+      // Log the event into event_log
+      try {
+        const evId = `E${Date.now()}`;
+        await db.insert(eventLog).values({
+          id: evId,
+          type: 'resident_created',
+          userId: username,
+          details: `Created resident ${name} (${id})`,
+          timestamp: new Date()
+        });
+      } catch (logErr) {
+        // Non-fatal: continue even if logging fails
+        console.error('Failed to write event log', logErr);
+      }
+
+      // Redirect back to the residents list
+      throw redirect(303, '/admin/dashboard/residents?created=1');
     } catch (e) {
       return fail(500, { error: 'Failed to create resident.' });
     }
