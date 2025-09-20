@@ -17,7 +17,7 @@
     <label>Email<input name="email" type="email" required /></label>
     <label>Phone Number<input name="phone" required /></label>
     <label>Car Number<input name="carNumber" required /></label>
-    <label>House Number<input name="houseNumber" required /></label>
+    <label>House Address<input name="houseAddress" required /></label>
     <button type="submit" class="btn btn-update">Add Resident</button>
   </form>
 </section>

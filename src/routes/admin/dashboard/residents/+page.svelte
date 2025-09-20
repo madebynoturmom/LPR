@@ -27,7 +27,7 @@
         <th>Email</th>
         <th>Phone</th>
         <th>Car Number</th>
-        <th>House Number</th>
+        <th>House Address</th>
         <th>Actions</th>
       </tr>
     </thead>
