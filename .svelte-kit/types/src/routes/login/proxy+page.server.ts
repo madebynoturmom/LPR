@@ -167,11 +167,11 @@ export const actions = {
         ? '/user/dashboard'
         : '/';
 
-      // Always perform a server-side redirect. This ensures the response
-      // contains a 303 Location header so client fetch requests (and
-      // traditional form submissions) follow the redirect reliably even
-      // when middleware wraps/encodes JSON payloads differently on EC2.
-      throw redirect(303, redirectUrl);
+      // Return a JSON payload with a redirect field so client-side fetches
+      // can read the redirect target and navigate. This avoids relying on a
+      // server-side 303 Location header which can be obscured by middleware
+      // wrappers in some deployments.
+      return { success: true, redirect: redirectUrl };
     }
   }
 };
