@@ -44,9 +44,31 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	       auth.deleteSessionTokenCookie(event);
        }
 
-       event.locals.user = user ? { id: user.id, username: user.username, role: user.role } : null;
-       event.locals.session = session;
-       return resolve(event);
+			 event.locals.user = user ? { id: user.id, username: user.username, role: user.role } : null;
+			 event.locals.session = session;
+
+			 // Resolve the request and attach a Content-Security-Policy header.
+			 // NOTE: SvelteKit's server-side serialization (devalue/uneval) may
+			 // generate inline scripts that rely on runtime evaluation. In strict
+			 // CSP environments that disallow 'unsafe-eval' those scripts can fail
+			 // to hydrate. Adding 'unsafe-eval' here relaxes that restriction so
+			 // hydration and action serialization work correctly. This is a
+			 // pragmatic choice for servers that cannot avoid the serialized output.
+			 // Security tradeoff: allowing 'unsafe-eval' increases risk of executing
+			 // injected code. Only enable it if you understand the implications.
+			 const res = await resolve(event);
+			 try {
+				 // Conservative CSP: allow scripts from self, permit eval (required by
+				 // SvelteKit de/serialization), disallow objects, and enable common
+				 // navigational sources. Adjust as needed for production.
+				 res.headers.set(
+					 'content-security-policy',
+					 "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
+				 );
+			 } catch (e) {
+				 // Some response types may not allow header mutation; ignore in that case
+			 }
+			 return res;
 };
 
 export const handle: Handle = sequence(handleParaglide, handleAuth);
