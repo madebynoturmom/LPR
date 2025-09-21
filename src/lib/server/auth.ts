@@ -110,10 +110,41 @@ export async function invalidateSession(sessionId: string) {
 }
 
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
-	event.cookies.set(sessionCookieName, token, {
+	// Determine whether the request is same-origin. If not, browsers require
+	// SameSite=None and Secure to allow cookies in cross-site requests. We set
+	// Secure only when the current request is over HTTPS. In dev over HTTP,
+	// Secure will be false which prevents cross-site cookies from being set.
+	const originHeader = event.request.headers.get('origin');
+	let sameSite: 'lax' | 'none' = 'lax';
+	let secure = false;
+	try {
+		if (originHeader) {
+			const originUrl = new URL(originHeader);
+			const sameOrigin = originUrl.origin === event.url.origin;
+			if (!sameOrigin) {
+				sameSite = 'none';
+				secure = event.url.protocol === 'https:';
+			}
+		} else {
+			// No Origin header implies same-origin navigation in most cases
+			secure = event.url.protocol === 'https:';
+		}
+	} catch (e) {
+		// If parsing fails, fall back to conservative defaults
+		secure = event.url.protocol === 'https:';
+	}
+
+	const cookieOptions = {
 		expires: expiresAt,
-		path: '/'
-	});
+		path: '/',
+		httpOnly: true,
+		sameSite,
+		secure
+	} as const;
+
+	console.log(`🔐 setSessionTokenCookie: setting cookie (sameSite=${sameSite}, secure=${secure})`);
+
+	event.cookies.set(sessionCookieName, token, cookieOptions);
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
