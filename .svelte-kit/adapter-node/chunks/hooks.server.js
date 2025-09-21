@@ -78,8 +78,22 @@ const handleAuth = async ({ event, resolve }) => {
   }
   event.locals.user = user ? { id: user.id, username: user.username, role: user.role } : null;
   event.locals.session = session;
+  const origin = event.request.headers.get("origin");
+  if (event.request.method === "OPTIONS") {
+    const headers = new Headers();
+    if (origin) headers.set("access-control-allow-origin", origin);
+    headers.set("access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS");
+    headers.set("access-control-allow-headers", "Content-Type,Authorization,Accept");
+    if (origin) headers.set("access-control-allow-credentials", "true");
+    headers.set("access-control-max-age", "600");
+    return new Response(null, { status: 204, headers });
+  }
   const res = await resolve(event);
   try {
+    if (origin) {
+      res.headers.set("access-control-allow-origin", origin);
+      res.headers.set("access-control-allow-credentials", "true");
+    }
     res.headers.set(
       "content-security-policy",
       "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"

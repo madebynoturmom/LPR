@@ -47,28 +47,52 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			 event.locals.user = user ? { id: user.id, username: user.username, role: user.role } : null;
 			 event.locals.session = session;
 
-			 // Resolve the request and attach a Content-Security-Policy header.
-			 // NOTE: SvelteKit's server-side serialization (devalue/uneval) may
-			 // generate inline scripts that rely on runtime evaluation. In strict
-			 // CSP environments that disallow 'unsafe-eval' those scripts can fail
-			 // to hydrate. Adding 'unsafe-eval' here relaxes that restriction so
-			 // hydration and action serialization work correctly. This is a
-			 // pragmatic choice for servers that cannot avoid the serialized output.
-			 // Security tradeoff: allowing 'unsafe-eval' increases risk of executing
-			 // injected code. Only enable it if you understand the implications.
-			 const res = await resolve(event);
-			 try {
-				 // Conservative CSP: allow scripts from self, permit eval (required by
-				 // SvelteKit de/serialization), disallow objects, and enable common
-				 // navigational sources. Adjust as needed for production.
-				 res.headers.set(
-					 'content-security-policy',
-					 "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
-				 );
-			 } catch (e) {
-				 // Some response types may not allow header mutation; ignore in that case
-			 }
-			 return res;
+			   // Handle CORS preflight requests and add conservative CORS response
+			   // headers for cross-origin requests. We echo the Origin header when
+			   // present (instead of '*') so we can allow credentialed requests.
+			   // This keeps behaviour permissive enough for browser fetches while
+			   // avoiding a blanket wildcard for credentialed cookies.
+			   //
+			   // NOTE: If you want to restrict origins in production, replace the
+			   // origin echo with a whitelist check.
+			   const origin = event.request.headers.get('origin');
+
+			   // Respond immediately to OPTIONS preflight with the necessary headers
+			   if (event.request.method === 'OPTIONS') {
+				   const headers = new Headers();
+				   if (origin) headers.set('access-control-allow-origin', origin);
+				   headers.set('access-control-allow-methods', 'GET,POST,PUT,DELETE,OPTIONS');
+				   headers.set('access-control-allow-headers', 'Content-Type,Authorization,Accept');
+				   // allow cookies in cross-origin requests when origin is echoed
+				   if (origin) headers.set('access-control-allow-credentials', 'true');
+				   // small cache for preflight
+				   headers.set('access-control-max-age', '600');
+
+				   return new Response(null, { status: 204, headers });
+			   }
+
+			   const res = await resolve(event);
+
+			   try {
+				   // Set CORS headers only when Origin present. We echo the origin so
+				   // browsers will accept credentialed responses.
+				   if (origin) {
+					   res.headers.set('access-control-allow-origin', origin);
+					   res.headers.set('access-control-allow-credentials', 'true');
+				   }
+
+				   // Conservative CSP: allow scripts from self, permit eval (required by
+				   // SvelteKit de/serialization), disallow objects, and enable common
+				   // navigational sources. Adjust as needed for production.
+				   res.headers.set(
+					   'content-security-policy',
+					   "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
+				   );
+			   } catch (e) {
+				   // Some response types may not allow header mutation; ignore in that case
+			   }
+
+			   return res;
 };
 
 export const handle: Handle = sequence(handleParaglide, handleAuth);
