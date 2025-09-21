@@ -20,6 +20,7 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
+		"set-guard-passwords": "tsx scripts/set-guard-default-passwords.ts",
 		"expire-passes": "tsx scripts/expire-guest-passes.ts",
 		"test-email": "tsx scripts/test-email.ts",
 		"storybook": "storybook dev -p 6006",

@@ -71,8 +71,17 @@
 	"/api/recent-activity": [
 		"src/routes/api/recent-activity/+server.ts"
 	],
+	"/guard/dashboard": [
+		"src/routes/guard/dashboard/+page.server.ts"
+	],
+	"/guard/dashboard/settings": [
+		"src/routes/guard/dashboard/settings/+page.server.ts"
+	],
 	"/login": [
 		"src/routes/login/+page.server.ts"
+	],
+	"/login/identify": [
+		"src/routes/login/identify/+server.ts"
 	],
 	"/logout": [
 		"src/routes/logout/+page.server.ts"

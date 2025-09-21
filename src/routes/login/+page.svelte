@@ -4,16 +4,24 @@
 
   let username = '';
   let otp = '';
+  let password = '';
   let error: string | null = null;
   let message: string | null = null;
   let otpSent = false;
   let loading = false;
+  let identifiedRole: string | null = null;
 
   async function sendOtp() {
     error = null;
     message = null;
     if (!username.trim()) {
       error = 'Please enter a username';
+      return;
+    }
+    // Ensure we know the role before attempting OTP. Guards must use password.
+    await identifyUser();
+    if (identifiedRole === 'guard') {
+      error = 'This account is a guard. Please login with password.';
       return;
     }
     loading = true;
@@ -89,6 +97,81 @@
     } catch (e: any) {
       console.error('sendOtp: fetch error', e);
       // Typical DOM TypeError when the network/host is unreachable
+      if (e instanceof TypeError && /failed to fetch/i.test(String(e.message))) {
+        error = `Cannot reach backend at ${location.origin}. Is the dev server running?`;
+      } else {
+        error = e?.message || 'Network error';
+      }
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function submitGuardPassword() {
+    error = null;
+    message = null;
+    if (!username.trim()) {
+      error = 'Please enter a username';
+      return;
+    }
+    if (!password.trim()) {
+      error = 'Please enter your password';
+      return;
+    }
+    loading = true;
+    try {
+      const form = new FormData();
+      form.append('username', username.trim());
+      form.append('password', password.trim());
+      const url = new URL('/login', location.origin).toString();
+      const res = await fetch(url, { method: 'POST', body: form, headers: { Accept: 'application/json' }, credentials: 'same-origin' });
+      if (res.redirected) {
+        goto(res.url);
+        return;
+      }
+      const text = await res.text().catch(() => null);
+      let data = null;
+      if (text) {
+        try { data = JSON.parse(text); } catch (e) { /* ignore */ }
+      }
+      // decode Paraglide wrapper if present (same format used elsewhere)
+      if (data && typeof data === 'object' && data.type) {
+        try {
+          const inner = JSON.parse(data.data);
+          if (Array.isArray(inner) && inner.length > 0 && typeof inner[0] === 'object') {
+            const mapping = inner[0];
+            const out: any = {};
+            for (const k of Object.keys(mapping)) {
+              const idx = mapping[k];
+              out[k] = inner[idx];
+            }
+            data = out;
+          } else {
+            data = inner;
+          }
+        } catch (e) {
+          // leave data as-is
+        }
+      }
+      if (!res.ok) {
+        error = data?.error || text || 'Login failed';
+        return;
+      }
+      // success — follow server-provided redirect if present
+      if (data?.success) {
+        if (data.redirect) {
+          goto(data.redirect);
+          return;
+        }
+        goto('/');
+        return;
+      }
+      // If OK but non-JSON, show the text as a message
+      if (text && !data) {
+        message = text;
+      }
+    } catch (e: any) {
+      console.error('submitGuardPassword: fetch error', e);
       if (e instanceof TypeError && /failed to fetch/i.test(String(e.message))) {
         error = `Cannot reach backend at ${location.origin}. Is the dev server running?`;
       } else {
@@ -181,7 +264,9 @@
   function onKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (otpSent) verifyOtp();
+      if (identifiedRole === 'guard') {
+        submitGuardPassword();
+      } else if (otpSent) verifyOtp();
       else sendOtp();
     }
   }
@@ -190,11 +275,35 @@
     document.addEventListener('keydown', onKeydown);
     return () => document.removeEventListener('keydown', onKeydown);
   });
+
+  // Ask server which role this username belongs to. This lets us
+  // show a password input for guards and keep OTP flow for others.
+  async function identifyUser() {
+    identifiedRole = null;
+    if (!username.trim()) return;
+    try {
+      const url = new URL('/login/identify', location.origin);
+      url.searchParams.set('username', username.trim());
+      const res = await fetch(url.toString(), { method: 'GET', credentials: 'same-origin' });
+      if (!res.ok) return; // leave identifiedRole as null
+      const data = await res.json().catch(() => null);
+      if (data && data.role) identifiedRole = data.role;
+    } catch (e) {
+      // ignore — identification is a nicety, server side still enforces auth
+      console.warn('identifyUser failed', e);
+    }
+  }
 </script>
 
-<section class="login-section">
-  <div class="login-form">
-    <h2>Login</h2>
+<section class="login-viewport">
+  <div class="login-container">
+    <div class="login-section">
+      <div class="brand">
+        <div class="logo">RAMS</div>
+        <div class="title">Residence Access Management System</div>
+      </div>
+      <div class="login-form">
+        <h2>Login</h2>
     {#if error}
       <div class="error">{error}</div>
     {/if}
@@ -203,25 +312,123 @@
     {/if}
 
     <label>Username
-      <input name="username" bind:value={username} autocomplete="username" />
+      <input name="username" bind:value={username} autocomplete="username" on:blur={() => identifyUser()} />
     </label>
 
-    {#if otpSent}
+    {#if identifiedRole === 'guard'}
+      <label>Password
+        <input name="password" bind:value={password} type="password" autocomplete="current-password" />
+      </label>
+      <button class="login-btn" on:click={submitGuardPassword} disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
+    {:else}
+      {#if otpSent}
       <label>OTP
         <input name="otp" bind:value={otp} autocomplete="one-time-code" />
       </label>
       <button class="login-btn" on:click={verifyOtp} disabled={loading}>{loading ? 'Verifying...' : 'Verify OTP'}</button>
-    {:else}
-      <button class="login-btn" on:click={sendOtp} disabled={loading}>{loading ? 'Sending...' : 'Send OTP'}</button>
+      {:else}
+        <button class="login-btn" on:click={sendOtp} disabled={loading}>{loading ? 'Sending...' : 'Send OTP'}</button>
+      {/if}
     {/if}
+  </div>
+    </div>
   </div>
 </section>
 
 <style>
-.login-section{max-width:420px;margin:4rem auto;padding:2rem;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+/* Page layout */
+/* Centered viewport */
+.login-viewport{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:2rem;
+  background: linear-gradient(180deg,#f4f7fb,#eef4fb);
+}
+
+.login-container{
+  width:100%;
+  max-width:520px;
+  display:block;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto;
+}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0.25rem;
+  margin-bottom:0.6rem;
+}
+.brand .logo{
+  font-weight:800;
+  font-size:28px;
+  background:linear-gradient(90deg,#1976d2,#60a5fa);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.brand .title{
+  font-size:13px;
+  color:#475569;
+  opacity:0.95;
+  text-align:center;
+}
+
+.login-section{
+  max-width:420px;
+  margin:0;
+  padding:2.25rem;
+  background: #ffffff;
+  border-radius:18px;
+  box-shadow: 0 12px 36px rgba(2,6,23,0.08);
+  border: 1px solid rgba(16,24,40,0.04);
+}
+
 .login-form{display:flex;flex-direction:column;gap:1rem}
-.login-form label{display:flex;flex-direction:column}
-.login-btn{background:#1976d2;color:#fff;padding:.6rem;border-radius:8px;border:0}
-.error{color:#b00}
-.message{color:green}
+.login-form h2{margin:0 0 .25rem 0;font-size:1.5rem;color:#0f1724}
+
+/* Inputs */
+.login-form label{display:flex;flex-direction:column;font-size:0.9rem;color:#334155}
+.login-form input{
+  margin-top:0.5rem;
+  padding:0.65rem 0.75rem;
+  border-radius:10px;
+  border:1px solid rgba(16,24,40,0.08);
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(16,24,40,0.02);
+  font-size:0.95rem;
+  color:#0b1220;
+  transition: box-shadow .12s ease, transform .06s ease;
+}
+.login-form input:focus{outline:none; box-shadow: 0 6px 24px rgba(25,118,210,0.12); transform: translateY(-1px); border-color: rgba(25,118,210,0.35)}
+
+/* Primary button */
+.login-btn{
+  background: linear-gradient(180deg,#1976d2,#125ea8);
+  color:#fff;
+  padding:.7rem;
+  border-radius:12px;
+  border:0;
+  font-weight:600;
+  letter-spacing:0.2px;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(25,118,210,0.14);
+  transition: transform .08s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.login-btn:active{transform: translateY(1px)}
+.login-btn[disabled]{opacity:0.6; cursor:not-allowed; box-shadow:none}
+
+/* Messages */
+.error{color:#b91c1c;background:rgba(185,28,28,0.06);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.9rem}
+.message{color:#065f46;background:rgba(6,95,70,0.06);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.9rem}
+
+/* Responsive tweaks */
+@media (max-width:520px){
+  .login-section{margin:2rem 1rem;padding:1.2rem;border-radius:12px}
+  .login-form h2{font-size:1.25rem}
+}
 </style>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { GuestPass } from '$lib/server/db/schema';
+  import { page } from '$app/stores';
 
   export let data: {
     recentActivity: {
@@ -15,6 +16,23 @@
   export let activeGuestPasses = data.activeGuestPasses;
   export let activeFoodDeliveryPasses = data.activeFoodDeliveryPasses;
 
+  // UI state: which pass ids are expanded to show details
+  let expandedPasses: Set<number | string> = new Set();
+
+  function togglePass(id: number | string) {
+    if (expandedPasses.has(id)) {
+      expandedPasses.delete(id);
+      // reassign to trigger Svelte reactivity
+      expandedPasses = new Set(expandedPasses);
+    } else {
+      expandedPasses.add(id);
+      expandedPasses = new Set(expandedPasses);
+    }
+  }
+
+  const isExpanded = (id: number | string) => expandedPasses.has(id);
+  import { slide } from 'svelte/transition';
+
   // reference to hero container so we can dispatch a DOM event that bubbles
   let heroEl: HTMLElement | null = null;
 
@@ -22,6 +40,9 @@
     const ev = new CustomEvent('toggleSidebar', { bubbles: true });
     heroEl?.dispatchEvent(ev);
   }
+
+  // derive user name from page data when available
+  $: userName = $page.data?.user?.name || 'Resident';
 </script>
 
 <!-- Move hero into the index page so subpages don't render it -->
@@ -43,26 +64,32 @@
   </ul>
 </div>
 
+
 {#if activeGuestPasses.length > 0}
 <div class="active-passes-card">
   <h3>Your Active Guest Passes</h3>
   <div class="passes-list">
     {#each activeGuestPasses as pass}
-      <div class="pass-item">
-        <div class="pass-info">
+      <div class="pass-item" on:click={() => togglePass(pass.id)} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && togglePass(pass.id)} aria-expanded={isExpanded(pass.id)}>
+        <div class="pass-summary">
           <div class="pass-plate"><strong>{pass.plateNumber}</strong></div>
-          {#if pass.name}
-            <div class="pass-detail">Name: {pass.name}</div>
-          {/if}
-          {#if pass.phone}
-            <div class="pass-detail">Phone: {pass.phone}</div>
-          {/if}
-          <div class="pass-detail">Visit: {new Date(pass.visitTime).toLocaleString()}</div>
-          <div class="pass-detail">Duration: {pass.durationMinutes} minutes</div>
+          <div class="pass-meta">{pass.name ? pass.name : ''}</div>
         </div>
         <div class="pass-actions">
-          <a href="/user/dashboard/guests" class="manage-link">Manage</a>
+          <button class="manage-link" on:click|stopPropagation={() => { /* navigate to manage */ window.location.href = '/user/dashboard/guests'; }}>Manage</button>
         </div>
+        {#if isExpanded(pass.id)}
+          <div class="pass-details" transition:slide={{ duration: 180 }}>
+            {#if pass.name}
+              <div class="pass-detail">Name: {pass.name}</div>
+            {/if}
+            {#if pass.phone}
+              <div class="pass-detail">Phone: {pass.phone}</div>
+            {/if}
+            <div class="pass-detail">Visit: {new Date(pass.visitTime).toLocaleString()}</div>
+            <div class="pass-detail">Duration: {pass.durationMinutes} minutes</div>
+          </div>
+        {/if}
       </div>
     {/each}
   </div>
@@ -74,26 +101,33 @@
   <h3>Your Active Food Delivery Passes</h3>
   <div class="passes-list">
     {#each activeFoodDeliveryPasses as pass}
-      <div class="pass-item">
-        <div class="pass-info">
+      <div class="pass-item" on:click={() => togglePass(pass.id)} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && togglePass(pass.id)} aria-expanded={isExpanded(pass.id)}>
+        <div class="pass-summary">
           <div class="pass-plate"><strong>{pass.plateNumber}</strong></div>
-          {#if pass.name}
-            <div class="pass-detail">Name: {pass.name}</div>
-          {/if}
-          {#if pass.phone}
-            <div class="pass-detail">Phone: {pass.phone}</div>
-          {/if}
-          <div class="pass-detail">Visit: {new Date(pass.visitTime).toLocaleString()}</div>
-          <div class="pass-detail">Duration: {pass.durationMinutes} minutes</div>
+          <div class="pass-meta">{pass.name ? pass.name : ''}</div>
         </div>
         <div class="pass-actions">
-          <a href="/user/dashboard/food-delivery" class="manage-link">Manage</a>
+          <button class="manage-link" on:click|stopPropagation={() => { window.location.href = '/user/dashboard/food-delivery'; }}>Manage</button>
         </div>
+        {#if isExpanded(pass.id)}
+          <div class="pass-details" transition:slide={{ duration: 180 }}>
+            {#if pass.name}
+              <div class="pass-detail">Name: {pass.name}</div>
+            {/if}
+            {#if pass.phone}
+              <div class="pass-detail">Phone: {pass.phone}</div>
+            {/if}
+            <div class="pass-detail">Visit: {new Date(pass.visitTime).toLocaleString()}</div>
+            <div class="pass-detail">Duration: {pass.durationMinutes} minutes</div>
+          </div>
+        {/if}
       </div>
     {/each}
   </div>
 </div>
 {/if}
+
+<h3 class="quick-actions">Quick Actions</h3>
 
 <div class="dashboard-cards-row">
   <a href="/user/dashboard/vehicles" class="dashboard-card">
@@ -115,6 +149,7 @@
 
 <style>
 
+  /* recent activity: responsive container that never overflows horizontally */
   .recent-activity-card {
     background: #fff;
     border-radius: 12px;
@@ -122,11 +157,9 @@
     padding: 1.5rem;
     margin: 0 auto 2rem auto;
     width: 100%;
-    /* never exceed the viewport minus small gutters */
-    max-width: min(760px, calc(100vw - 32px));
+    max-width: 760px;
     box-sizing: border-box;
-    overflow: auto; /* allow internal scroll if content is unexpectedly wide */
-    flex: 0 0 auto; /* centered fixed width card */
+    overflow-wrap: anywhere;
   }
   .recent-activity-card h3 {
     margin: 0 0 1rem 0;
@@ -152,10 +185,12 @@
     display: grid;
     grid-template-columns: 1fr; /* default mobile: single column */
     gap: 1rem;
-    max-width: 760px;
+    max-width: 960px;
     margin: 0 auto 1rem auto;
-    padding: 0 1rem;
+    padding-inline: clamp(12px, 4vw, 32px);
     align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
   }
   .dashboard-card {
     background: #fff;
@@ -172,6 +207,7 @@
     color: inherit; /* Inherit text color */
     min-height: 120px; /* ensure visual consistency */
     width: 100%;
+    min-width: 0; /* prevent overflowing due to long children */
     box-sizing: border-box;
   }
   .dashboard-card .card-icon {
@@ -217,7 +253,9 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
     width: 100%;
-    max-width: 600px;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .active-passes-card h3 {
     margin-bottom: 1rem;
@@ -225,22 +263,40 @@
     color: #232946;
   }
   .passes-list {
+    margin: 0 auto 2rem auto;
+    width: 100%;
+    max-width: 760px; /* center and allow slightly wider cards */
+    padding-inline: clamp(12px, 4vw, 32px);
+    gap: 0.75rem;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
   }
   .pass-item {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-    padding: 1rem;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
     background: #f8f9fa;
     border-radius: 8px;
     border-left: 4px solid #175cd3;
+    gap: 0.75rem;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* prevent content from forcing horizontal scroll */
+    min-height: 64px;
   }
-  .pass-info {
-    flex: 1;
-  }
+  .pass-summary { display:flex; align-items:center; gap:0.75rem; flex: 1 1 auto; min-width: 0; }
+  .pass-plate { font-size: 1.05rem; color: #123; margin-right: 0.5rem; flex: 0 0 auto; }
+  .pass-meta { color: #555; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
+  .pass-details { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(0,0,0,0.04); }
+  .pass-details { overflow: hidden; }
+  .pass-info { flex: 1 1 auto; min-width: 0; }
+  .pass-actions { display:flex; align-items:center; flex: 0 0 auto; margin-left: 0; }
+  .manage-link { background: transparent; border: 1px solid #1976d2; color:#1976d2; padding:0.35rem 0.65rem; border-radius:8px; cursor:pointer; white-space:nowrap; }
+  .manage-link:hover { background:#eaf2ff; }
   .pass-plate {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
@@ -279,15 +335,24 @@
       max-width: 520px; /* limit card width so it doesn't hug the right edge */
       color: #232946;
     }
+    /* stack pass items vertically on small screens to avoid tight horizontal space */
+    .pass-item { flex-direction: column; align-items: stretch; }
+    .pass-summary { justify-content: space-between; }
+    .pass-meta { white-space: normal; }
   }
 
   @media (min-width: 721px) {
     .dashboard-cards-row {
       grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet+ */
-      max-width: 880px;
+      max-width: 960px;
     }
+    .dashboard-card { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding: 2rem; }
+    .dashboard-card h2 { padding-left: 0; }
     .recent-activity-card { max-width: 600px; }
   }
+
+  /* Quick actions header */
+  .quick-actions { max-width: 960px; margin: 1.25rem auto 0.5rem auto; padding: 0 1rem; font-size: 1.1rem; color: #111827; }
 
   /* Hero (page-level) */
   .dashboard-hero-page {
@@ -304,6 +369,7 @@
     gap: 1rem;
     padding: 0.75rem 0;
   }
+
   .hero-title-page {
     font-size: 1.25rem;
     margin: 0;

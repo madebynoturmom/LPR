@@ -4,6 +4,8 @@ import { guard } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
+import { sha256 } from '@oslojs/crypto/sha2';
+import { encodeHexLowerCase } from '@oslojs/encoding';
 
 export const load: PageServerLoad = async () => {
   const guards = await db.select().from(guard);
@@ -21,11 +23,14 @@ export const actions: Actions = {
     }
     // Use guardId as username for uniqueness
     try {
+      // Default password: use guardId as temporary password (hashed)
+      const defaultHash = encodeHexLowerCase(sha256(new TextEncoder().encode(guardId)));
       await db.insert(guard).values({
         username: guardId,
         name,
         phone,
-        guardId
+        guardId,
+        passwordHash: defaultHash
       });
       throw redirect(303, '/admin/dashboard/guards');
     } catch (e) {

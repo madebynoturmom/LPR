@@ -3,6 +3,8 @@ import { guard } from '$lib/server/db/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { eq } from 'drizzle-orm';
+import { sha256 } from '@oslojs/crypto/sha2';
+import { encodeHexLowerCase } from '@oslojs/encoding';
 
 export const actions: Actions = {
   default: async ({ request }) => {
@@ -26,13 +28,18 @@ export const actions: Actions = {
       return fail(400, { error: 'All fields are required.' });
     }
     try {
+      // Default password: use guardId as initial password (admin should communicate/change it)
+      const plainPassword = guardId;
+      const passwordHash = encodeHexLowerCase(sha256(new TextEncoder().encode(plainPassword)));
       await db.insert(guard).values({
         username: guardId,
+        passwordHash,
         name,
         phone,
         guardId,
         profilePic
       });
+      console.log(`Created guard ${guardId} with default password: ${plainPassword}`);
       throw redirect(303, '/admin/dashboard/guards');
     } catch (e) {
       return fail(500, { error: 'Failed to create guard.' });
