@@ -78,7 +78,15 @@ const handleAuth = async ({ event, resolve }) => {
   }
   event.locals.user = user ? { id: user.id, username: user.username, role: user.role } : null;
   event.locals.session = session;
-  return resolve(event);
+  const res = await resolve(event);
+  try {
+    res.headers.set(
+      "content-security-policy",
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
+    );
+  } catch (e) {
+  }
+  return res;
 };
 const handle = sequence(handleParaglide, handleAuth);
 export {
