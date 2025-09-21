@@ -91,6 +91,14 @@ function setSessionTokenCookie(event, token, expiresAt) {
   } catch (e) {
     secure = event.url.protocol === "https:";
   }
+  try {
+    const fwd = event.request.headers.get("x-forwarded-proto") || event.request.headers.get("x-forwarded-ssl");
+    if (fwd && !secure) {
+      const proto = fwd.split(",")[0].trim().toLowerCase();
+      if (proto === "https" || proto === "on") secure = true;
+    }
+  } catch (e) {
+  }
   const cookieOptions = {
     expires: expiresAt,
     path: "/",

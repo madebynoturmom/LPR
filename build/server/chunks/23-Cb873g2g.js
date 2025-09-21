@@ -1,0 +1,32 @@
+import { r as redirect } from './index-BmA2ZghE.js';
+import { d as db, h as session, e as eq } from './index3-DfwD5jMB.js';
+import './base64-EEv6AAhc.js';
+import 'dotenv/config';
+import 'better-sqlite3';
+
+const actions = {
+  default: async (event) => {
+    const sessionToken = event.cookies.get("auth-session");
+    if (sessionToken) {
+      await db.delete(session).where(eq(session.id, sessionToken));
+      event.cookies.delete("auth-session", { path: "/" });
+    }
+    throw redirect(303, "/login");
+  }
+};
+
+var _page_server_ts = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  actions: actions
+});
+
+const index = 23;
+let component_cache;
+const component = async () => component_cache ??= (await import('./_page.svelte-CRyhKtqO.js')).default;
+const server_id = "src/routes/logout/+page.server.ts";
+const imports = ["_app/immutable/nodes/23.CmwPoCZu.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/Dr5p_gXH.js","_app/immutable/chunks/D6_VZFDO.js"];
+const stylesheets = [];
+const fonts = [];
+
+export { component, fonts, imports, index, _page_server_ts as server, server_id, stylesheets };
+//# sourceMappingURL=23-Cb873g2g.js.map
