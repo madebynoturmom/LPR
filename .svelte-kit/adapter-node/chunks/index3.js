@@ -80,6 +80,7 @@ const guestPass = sqliteTable("guest_pass", {
 const guard = sqliteTable("guard", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
   name: text("name"),
   phone: text("phone"),
   guardId: text("guard_id").notNull().unique(),

@@ -1,5 +1,7 @@
 import { d as db, b as guard } from "../../../../../../chunks/index3.js";
 import { fail, redirect } from "@sveltejs/kit";
+import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeHexLowerCase } from "@oslojs/encoding";
 const actions = {
   default: async ({ request }) => {
     const form = await request.formData();
@@ -19,13 +21,17 @@ const actions = {
       return fail(400, { error: "All fields are required." });
     }
     try {
+      const plainPassword = guardId;
+      const passwordHash = encodeHexLowerCase(sha256(new TextEncoder().encode(plainPassword)));
       await db.insert(guard).values({
         username: guardId,
+        passwordHash,
         name,
         phone,
         guardId,
         profilePic
       });
+      console.log(`Created guard ${guardId} with default password: ${plainPassword}`);
       throw redirect(303, "/admin/dashboard/guards");
     } catch (e) {
       return fail(500, { error: "Failed to create guard." });

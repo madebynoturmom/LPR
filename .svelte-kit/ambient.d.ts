@@ -73,7 +73,6 @@ declare module '$env/static/private' {
 	export const LS_COLORS: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const TERM_PROGRAM: string;
-	export const npm_config_loglevel: string;
 	export const npm_lifecycle_script: string;
 	export const SHELL: string;
 	export const npm_package_version: string;
@@ -81,7 +80,6 @@ declare module '$env/static/private' {
 	export const LESSCLOSE: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_NONCE: string;
-	export const GIT_PAGER: string;
 	export const npm_config_globalconfig: string;
 	export const npm_config_init_module: string;
 	export const PWD: string;
@@ -95,6 +93,7 @@ declare module '$env/static/private' {
 	export const WSLENV: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
+	export const NODE_ENV: string;
 }
 
 /**
@@ -171,7 +170,6 @@ declare module '$env/dynamic/private' {
 		LS_COLORS: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		TERM_PROGRAM: string;
-		npm_config_loglevel: string;
 		npm_lifecycle_script: string;
 		SHELL: string;
 		npm_package_version: string;
@@ -179,7 +177,6 @@ declare module '$env/dynamic/private' {
 		LESSCLOSE: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_NONCE: string;
-		GIT_PAGER: string;
 		npm_config_globalconfig: string;
 		npm_config_init_module: string;
 		PWD: string;
@@ -193,6 +190,7 @@ declare module '$env/dynamic/private' {
 		WSLENV: string;
 		INIT_CWD: string;
 		EDITOR: string;
+		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

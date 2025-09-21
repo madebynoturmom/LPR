@@ -1,8 +1,8 @@
-import { d as db, a as admin, u as user, o as otp } from "../../../chunks/index3.js";
+import { d as db, a as admin, b as guard, u as user, o as otp } from "../../../chunks/index3.js";
 import { fail, redirect } from "@sveltejs/kit";
 import { v4 } from "uuid";
-import "@oslojs/crypto/sha2";
-import "@oslojs/encoding";
+import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeHexLowerCase } from "@oslojs/encoding";
 import { eq, desc } from "drizzle-orm";
 import { g as generateSessionToken, c as createSession, s as setSessionTokenCookie } from "../../../chunks/auth.js";
 import { s as sendEmail } from "../../../chunks/email.js";
@@ -17,49 +17,80 @@ const actions = {
     if (!username) {
       return fail(400, { error: "Username is required." });
     }
+    const usernameLower = username.toLowerCase();
     let found = null;
     let userRole = null;
     let userEmail = null;
-    const admins = await db.select().from(admin).where(eq(admin.username, username));
+    const admins = await db.select().from(admin).where(eq(admin.username, usernameLower));
     if (admins.length > 0) {
       found = admins[0];
       userRole = "admin";
       userEmail = found.email;
     } else {
-      const users = await db.select().from(user).where(eq(user.username, username));
-      if (users.length > 0) {
-        found = users[0];
-        userRole = found.role;
-        userEmail = found.email;
+      const guards = await db.select().from(guard).where(eq(guard.username, usernameLower));
+      if (guards.length > 0) {
+        found = guards[0];
+        userRole = "guard";
+        userEmail = null;
+      } else {
+        const users = await db.select().from(user).where(eq(user.username, usernameLower));
+        if (users.length > 0) {
+          found = users[0];
+          userRole = found.role;
+          userEmail = found.email;
+        }
       }
     }
     if (!found) {
       console.log("🔐 User not found for username:", username);
       return fail(401, { error: "Invalid username." });
     }
-    if (!userEmail) {
+    if (userRole !== "guard" && !userEmail) {
       console.log("🔐 No email associated with user:", username);
       return fail(400, { error: "No email associated with this user." });
     }
-    console.log("🔐 User found:", username, "Role:", userRole, "Email:", userEmail);
+    console.log("🔐 User found:", usernameLower, "Role:", userRole, "Email:", userEmail);
+    if (userRole === "guard") {
+      const password = form.get("password")?.toString();
+      if (!password) {
+        return fail(400, { error: "Password is required for guard login." });
+      }
+      const providedHash = encodeHexLowerCase(sha256(new TextEncoder().encode(password)));
+      if (!found.passwordHash || providedHash !== found.passwordHash) {
+        console.log("🔐 Guard password mismatch for user:", username);
+        return fail(401, { error: "Invalid password." });
+      }
+      const sessionToken = generateSessionToken();
+      const session = await createSession(sessionToken, found.id);
+      setSessionTokenCookie(event, sessionToken, session.expiresAt);
+      const redirectUrl = "/guard/dashboard";
+      const accept = request.headers.get("accept") || "";
+      if (accept.includes("application/json")) return { success: true, redirect: redirectUrl };
+      throw redirect(303, redirectUrl);
+    }
     if (!otpCode) {
+      const targetEmail = userEmail;
+      if (!targetEmail) {
+        console.log("🔐 No email available for OTP flow (unexpected)");
+        return fail(500, { error: "No email for OTP flow." });
+      }
       console.log("🔐 OTP Generation: Starting for username:", username);
       const code = Math.floor(1e5 + Math.random() * 9e5).toString();
-      console.log("🔐 OTP Generated:", code, "for email:", userEmail);
+      console.log("🔐 OTP Generated:", code, "for email:", targetEmail);
       const expiresAt = new Date(Date.now() + 5 * 60 * 1e3);
       console.log("🔐 OTP Expires At:", expiresAt);
       await db.insert(otp).values({
         id: v4(),
-        email: userEmail,
+        email: targetEmail,
         code,
         expiresAt
       });
       console.log("🔐 OTP Stored in DB");
       console.log("📧 SMTP_USER set:", !!process.env.SMTP_USER);
       console.log("📧 SMTP_PASS set:", !!process.env.SMTP_PASS);
-      console.log("📧 Sending OTP email to:", userEmail);
+      console.log("📧 Sending OTP email to:", targetEmail);
       try {
-        await sendEmail(userEmail, "Your OTP Code", `Your OTP code is: ${code}`);
+        await sendEmail(targetEmail, "Your OTP Code", `Your OTP code is: ${code}`);
         console.log("📧 OTP Email sent successfully");
       } catch (emailError) {
         console.error("📧 OTP Email send failed:", emailError);
@@ -70,7 +101,12 @@ const actions = {
       return body;
     } else {
       console.log("🔐 OTP Verification: Starting for email:", userEmail, "OTP:", otpCode);
-      const otpRecords = await db.select().from(otp).where(eq(otp.email, userEmail)).orderBy(desc(otp.expiresAt));
+      const targetEmail = userEmail;
+      if (!targetEmail) {
+        console.log("🔐 No email available for OTP verification (unexpected)");
+        return fail(500, { error: "No email for OTP verification." });
+      }
+      const otpRecords = await db.select().from(otp).where(eq(otp.email, targetEmail)).orderBy(desc(otp.expiresAt));
       console.log("🔐 OTP Records found:", otpRecords.length);
       if (otpRecords.length === 0) {
         console.log("🔐 No OTP records found for email:", userEmail);

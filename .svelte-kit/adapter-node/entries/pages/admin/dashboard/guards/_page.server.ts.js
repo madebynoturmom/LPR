@@ -1,6 +1,8 @@
 import { d as db, b as guard } from "../../../../../chunks/index3.js";
 import { fail, redirect } from "@sveltejs/kit";
 import { eq } from "drizzle-orm";
+import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeHexLowerCase } from "@oslojs/encoding";
 const load = async () => {
   const guards = await db.select().from(guard);
   return { guards };
@@ -15,11 +17,13 @@ const actions = {
       return fail(400, { error: "All fields are required." });
     }
     try {
+      const defaultHash = encodeHexLowerCase(sha256(new TextEncoder().encode(guardId)));
       await db.insert(guard).values({
         username: guardId,
         name,
         phone,
-        guardId
+        guardId,
+        passwordHash: defaultHash
       });
       throw redirect(303, "/admin/dashboard/guards");
     } catch (e) {

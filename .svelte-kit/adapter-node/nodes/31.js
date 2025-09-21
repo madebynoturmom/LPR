@@ -1,10 +1,10 @@
-import * as server from '../entries/pages/user/dashboard/vehicles/create/_page.server.ts.js';
+import * as server from '../entries/pages/user/dashboard/vehicles/_page.server.ts.js';
 
 export const index = 31;
 let component_cache;
-export const component = async () => component_cache ??= (await import('../entries/pages/user/dashboard/vehicles/create/_page.svelte.js')).default;
+export const component = async () => component_cache ??= (await import('../entries/pages/user/dashboard/vehicles/_page.svelte.js')).default;
 export { server };
-export const server_id = "src/routes/user/dashboard/vehicles/create/+page.server.ts";
-export const imports = ["_app/immutable/nodes/31.DsetzL6j.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/COTvsYcR.js","_app/immutable/chunks/BjJWVY7i.js","_app/immutable/chunks/DyiMSgY8.js","_app/immutable/chunks/CbnbkC1n.js","_app/immutable/chunks/BN32gUog.js","_app/immutable/chunks/D6O3RN6I.js","_app/immutable/chunks/DWyjkCdo.js","_app/immutable/chunks/Btu2CQ7A.js","_app/immutable/chunks/BbceK8gy.js","_app/immutable/chunks/DSozhXEh.js","_app/immutable/chunks/tExuWAHb.js","_app/immutable/chunks/CmONDsb2.js"];
-export const stylesheets = ["_app/immutable/assets/31.BQohetYN.css"];
+export const server_id = "src/routes/user/dashboard/vehicles/+page.server.ts";
+export const imports = ["_app/immutable/nodes/31.CjZGRM-O.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/Dr5p_gXH.js","_app/immutable/chunks/D6_VZFDO.js","_app/immutable/chunks/BDSG5-H0.js","_app/immutable/chunks/DtrBNwtL.js","_app/immutable/chunks/BHQlukOt.js","_app/immutable/chunks/BdvQLAZU.js","_app/immutable/chunks/g0qwyJPX.js","_app/immutable/chunks/BfIrQ_zr.js","_app/immutable/chunks/BWorSmfV.js","_app/immutable/chunks/DPinqpzW.js","_app/immutable/chunks/DDKRNP9O.js"];
+export const stylesheets = ["_app/immutable/assets/31.Ciq5rAok.css"];
 export const fonts = [];

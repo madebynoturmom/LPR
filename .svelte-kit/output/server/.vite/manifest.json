@@ -570,6 +570,73 @@
       "_index3.js"
     ]
   },
+  "src/routes/guard/dashboard/+layout.svelte": {
+    "file": "entries/pages/guard/dashboard/_layout.svelte.js",
+    "name": "entries/pages/guard/dashboard/_layout.svelte",
+    "src": "src/routes/guard/dashboard/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_stores.js",
+      "_index.js",
+      "_attributes.js",
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.BuI3T_cZ.css"
+    ]
+  },
+  "src/routes/guard/dashboard/+page.server.ts": {
+    "file": "entries/pages/guard/dashboard/_page.server.ts.js",
+    "name": "entries/pages/guard/dashboard/_page.server.ts",
+    "src": "src/routes/guard/dashboard/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js"
+    ]
+  },
+  "src/routes/guard/dashboard/+page.svelte": {
+    "file": "entries/pages/guard/dashboard/_page.svelte.js",
+    "name": "entries/pages/guard/dashboard/_page.svelte",
+    "src": "src/routes/guard/dashboard/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_attributes.js",
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Dxm5GUdE.css"
+    ]
+  },
+  "src/routes/guard/dashboard/settings/+page.server.ts": {
+    "file": "entries/pages/guard/dashboard/settings/_page.server.ts.js",
+    "name": "entries/pages/guard/dashboard/settings/_page.server.ts",
+    "src": "src/routes/guard/dashboard/settings/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_email.js"
+    ]
+  },
+  "src/routes/guard/dashboard/settings/+page.svelte": {
+    "file": "entries/pages/guard/dashboard/settings/_page.svelte.js",
+    "name": "entries/pages/guard/dashboard/settings/_page.svelte",
+    "src": "src/routes/guard/dashboard/settings/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_stores.js",
+      "_exports.js",
+      "_utils.js",
+      "_attributes.js",
+      "_state.svelte.js",
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.C0S5zQSb.css"
+    ]
+  },
   "src/routes/login/+page.server.ts": {
     "file": "entries/pages/login/_page.server.ts.js",
     "name": "entries/pages/login/_page.server.ts",
@@ -594,7 +661,16 @@
       "_state.svelte.js"
     ],
     "css": [
-      "_app/immutable/assets/_page._94_Grtu.css"
+      "_app/immutable/assets/_page.FR_Euwfd.css"
+    ]
+  },
+  "src/routes/login/identify/+server.ts": {
+    "file": "entries/endpoints/login/identify/_server.ts.js",
+    "name": "entries/endpoints/login/identify/_server.ts",
+    "src": "src/routes/login/identify/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js"
     ]
   },
   "src/routes/logout/+page.server.ts": {
@@ -653,10 +729,12 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_escaping.js"
+      "_stores.js",
+      "_escaping.js",
+      "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.KCYWcOlN.css"
+      "_app/immutable/assets/_page.m9s_vsEn.css"
     ]
   },
   "src/routes/user/dashboard/food-delivery/+page.server.ts": {
@@ -748,7 +826,7 @@
       "_escaping.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.CUUPVawk.css"
+      "_app/immutable/assets/_page.BKAeounY.css"
     ]
   },
   "src/routes/user/dashboard/history/+page.server.ts": {
