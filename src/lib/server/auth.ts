@@ -134,6 +134,19 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 		secure = event.url.protocol === 'https:';
 	}
 
+	// Honor common proxy headers for TLS termination (e.g., when running
+	// behind an nginx/ELB that terminates TLS). If x-forwarded-proto or
+	// x-forwarded-ssl indicate https, treat the original request as secure.
+	try {
+		const fwd = event.request.headers.get('x-forwarded-proto') || event.request.headers.get('x-forwarded-ssl');
+		if (fwd && !secure) {
+			const proto = fwd.split(',')[0].trim().toLowerCase();
+			if (proto === 'https' || proto === 'on') secure = true;
+		}
+	} catch (e) {
+		// ignore
+	}
+
 	const cookieOptions = {
 		expires: expiresAt,
 		path: '/',
