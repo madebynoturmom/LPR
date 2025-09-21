@@ -74,10 +74,32 @@ async function validateSessionToken(token) {
   return { session: session$1, user: user$1 };
 }
 function setSessionTokenCookie(event, token, expiresAt) {
-  event.cookies.set(sessionCookieName, token, {
+  const originHeader = event.request.headers.get("origin");
+  let sameSite = "lax";
+  let secure = false;
+  try {
+    if (originHeader) {
+      const originUrl = new URL(originHeader);
+      const sameOrigin = originUrl.origin === event.url.origin;
+      if (!sameOrigin) {
+        sameSite = "none";
+        secure = event.url.protocol === "https:";
+      }
+    } else {
+      secure = event.url.protocol === "https:";
+    }
+  } catch (e) {
+    secure = event.url.protocol === "https:";
+  }
+  const cookieOptions = {
     expires: expiresAt,
-    path: "/"
-  });
+    path: "/",
+    httpOnly: true,
+    sameSite,
+    secure
+  };
+  console.log(`🔐 setSessionTokenCookie: setting cookie (sameSite=${sameSite}, secure=${secure})`);
+  event.cookies.set(sessionCookieName, token, cookieOptions);
 }
 function deleteSessionTokenCookie(event) {
   event.cookies.delete(sessionCookieName, {
