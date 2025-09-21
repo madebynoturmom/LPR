@@ -130,10 +130,6 @@ const actions = {
       const session = await createSession(sessionToken, found.id);
       setSessionTokenCookie(event, sessionToken, session.expiresAt);
       const redirectUrl = userRole === "admin" ? "/admin/dashboard" : userRole === "guard" ? "/guard/dashboard" : userRole === "resident" ? "/user/dashboard" : "/";
-      const accept = request.headers.get("accept") || "";
-      if (accept.includes("application/json")) {
-        return { success: true, redirect: redirectUrl };
-      }
       throw redirect(303, redirectUrl);
     }
   }

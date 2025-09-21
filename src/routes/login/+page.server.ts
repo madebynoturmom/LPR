@@ -166,13 +166,10 @@ export const actions: Actions = {
         ? '/user/dashboard'
         : '/';
 
-      // If the client prefers JSON (fetch-based form), return a plain serializable object
-      const accept = request.headers.get('accept') || '';
-      if (accept.includes('application/json')) {
-        return { success: true, redirect: redirectUrl };
-      }
-
-      // Otherwise, perform a traditional server redirect for standard form submissions
+      // Always perform a server-side redirect. This ensures the response
+      // contains a 303 Location header so client fetch requests (and
+      // traditional form submissions) follow the redirect reliably even
+      // when middleware wraps/encodes JSON payloads differently on EC2.
       throw redirect(303, redirectUrl);
     }
   }

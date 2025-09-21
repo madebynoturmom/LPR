@@ -234,13 +234,14 @@
         error = data?.error || text || 'OTP verification failed';
         return;
       }
-      // success path typically redirects; if server returned JSON, handle it
+      // success path typically redirects; first check for an explicit redirect
+      // value either in parsed JSON or in the Paraglide-wrapped payload.
+      const redirectTarget = data?.redirect || (Array.isArray(data) && data[2]) || null;
+      if (redirectTarget) {
+        goto(redirectTarget);
+        return;
+      }
       if (data?.success) {
-        // If server returned a redirect URL, navigate there
-        if (data.redirect) {
-          goto(data.redirect);
-          return;
-        }
         goto('/');
         return;
       }
