@@ -1,6 +1,7 @@
-import { t as to_class } from "./attributes.js";
-import { r as run_all, d as define_property, b as deferred, o as object_prototype, c as array_prototype, g as get_descriptor, f as get_prototype_of, i as is_array, h as is_extensible, j as index_of, n as noop, e as escape_html } from "./escaping.js";
-import { b as safe_equals, e as equals, c as set_ssr_context, d as ssr_context, p as push$1, f as pop$1 } from "./context.js";
+import { t as to_class, b as to_style } from "./attributes.js";
+import { r as run_all, d as define_property, b as deferred, o as object_prototype, c as array_prototype, g as get_descriptor, e as get_prototype_of, i as is_array, f as is_extensible, h as index_of, n as noop } from "./utils2.js";
+import { c as safe_equals, e as equals, d as set_ssr_context, b as ssr_context, p as push$1, f as pop$1 } from "./context.js";
+import { e as escape_html } from "./escaping.js";
 const DEV = false;
 const DERIVED = 1 << 1;
 const EFFECT = 1 << 2;
@@ -2088,6 +2089,10 @@ function attr_class(value, hash, directives) {
   var result = to_class(value, hash, directives);
   return result ? ` class="${escape_html(result, true)}"` : "";
 }
+function attr_style(value, directives) {
+  var result = to_style(value);
+  return result ? ` style="${escape_html(result, true)}"` : "";
+}
 function store_get(store_values, store_name, store) {
   if (store_name in store_values && store_values[store_name][0] === store) {
     return store_values[store_name][2];
@@ -2159,12 +2164,13 @@ export {
   head as U,
   store_get as V,
   attr_class as W,
-  ensure_array_like as X,
-  slot as Y,
+  slot as X,
+  ensure_array_like as Y,
   unsubscribe_stores as Z,
   stringify as _,
   HYDRATION_END as a,
   maybe_selected as a0,
+  attr_style as a1,
   HYDRATION_START as b,
   HYDRATION_START_ELSE as c,
   get as d,

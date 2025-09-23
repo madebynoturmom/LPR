@@ -1,10 +1,10 @@
-import * as server from '../entries/pages/guard/dashboard/_page.server.ts.js';
+import * as server from '../entries/pages/admin/dashboard/vehicles/_page.server.ts.js';
 
 export const index = 20;
 let component_cache;
-export const component = async () => component_cache ??= (await import('../entries/pages/guard/dashboard/_page.svelte.js')).default;
+export const component = async () => component_cache ??= (await import('../entries/pages/admin/dashboard/vehicles/_page.svelte.js')).default;
 export { server };
-export const server_id = "src/routes/guard/dashboard/+page.server.ts";
-export const imports = ["_app/immutable/nodes/20.B42nURwR.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/Dr5p_gXH.js","_app/immutable/chunks/D6_VZFDO.js","_app/immutable/chunks/BDSG5-H0.js","_app/immutable/chunks/DtrBNwtL.js","_app/immutable/chunks/BHQlukOt.js","_app/immutable/chunks/BdvQLAZU.js","_app/immutable/chunks/g0qwyJPX.js","_app/immutable/chunks/BfIrQ_zr.js","_app/immutable/chunks/Cko499XQ.js","_app/immutable/chunks/CmAcq_e6.js","_app/immutable/chunks/BWorSmfV.js","_app/immutable/chunks/DPinqpzW.js","_app/immutable/chunks/DDKRNP9O.js"];
-export const stylesheets = ["_app/immutable/assets/20.Dxm5GUdE.css"];
+export const server_id = "src/routes/admin/dashboard/vehicles/+page.server.ts";
+export const imports = ["_app/immutable/nodes/20.BDJBjqEs.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/i9DHmAX1.js","_app/immutable/chunks/MgvKJ5Oe.js","_app/immutable/chunks/tNEdk8z3.js","_app/immutable/chunks/DANlTl3y.js","_app/immutable/chunks/TZ4K4ZOd.js","_app/immutable/chunks/uYRH7WDe.js","_app/immutable/chunks/D3LgcHxc.js","_app/immutable/chunks/STPvjbMu.js","_app/immutable/chunks/DbZgNqix.js","_app/immutable/chunks/DkPbIObf.js","_app/immutable/chunks/mO3J0t2N.js","_app/immutable/chunks/BifvwZtI.js","_app/immutable/chunks/BIazggEA.js","_app/immutable/chunks/BzyUH8j5.js","_app/immutable/chunks/tN8zdOQx.js","_app/immutable/chunks/BQQlMUYl.js","_app/immutable/chunks/D5ruwRzR.js"];
+export const stylesheets = [];
 export const fonts = [];

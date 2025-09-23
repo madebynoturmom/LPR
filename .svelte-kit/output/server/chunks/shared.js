@@ -514,9 +514,9 @@ export {
   get_type as g,
   stringify as h,
   is_primitive as i,
-  create_remote_cache_key as j,
-  stringify_remote_arg as k,
-  parse as l,
+  stringify_remote_arg as j,
+  parse as k,
+  create_remote_cache_key as l,
   parse_remote_arg as p,
   stringify_key as s
 };

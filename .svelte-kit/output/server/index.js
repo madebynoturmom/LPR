@@ -2,8 +2,8 @@ import { i as is_primitive, g as get_type, D as DevalueError, a as is_plain_obje
 import { json, text, error } from "@sveltejs/kit";
 import { HttpError, SvelteKitError, Redirect, ActionFailure } from "@sveltejs/kit/internal";
 import { with_request_store, merge_tracing } from "@sveltejs/kit/internal/server";
-import { a as assets, b as base, c as app_dir, o as override, r as reset } from "./chunks/environment.js";
-import { m as make_trackable, d as disable_search, a as decode_params, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, r as resolve, f as decode_pathname, g as validate_server_exports } from "./chunks/exports.js";
+import { a as assets, b as base, c as app_dir, r as relative, o as override, d as reset } from "./chunks/environment.js";
+import { m as make_trackable, d as disable_search, a as decode_params, S as SCHEME, v as validate_layout_server_exports, b as validate_layout_exports, c as validate_page_server_exports, e as validate_page_exports, n as normalize_path, r as resolve, f as decode_pathname, g as validate_server_exports } from "./chunks/exports.js";
 import { b as base64_encode, t as text_decoder, a as text_encoder, g as get_relative_path, f as file_transport } from "./chunks/utils.js";
 import { r as readable, w as writable } from "./chunks/index.js";
 import { p as public_env, r as read_implementation, o as options, s as set_private_env, a as set_public_env, g as get_hooks, b as set_read_implementation } from "./chunks/internal.js";
@@ -2029,7 +2029,6 @@ async function render_response({
       form: form_value,
       state: {}
     };
-    override({ base: base$1, assets: assets$1 });
     const render_opts = {
       context: /* @__PURE__ */ new Map([
         [
@@ -2040,16 +2039,20 @@ async function render_response({
         ]
       ])
     };
-    {
-      try {
-        rendered = with_request_store({ event, state: event_state }, () => {
-          const result = options2.root.render(props, render_opts);
-          result.html;
-          return result;
-        });
-      } finally {
-        reset();
-      }
+    const fetch2 = globalThis.fetch;
+    try {
+      if (DEV) ;
+      rendered = await with_request_store({ event, state: event_state }, async () => {
+        if (relative) override({ base: base$1, assets: assets$1 });
+        const rendered2 = options2.root.render(props, render_opts);
+        if (options2.async) {
+          reset();
+        }
+        const { head: head2, html: html2, css } = options2.async ? await rendered2 : rendered2;
+        return { head: head2, html: html2, css };
+      });
+    } finally {
+      reset();
     }
     for (const { node } of branch) {
       for (const url of node.imports) modulepreloads.add(url);
@@ -2228,12 +2231,15 @@ ${indent}	${hydrate.join(`,
 ${indent}	`)}
 ${indent}}`);
     }
-    const { remote_data } = event_state;
+    const { remote_data: remote_cache } = event_state;
     let serialized_remote_data = "";
-    if (remote_data) {
+    if (remote_cache) {
       const remote = {};
-      for (const key2 in remote_data) {
-        remote[key2] = await remote_data[key2];
+      for (const [info, cache] of remote_cache) {
+        if (!info.id) continue;
+        for (const key2 in cache) {
+          remote[key2 ? info.id + "/" + key2 : info.id] = await cache[key2];
+        }
       }
       const replacer = (thing) => {
         for (const key2 in options2.hooks.transport) {

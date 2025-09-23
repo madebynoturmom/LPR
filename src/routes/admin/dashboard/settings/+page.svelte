@@ -74,48 +74,4 @@
   </form>
 </div>
 
-<style>
-.settings-container {
-  width: 100%;
-  max-width: none;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2.5rem 1rem; /* more vertical breathing room */
-  box-sizing: border-box;
-}
-
-.subpage-card {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 18px 48px rgba(17,24,39,0.08);
-  padding: 2.4rem 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 520px; /* comfortable card measure */
-  width: 100%;
-  margin: 0 auto;
-}
-
-.subpage-header { text-align: center; margin-bottom: 0.6rem; }
-.subpage-title { color: #232946; font-size: 2.6rem; margin: 0 0 0.5rem 0; font-weight: 800; line-height: 1; }
-.settings-form { display: flex; flex-direction: column; gap: 1.25rem; width: 100%; align-items: stretch; }
-.profile-pic-section { display:flex; flex-direction:column; align-items:center; margin-bottom: 0.6rem; }
-.profile-pic-preview { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid #1976d2; margin-bottom: 0.9rem; background: #f4f6fb; }
-.upload-label { background: #1976d2; color: #fff; padding: 0.5rem 1.4rem; border-radius: 8px; font-size: 1rem; cursor: pointer; margin-top: 0.25rem; transition: background 0.2s; display: inline-block; }
-.upload-label:hover { background: #1251a3; }
-.upload-label input[type="file"] { display: none; }
-
-
-
-.message { text-align:center; margin-top:1rem; font-weight:500; }
-.message.success { color:#4caf50; }
-.message.error { color:#f44336; }
-
-@media (max-width: 640px) {
-  .subpage-title { font-size: 1.6rem; }
-  .profile-pic-preview { width: 120px; height: 120px; }
-  .subpage-card { padding-right: 1.25rem; }
-}
-</style>
+<!-- styles moved to subpage.css -->

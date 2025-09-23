@@ -19,8 +19,21 @@ export const load = async ({ locals }: Parameters<PageServerLoad>[0]) => {
   ]);
 
   // Get guest stats for the last 7 days using Drizzle ORM SQL
+  // Combine guest_pass and guest_pass_history so the chart includes both current and historical records
   const guestStatsRows = await db.all(
-    sql`SELECT strftime('%Y-%m-%d', datetime(visit_time, 'unixepoch')) as date, COUNT(*) as count FROM guest_pass WHERE visit_time >= strftime('%s', 'now', '-6 days') GROUP BY date ORDER BY date ASC;`
+    sql`
+      SELECT date, SUM(count) as count FROM (
+        SELECT strftime('%Y-%m-%d', datetime(visit_time, 'unixepoch')) as date, COUNT(*) as count
+        FROM guest_pass
+        WHERE visit_time >= strftime('%s', 'now', '-6 days')
+        GROUP BY date
+        UNION ALL
+        SELECT strftime('%Y-%m-%d', datetime(visit_time, 'unixepoch')) as date, COUNT(*) as count
+        FROM guest_pass_history
+        WHERE visit_time >= strftime('%s', 'now', '-6 days')
+        GROUP BY date
+      ) GROUP BY date ORDER BY date ASC;
+    `
   );
   const guestStats = Array.isArray(guestStatsRows)
     ? guestStatsRows.map((row: any) => ({ date: row.date, count: Number(row.count) }))

@@ -48,48 +48,4 @@
   </div>
 </div>
 
-<style>
-.back-btn {
-  margin-bottom: 1rem;
-  background: #eee;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.back-btn:hover {
-  background: #ddd;
-}
-.vehicle-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  margin-bottom: 2rem;
-}
-.vehicle-form label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-}
-.btn {
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
-.btn-update {
-  background: #1976d2;
-  color: #fff;
-  margin-right: 0.5rem;
-}
-.error {
-  color: #b00;
-  margin-bottom: 1rem;
-}
-.success {
-  color: #080;
-  margin-bottom: 1rem;
-}
-  .vehicle-form { max-width: 600px; }
-</style>
+<!-- styles moved to subpage.css -->

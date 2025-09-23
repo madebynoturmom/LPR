@@ -52,6 +52,7 @@
 		"@types/node": "^22",
 		"@types/nodemailer": "^7.0.1",
 		"@vitest/browser": "^3.2.3",
+		"daisyui": "^5.1.14",
 		"drizzle-kit": "^0.31.4",
 		"drizzle-orm": "^0.44.5",
 		"eslint": "^9.22.0",

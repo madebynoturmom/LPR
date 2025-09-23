@@ -59,30 +59,11 @@
 			{/each}
 		</div>
 	{/if}
-</div>
-
-<style>
-	/* Accordion styles */
-	.resident-list { display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem; }
-	.resident-item { border:1px solid #e6eef8; border-radius:10px; overflow:hidden; }
-	.resident-summary { display:flex; align-items:center; width:100%; gap:0.75rem; padding:0.75rem 1rem; background:transparent; border:none; text-align:left; cursor:pointer; }
-	.resident-name { flex:1; font-weight:600; }
-	.resident-house { color:#6b7280; font-size:0.95rem; }
-	.chev { color:#9ca3af; margin-left:0.5rem; }
-	.resident-details { padding:0.75rem 1rem; background:#fff; display:flex; flex-direction:column; gap:0.5rem; }
-	.detail-row { color:#374151; }
-	.detail-actions { margin-top:0.5rem; display:flex; gap:0.5rem; align-items:center; }
-
-	@media (min-width: 900px) {
-		/* On larger screens, show summary as a horizontal row with fixed house column */
-		.resident-summary { padding:0.75rem 1rem; }
-		.resident-house { min-width:160px; text-align:right; }
-	}
-</style>
-</div>
-
-{#if showToast}
-	<div class="toast-wrap" role="status" aria-live="polite">
-		<div class="toast">Vehicle deleted</div>
 	</div>
-{/if}
+
+	{#if showToast}
+		<div class="toast-wrap" role="status" aria-live="polite">
+			<div class="toast">Vehicle deleted</div>
+		</div>
+	{/if}
+</div>

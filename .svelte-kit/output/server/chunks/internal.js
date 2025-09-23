@@ -1,5 +1,5 @@
 import { H as HYDRATION_ERROR, g as get_next_sibling, C as COMMENT_NODE, a as HYDRATION_END, b as HYDRATION_START, c as HYDRATION_START_ELSE, e as effect_tracking, d as get, s as source, r as render_effect, u as untrack, i as increment, q as queue_micro_task, f as internal_set, h as active_effect, j as block, k as branch, B as Batch, p as pause_effect, l as set_active_effect, m as set_active_reaction, n as set_component_context, o as handle_error, t as active_reaction, v as component_context, w as effect_pending_updates, x as destroy_effect, y as invoke_error_boundary, z as svelte_boundary_reset_onerror, E as EFFECT_TRANSPARENT, A as EFFECT_PRESERVED, D as BOUNDARY_EFFECT, F as init_operations, G as get_first_child, I as hydration_failed, J as clear_text_content, K as component_root, L as create_text, M as push, N as pop, O as set, P as LEGACY_PROPS, Q as flushSync, R as mutable_source, S as render, T as experimental_async_ssr } from "./index2.js";
-import { d as define_property, i as is_array, a as array_from } from "./escaping.js";
+import { d as define_property, i as is_array, a as array_from } from "./utils2.js";
 import { s as setContext } from "./context.js";
 import "./environment.js";
 let public_env = {};
@@ -898,6 +898,7 @@ function Root($$renderer, $$props) {
 const root = asClassComponent(Root);
 const options = {
   app_template_contains_nonce: false,
+  async: false,
   csp: { "mode": "auto", "directives": { "upgrade-insecure-requests": false, "block-all-mixed-content": false }, "reportOnly": { "upgrade-insecure-requests": false, "block-all-mixed-content": false } },
   csrf_check_origin: false,
   csrf_trusted_origins: ["*"],
@@ -984,7 +985,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "9ir36f"
+  version_hash: "j585bv"
 };
 async function get_hooks() {
   let handle;

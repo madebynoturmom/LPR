@@ -48,7 +48,7 @@
     "file": "chunks/index.js",
     "name": "index",
     "imports": [
-      "_escaping.js",
+      "_utils2.js",
       "_context.js"
     ]
   },
@@ -57,8 +57,9 @@
     "name": "index",
     "imports": [
       "_attributes.js",
-      "_escaping.js",
-      "_context.js"
+      "_utils2.js",
+      "_context.js",
+      "_escaping.js"
     ]
   },
   "_index3.js": {
@@ -70,7 +71,7 @@
     "name": "internal",
     "imports": [
       "_index2.js",
-      "_escaping.js",
+      "_utils2.js",
       "_context.js",
       "_environment.js"
     ],
@@ -94,7 +95,7 @@
     "file": "chunks/state.svelte.js",
     "name": "state.svelte",
     "imports": [
-      "_escaping.js"
+      "_utils2.js"
     ]
   },
   "_stores.js": {
@@ -109,6 +110,10 @@
   },
   "_utils.js": {
     "file": "chunks/utils.js",
+    "name": "utils"
+  },
+  "_utils2.js": {
+    "file": "chunks/utils2.js",
     "name": "utils"
   },
   "node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
@@ -179,7 +184,7 @@
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.BhLAbWSv.css"
+      "_app/immutable/assets/_layout.C1Et6Wgn.css"
     ]
   },
   "src/routes/+page.server.ts": {
@@ -208,9 +213,6 @@
       "_index.js",
       "_attributes.js",
       "_escaping.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_layout.w0BPJsK9.css"
     ]
   },
   "src/routes/admin/dashboard/+page.server.ts": {
@@ -229,14 +231,12 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_exports.js",
-      "_utils.js",
-      "_attributes.js",
-      "_state.svelte.js",
-      "_escaping.js"
+      "_context.js",
+      "_escaping.js",
+      "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.D2A5auvc.css"
+      "_app/immutable/assets/_page.D-oqgQCU.css"
     ]
   },
   "src/routes/admin/dashboard/admins/+page.server.ts": {
@@ -257,9 +257,6 @@
       "_index2.js",
       "_escaping.js",
       "_attributes.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.DMSCsXDq.css"
     ]
   },
   "src/routes/admin/dashboard/admins/create/+page.server.ts": {
@@ -281,9 +278,6 @@
       "_exports.js",
       "_utils.js",
       "_state.svelte.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.DKBv__qu.css"
     ]
   },
   "src/routes/admin/dashboard/events/+page.server.ts": {
@@ -303,9 +297,6 @@
     "imports": [
       "_index2.js",
       "_escaping.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.DFhwXHc2.css"
     ]
   },
   "src/routes/admin/dashboard/guards/+page.server.ts": {
@@ -326,9 +317,6 @@
       "_index2.js",
       "_escaping.js",
       "_attributes.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.CYNzSrRu.css"
     ]
   },
   "src/routes/admin/dashboard/guards/create/+page.server.ts": {
@@ -344,10 +332,7 @@
     "file": "entries/pages/admin/dashboard/guards/create/_page.svelte.js",
     "name": "entries/pages/admin/dashboard/guards/create/_page.svelte",
     "src": "src/routes/admin/dashboard/guards/create/+page.svelte",
-    "isEntry": true,
-    "css": [
-      "_app/immutable/assets/_page.lUCd4BbX.css"
-    ]
+    "isEntry": true
   },
   "src/routes/admin/dashboard/guests/+page.server.ts": {
     "file": "entries/pages/admin/dashboard/guests/_page.server.ts.js",
@@ -367,9 +352,6 @@
       "_index2.js",
       "_escaping.js",
       "_attributes.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.BvxMG4p2.css"
     ]
   },
   "src/routes/admin/dashboard/guests/[id]/extend/+server.ts": {
@@ -379,6 +361,43 @@
     "isEntry": true,
     "imports": [
       "_index3.js"
+    ]
+  },
+  "src/routes/admin/dashboard/manage/+page.svelte": {
+    "file": "entries/pages/admin/dashboard/manage/_page.svelte.js",
+    "name": "entries/pages/admin/dashboard/manage/_page.svelte",
+    "src": "src/routes/admin/dashboard/manage/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_attributes.js",
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.B6dN0n_n.css"
+    ]
+  },
+  "src/routes/admin/dashboard/manage/system-overview/+page.server.ts": {
+    "file": "entries/pages/admin/dashboard/manage/system-overview/_page.server.ts.js",
+    "name": "entries/pages/admin/dashboard/manage/system-overview/_page.server.ts",
+    "src": "src/routes/admin/dashboard/manage/system-overview/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "src/routes/admin/dashboard/+page.server.ts"
+    ]
+  },
+  "src/routes/admin/dashboard/manage/system-overview/+page.svelte": {
+    "file": "entries/pages/admin/dashboard/manage/system-overview/_page.svelte.js",
+    "name": "entries/pages/admin/dashboard/manage/system-overview/_page.svelte",
+    "src": "src/routes/admin/dashboard/manage/system-overview/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_attributes.js",
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CSOABevP.css"
     ]
   },
   "src/routes/admin/dashboard/residents/+page.server.ts": {
@@ -399,9 +418,6 @@
       "_index2.js",
       "_attributes.js",
       "_escaping.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.QdKNH1CY.css"
     ]
   },
   "src/routes/admin/dashboard/residents/[id]/+page.server.ts": {
@@ -424,9 +440,6 @@
       "_utils.js",
       "_escaping.js",
       "_state.svelte.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.CDIXWxuu.css"
     ]
   },
   "src/routes/admin/dashboard/residents/[id]/delete/+server.ts": {
@@ -455,9 +468,6 @@
     "imports": [
       "_index2.js",
       "_attributes.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.CYcyRZx8.css"
     ]
   },
   "src/routes/admin/dashboard/residents/create/+page.server.ts": {
@@ -474,10 +484,7 @@
     "file": "entries/pages/admin/dashboard/residents/create/_page.svelte.js",
     "name": "entries/pages/admin/dashboard/residents/create/_page.svelte",
     "src": "src/routes/admin/dashboard/residents/create/+page.svelte",
-    "isEntry": true,
-    "css": [
-      "_app/immutable/assets/_page.D8-PX_gG.css"
-    ]
+    "isEntry": true
   },
   "src/routes/admin/dashboard/settings/+page.server.ts": {
     "file": "entries/pages/admin/dashboard/settings/_page.server.ts.js",
@@ -501,9 +508,6 @@
       "_attributes.js",
       "_state.svelte.js",
       "_escaping.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.EWDonvfx.css"
     ]
   },
   "src/routes/admin/dashboard/vehicles/+page.server.ts": {
@@ -547,9 +551,6 @@
       "_index2.js",
       "_attributes.js",
       "_escaping.js"
-    ],
-    "css": [
-      "_app/immutable/assets/_page.BoZT4lOe.css"
     ]
   },
   "src/routes/api/food-delivery/create/+server.ts": {
@@ -658,10 +659,12 @@
       "_escaping.js",
       "_exports.js",
       "_utils.js",
-      "_state.svelte.js"
+      "_state.svelte.js",
+      "_index2.js",
+      "_utils2.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.FR_Euwfd.css"
+      "_app/immutable/assets/_page.B7EyBuCr.css"
     ]
   },
   "src/routes/login/identify/+server.ts": {
@@ -687,6 +690,18 @@
     "name": "entries/pages/logout/_page.svelte",
     "src": "src/routes/logout/+page.svelte",
     "isEntry": true
+  },
+  "src/routes/theme-test/+page.svelte": {
+    "file": "entries/pages/theme-test/_page.svelte.js",
+    "name": "entries/pages/theme-test/_page.svelte",
+    "src": "src/routes/theme-test/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.CT4_Mzie.css"
+    ]
   },
   "src/routes/user/dashboard/+layout.server.ts": {
     "file": "entries/pages/user/dashboard/_layout.server.ts.js",
@@ -730,11 +745,12 @@
     "imports": [
       "_index2.js",
       "_stores.js",
+      "_utils2.js",
       "_escaping.js",
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.m9s_vsEn.css"
+      "_app/immutable/assets/_page.BiOzKe7L.css"
     ]
   },
   "src/routes/user/dashboard/food-delivery/+page.server.ts": {
@@ -849,6 +865,44 @@
     ],
     "css": [
       "_app/immutable/assets/_page.BRUEHXMY.css"
+    ]
+  },
+  "src/routes/user/dashboard/manage/+page.svelte": {
+    "file": "entries/pages/user/dashboard/manage/_page.svelte.js",
+    "name": "entries/pages/user/dashboard/manage/_page.svelte",
+    "src": "src/routes/user/dashboard/manage/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_attributes.js",
+      "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Cr2rx3n6.css"
+    ]
+  },
+  "src/routes/user/dashboard/manage/system-overview/+page.server.ts": {
+    "file": "entries/pages/user/dashboard/manage/system-overview/_page.server.ts.js",
+    "name": "entries/pages/user/dashboard/manage/system-overview/_page.server.ts",
+    "src": "src/routes/user/dashboard/manage/system-overview/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "src/routes/user/dashboard/+page.server.ts"
+    ]
+  },
+  "src/routes/user/dashboard/manage/system-overview/+page.svelte": {
+    "file": "entries/pages/user/dashboard/manage/system-overview/_page.svelte.js",
+    "name": "entries/pages/user/dashboard/manage/system-overview/_page.svelte",
+    "src": "src/routes/user/dashboard/manage/system-overview/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_utils2.js",
+      "_escaping.js",
+      "_attributes.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.DeoBA-yU.css"
     ]
   },
   "src/routes/user/dashboard/profile/+page.server.ts": {

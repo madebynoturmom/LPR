@@ -16,6 +16,9 @@
   export let activeGuestPasses = data.activeGuestPasses;
   export let activeFoodDeliveryPasses = data.activeFoodDeliveryPasses;
 
+  // compact recent activity toggle state
+  let showDetails = false;
+
   // UI state: which pass ids are expanded to show details
   let expandedPasses: Set<number | string> = new Set();
 
@@ -55,13 +58,32 @@
   </div>
 </div>
 
-<div class="recent-activity-card">
-  <h3>Recent Activity</h3>
-  <ul>
-    <li><strong>Active Guest Passes:</strong> {recentActivity.activeGuestPasses}</li>
-    <li><strong>Active Food Delivery Passes:</strong> {recentActivity.activeFoodDeliveryPasses}</li>
-    <li><strong>Recent Car Access:</strong> {recentActivity.recentCarAccess}</li>
-  </ul>
+<!-- Compact recent activity: shows small stat tiles and a toggle to expand full details -->
+<div class="recent-activity-compact" aria-live="polite">
+  <div class="recent-stats-row">
+    <div class="stat-tile">
+      <div class="stat-value">{recentActivity.activeGuestPasses}</div>
+      <div class="stat-label">Guest Passes</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">{recentActivity.activeFoodDeliveryPasses}</div>
+      <div class="stat-label">Food Delivery</div>
+    </div>
+    <div class="stat-tile stat-long">
+      <div class="stat-value">{recentActivity.recentCarAccess}</div>
+      <div class="stat-label">Recent Car</div>
+    </div>
+  <a href="/user/dashboard/manage/system-overview" class="stat-toggle" title="Open system overview">Details</a>
+  </div>
+
+  <div id="recent-activity-details" class="recent-activity-card" style="display:none; margin-top:0.75rem;">
+    <h3>Recent Activity</h3>
+    <ul>
+      <li><strong>Active Guest Passes:</strong> {recentActivity.activeGuestPasses}</li>
+      <li><strong>Active Food Delivery Passes:</strong> {recentActivity.activeFoodDeliveryPasses}</li>
+      <li><strong>Recent Car Access:</strong> {recentActivity.recentCarAccess}</li>
+    </ul>
+  </div>
 </div>
 
 
@@ -161,6 +183,14 @@
     box-sizing: border-box;
     overflow-wrap: anywhere;
   }
+  /* compact recent activity row */
+  .recent-activity-compact { max-width: 960px; margin: 0 auto 1rem auto; padding-inline: clamp(12px, 4vw, 32px); box-sizing: border-box; }
+  .recent-stats-row { display:flex; gap: 0.75rem; align-items: center; justify-content: flex-start; flex-wrap:wrap; }
+  .stat-tile { background: #fff; border-radius: 10px; padding: 0.6rem 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); min-width: 88px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .stat-value { font-weight:700; color:#111827; font-size:1rem; }
+  .stat-label { font-size:0.78rem; color:#6b7280; margin-top:0.15rem; }
+  .stat-long { min-width: 180px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+  .stat-toggle { margin-left: auto; background: transparent; border: 1px solid #d1d5db; padding: 0.4rem 0.6rem; border-radius:8px; cursor:pointer; color:#111827; }
   .recent-activity-card h3 {
     margin: 0 0 1rem 0;
     font-size: 1.2rem;
@@ -183,7 +213,7 @@
   }
   .dashboard-cards-row {
     display: grid;
-    grid-template-columns: 1fr; /* default mobile: single column */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* two-per-row when space allows */
     gap: 1rem;
     max-width: 960px;
     margin: 0 auto 1rem auto;
@@ -192,6 +222,8 @@
     box-sizing: border-box;
     width: 100%;
   }
+
+  /* Remove media query: two columns are default now */
   .dashboard-card {
     background: #fff;
     border-radius: 8px;
@@ -293,7 +325,6 @@
   .pass-meta { color: #555; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
   .pass-details { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(0,0,0,0.04); }
   .pass-details { overflow: hidden; }
-  .pass-info { flex: 1 1 auto; min-width: 0; }
   .pass-actions { display:flex; align-items:center; flex: 0 0 auto; margin-left: 0; }
   .manage-link { background: transparent; border: 1px solid #1976d2; color:#1976d2; padding:0.35rem 0.65rem; border-radius:8px; cursor:pointer; white-space:nowrap; }
   .manage-link:hover { background:#eaf2ff; }
@@ -323,7 +354,7 @@
     background-color: #175cd3;
     color: white;
   }
-  @media (max-width: 720px) {
+  @media (max-width: 640px) {
     .dashboard-cards-row {
       grid-template-columns: 1fr; /* single column on narrow viewports */
       gap: 1rem;
@@ -341,24 +372,25 @@
     .pass-meta { white-space: normal; }
   }
 
-  @media (min-width: 721px) {
-    .dashboard-cards-row {
-      grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet+ */
-      max-width: 960px;
-    }
-    .dashboard-card { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding: 2rem; }
-    .dashboard-card h2 { padding-left: 0; }
-    .recent-activity-card { max-width: 600px; }
+  /* Keep auto-fit grid as the primary behavior for mid+ screens; remove explicit min-width override so
+     the grid can naturally form two columns when space allows. */
+
+  /* Prevent horizontal page scrolling introduced by long content or icons */
+  :global(html, body) {
+    overflow-x: hidden;
   }
 
+  /* Ensure headings in cards don't add extra left padding that could cause layout shifts */
+  .dashboard-card h2 { padding-left: 0; }
+
   /* Quick actions header */
-  .quick-actions { max-width: 960px; margin: 1.25rem auto 0.5rem auto; padding: 0 1rem; font-size: 1.1rem; color: #111827; }
+  .quick-actions { max-width: 960px; margin: 0.5rem auto 0.5rem auto; padding: 0 1rem; font-size: 1.1rem; color: #111827; }
 
   /* Hero (page-level) */
   .dashboard-hero-page {
     width: 100%;
-    margin: 0 0 1.25rem 0;
-    padding: 0 1rem;
+    margin: 0 0 0.5rem 0; /* reduced top/bottom spacing */
+    padding: 0 0.5rem;
     box-sizing: border-box;
   }
   .hero-inner-page {
@@ -366,8 +398,8 @@
     margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 0;
+    gap: 0.75rem;
+    padding: 0.5rem 0; /* reduced vertical padding */
   }
 
   .hero-title-page {

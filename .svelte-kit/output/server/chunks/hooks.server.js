@@ -80,27 +80,29 @@ const handleAuth = async ({ event, resolve }) => {
   event.locals.session = session;
   const origin = event.request.headers.get("origin");
   if (event.request.method === "OPTIONS") {
-    const headers = new Headers();
-    if (origin) headers.set("access-control-allow-origin", origin);
-    headers.set("access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS");
-    headers.set("access-control-allow-headers", "Content-Type,Authorization,Accept");
-    if (origin) headers.set("access-control-allow-credentials", "true");
-    headers.set("access-control-max-age", "600");
-    return new Response(null, { status: 204, headers });
+    const headers2 = new Headers();
+    if (origin) headers2.set("access-control-allow-origin", origin);
+    headers2.set("access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS");
+    headers2.set("access-control-allow-headers", "Content-Type,Authorization,Accept");
+    if (origin) headers2.set("access-control-allow-credentials", "true");
+    headers2.set("access-control-max-age", "600");
+    return new Response(null, { status: 204, headers: headers2 });
   }
   const res = await resolve(event);
-  try {
-    if (origin) {
-      res.headers.set("access-control-allow-origin", origin);
-      res.headers.set("access-control-allow-credentials", "true");
-    }
-    res.headers.set(
-      "content-security-policy",
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
-    );
-  } catch (e) {
+  const headers = new Headers(res.headers);
+  if (origin) {
+    headers.set("access-control-allow-origin", origin);
+    headers.set("access-control-allow-credentials", "true");
   }
-  return res;
+  const isDev = process.env.NODE_ENV !== "production";
+  const baseCsp = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';";
+  const devExtras = " img-src 'self' data:; style-src 'self' 'unsafe-inline' 'unsafe-hashes' data:; style-src-elem 'self' 'unsafe-inline' data:; style-src-attr 'self' 'unsafe-inline' data:;";
+  headers.set("content-security-policy", isDev ? baseCsp + devExtras : baseCsp);
+  return new Response(res.body, {
+    status: res.status,
+    statusText: res.statusText,
+    headers
+  });
 };
 const handle = sequence(handleParaglide, handleAuth);
 export {

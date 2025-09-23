@@ -7,10 +7,10 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set(["default-profile.png","icons/food-delivery.svg","icons/guest-passes.svg","icons/vehicles.svg","robots.txt","uploads/admin_1758427067860.png","uploads/admin_2712dcbc-c1e2-4455-8631-be4f53277cf9_1758353036293_Screenshot 2025-09-14 001345.png","uploads/admin_A001_1758129885580_monitor.png","uploads/user_R001_1758338084444_Screenshot 2025-09-12 095649.png","uploads/user_R001_1758352367990_Screenshot 2025-09-12 095649.png"]),
-	mimeTypes: {".png":"image/png",".svg":"image/svg+xml",".txt":"text/plain"},
+	assets: new Set(["admin/dashboard/subpage.css","default-profile.png","icons/add-resident.svg","icons/bolt-icon.svg","icons/food-delivery.svg","icons/guest-passes.svg","icons/house-icon.svg","icons/issue-guest.svg","icons/register-vehicle.svg","icons/system-admins.svg","icons/system-events.svg","icons/system-guards.svg","icons/system-guests.svg","icons/system-residents.svg","icons/system-vehicles.svg","icons/users-icon.svg","icons/vehicles.svg","icons/view-reports.svg","robots.txt","uploads/admin_1758427067860.png","uploads/admin_2712dcbc-c1e2-4455-8631-be4f53277cf9_1758353036293_Screenshot 2025-09-14 001345.png","uploads/admin_A001_1758129885580_monitor.png","uploads/user_R001_1758338084444_Screenshot 2025-09-12 095649.png","uploads/user_R001_1758352367990_Screenshot 2025-09-12 095649.png"]),
+	mimeTypes: {".css":"text/css",".png":"image/png",".svg":"image/svg+xml",".txt":"text/plain"},
 	_: {
-		client: {start:"_app/immutable/entry/start.Be7D6d19.js",app:"_app/immutable/entry/app.CSElAveH.js",imports:["_app/immutable/entry/start.Be7D6d19.js","_app/immutable/chunks/0BRe-bZZ.js","_app/immutable/chunks/G6y-YXti.js","_app/immutable/chunks/D6_VZFDO.js","_app/immutable/chunks/BDSG5-H0.js","_app/immutable/chunks/DtrBNwtL.js","_app/immutable/chunks/BHQlukOt.js","_app/immutable/chunks/CYxAlzJ1.js","_app/immutable/chunks/Cjiog9k2.js","_app/immutable/chunks/DDKRNP9O.js","_app/immutable/entry/app.CSElAveH.js","_app/immutable/chunks/D6_VZFDO.js","_app/immutable/chunks/BDSG5-H0.js","_app/immutable/chunks/DtrBNwtL.js","_app/immutable/chunks/BHQlukOt.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/G6y-YXti.js","_app/immutable/chunks/CYxAlzJ1.js","_app/immutable/chunks/BdvQLAZU.js","_app/immutable/chunks/BkOMJDxY.js","_app/immutable/chunks/BWorSmfV.js","_app/immutable/chunks/DPinqpzW.js","_app/immutable/chunks/DDKRNP9O.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.BTlSMATd.js",app:"_app/immutable/entry/app.LmqKMDZG.js",imports:["_app/immutable/entry/start.BTlSMATd.js","_app/immutable/chunks/CK-fib3O.js","_app/immutable/chunks/BQQlMUYl.js","_app/immutable/chunks/MgvKJ5Oe.js","_app/immutable/chunks/tNEdk8z3.js","_app/immutable/chunks/DANlTl3y.js","_app/immutable/chunks/TZ4K4ZOd.js","_app/immutable/chunks/D5ruwRzR.js","_app/immutable/chunks/tN8zdOQx.js","_app/immutable/chunks/BzyUH8j5.js","_app/immutable/entry/app.LmqKMDZG.js","_app/immutable/chunks/MgvKJ5Oe.js","_app/immutable/chunks/tNEdk8z3.js","_app/immutable/chunks/DANlTl3y.js","_app/immutable/chunks/TZ4K4ZOd.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/BQQlMUYl.js","_app/immutable/chunks/D5ruwRzR.js","_app/immutable/chunks/uYRH7WDe.js","_app/immutable/chunks/BVWhRRat.js","_app/immutable/chunks/BTrwRH8r.js","_app/immutable/chunks/BifvwZtI.js","_app/immutable/chunks/BIazggEA.js","_app/immutable/chunks/BzyUH8j5.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
@@ -46,7 +46,12 @@ return {
 			__memo(() => import('./nodes/31.js')),
 			__memo(() => import('./nodes/32.js')),
 			__memo(() => import('./nodes/33.js')),
-			__memo(() => import('./nodes/34.js'))
+			__memo(() => import('./nodes/34.js')),
+			__memo(() => import('./nodes/35.js')),
+			__memo(() => import('./nodes/36.js')),
+			__memo(() => import('./nodes/37.js')),
+			__memo(() => import('./nodes/38.js')),
+			__memo(() => import('./nodes/39.js'))
 		],
 		remotes: {
 			
@@ -116,24 +121,38 @@ return {
 				endpoint: __memo(() => import('./entries/endpoints/admin/dashboard/guests/_id_/extend/_server.ts.js'))
 			},
 			{
+				id: "/admin/dashboard/manage",
+				pattern: /^\/admin\/dashboard\/manage\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 13 },
+				endpoint: null
+			},
+			{
+				id: "/admin/dashboard/manage/system-overview",
+				pattern: /^\/admin\/dashboard\/manage\/system-overview\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 14 },
+				endpoint: null
+			},
+			{
 				id: "/admin/dashboard/residents",
 				pattern: /^\/admin\/dashboard\/residents\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 13 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 15 },
 				endpoint: null
 			},
 			{
 				id: "/admin/dashboard/residents/create",
 				pattern: /^\/admin\/dashboard\/residents\/create\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 16 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 18 },
 				endpoint: null
 			},
 			{
 				id: "/admin/dashboard/residents/[id]",
 				pattern: /^\/admin\/dashboard\/residents\/([^/]+?)\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 14 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 16 },
 				endpoint: null
 			},
 			{
@@ -147,28 +166,28 @@ return {
 				id: "/admin/dashboard/residents/[id]/edit",
 				pattern: /^\/admin\/dashboard\/residents\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 15 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 17 },
 				endpoint: null
 			},
 			{
 				id: "/admin/dashboard/settings",
 				pattern: /^\/admin\/dashboard\/settings\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 17 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 19 },
 				endpoint: null
 			},
 			{
 				id: "/admin/dashboard/vehicles",
 				pattern: /^\/admin\/dashboard\/vehicles\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 18 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 20 },
 				endpoint: null
 			},
 			{
 				id: "/admin/dashboard/vehicles/create",
 				pattern: /^\/admin\/dashboard\/vehicles\/create\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 19 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 21 },
 				endpoint: null
 			},
 			{
@@ -189,21 +208,21 @@ return {
 				id: "/guard/dashboard",
 				pattern: /^\/guard\/dashboard\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 20 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 22 },
 				endpoint: null
 			},
 			{
 				id: "/guard/dashboard/settings",
 				pattern: /^\/guard\/dashboard\/settings\/?$/,
 				params: [],
-				page: { layouts: [0,3,], errors: [1,,], leaf: 21 },
+				page: { layouts: [0,3,], errors: [1,,], leaf: 23 },
 				endpoint: null
 			},
 			{
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 22 },
+				page: { layouts: [0,], errors: [1,], leaf: 24 },
 				endpoint: null
 			},
 			{
@@ -217,84 +236,105 @@ return {
 				id: "/logout",
 				pattern: /^\/logout\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 23 },
+				page: { layouts: [0,], errors: [1,], leaf: 25 },
+				endpoint: null
+			},
+			{
+				id: "/theme-test",
+				pattern: /^\/theme-test\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 26 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard",
 				pattern: /^\/user\/dashboard\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 24 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 27 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/food-delivery",
 				pattern: /^\/user\/dashboard\/food-delivery\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 25 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 28 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/food-delivery/create",
 				pattern: /^\/user\/dashboard\/food-delivery\/create\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 26 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 29 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/guests",
 				pattern: /^\/user\/dashboard\/guests\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 27 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 30 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/guests/create",
 				pattern: /^\/user\/dashboard\/guests\/create\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 28 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 31 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/history",
 				pattern: /^\/user\/dashboard\/history\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 29 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 32 },
+				endpoint: null
+			},
+			{
+				id: "/user/dashboard/manage",
+				pattern: /^\/user\/dashboard\/manage\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,,], leaf: 33 },
+				endpoint: null
+			},
+			{
+				id: "/user/dashboard/manage/system-overview",
+				pattern: /^\/user\/dashboard\/manage\/system-overview\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,,], leaf: 34 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/profile",
 				pattern: /^\/user\/dashboard\/profile\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 30 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 35 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/vehicles",
 				pattern: /^\/user\/dashboard\/vehicles\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 31 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 36 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/vehicles/create",
 				pattern: /^\/user\/dashboard\/vehicles\/create\/?$/,
 				params: [],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 34 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 39 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/vehicles/[id]/delete",
 				pattern: /^\/user\/dashboard\/vehicles\/([^/]+?)\/delete\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 32 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 37 },
 				endpoint: null
 			},
 			{
 				id: "/user/dashboard/vehicles/[id]/edit",
 				pattern: /^\/user\/dashboard\/vehicles\/([^/]+?)\/edit\/?$/,
 				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
-				page: { layouts: [0,4,], errors: [1,,], leaf: 33 },
+				page: { layouts: [0,4,], errors: [1,,], leaf: 38 },
 				endpoint: null
 			}
 		],

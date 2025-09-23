@@ -58,10 +58,4 @@
   </div>
 </div>
 
-<style>
-.back-btn { margin-bottom: 1rem; }
-.resident-form label { display: block; margin-bottom: 1rem; }
-.resident-form input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #bdbdbd; border-radius: 4px; }
-.btn-update { background: #1976d2; color: #fff; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; }
-.resident-form { max-width: 700px; }
-</style>
+<!-- styles moved to subpage.css -->

@@ -1,0 +1,31 @@
+import { a0 as maybe_selected, Y as ensure_array_like, $ as bind_props } from './index2-Dybjf8Ej.js';
+import { b as attr } from './attributes-Y1rI5qy_.js';
+import { e as escape_html } from './escaping-CqgfEcN3.js';
+import './utils2-JZdwKo0Y.js';
+import './context-DXUidelg.js';
+
+function _page($$renderer, $$props) {
+  $$renderer.component(($$renderer2) => {
+    let data = $$props["data"];
+    let users = data?.users ?? [];
+    $$renderer2.push(`<div class="subpage-container"><div class="subpage-card"><div class="subpage-header"><div><button type="button" class="back-btn">← Back</button> <h2 class="subpage-title">Add Vehicle</h2></div></div> `);
+    {
+      $$renderer2.push("<!--[!-->");
+    }
+    $$renderer2.push(`<!--]--> `);
+    {
+      $$renderer2.push("<!--[!-->");
+    }
+    $$renderer2.push(`<!--]--> <form method="POST" class="vehicle-form"><label>Plate Number: <input name="plateNumber" required/></label> <label>Owner (Resident): <select name="ownerId" required><option value=""${maybe_selected($$renderer2, "")}>Select owner</option><!--[-->`);
+    const each_array = ensure_array_like(users);
+    for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+      let user = each_array[$$index];
+      $$renderer2.push(`<option${attr("value", user.id)}${maybe_selected($$renderer2, user.id)}>${escape_html(user.name)} (${escape_html(user.houseAddress)})</option>`);
+    }
+    $$renderer2.push(`<!--]--></select></label> <label>Car Model: <input name="model" required/></label> <label>Make Year: <input name="makeYear" type="number" min="1900" max="2100" required/></label> <button type="submit" class="btn btn-update">Add Vehicle</button></form></div></div>`);
+    bind_props($$props, { data });
+  });
+}
+
+export { _page as default };
+//# sourceMappingURL=_page.svelte-C_AKLK3q.js.map

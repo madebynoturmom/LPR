@@ -4,13 +4,25 @@
   // guards list comes from page data
   let guards: any[] = data?.guards ?? [];
 
+  // In development, show sample rows when there are no real guards so the table layout can be previewed.
+  const sampleGuards: Guard[] = [
+    { id: 'g-1', name: 'Alice Smith', phone: '555-0101', guardId: 'G-001' },
+    { id: 'g-2', name: 'Bob Johnson', phone: '555-0202', guardId: 'G-002' },
+    { id: 'g-3', name: 'Carlos Ruiz', phone: '555-0303', guardId: 'G-003' }
+  ];
+
+  // Use real guards if present; otherwise, in dev show sample data. Production remains unchanged.
+  const displayedGuards: Guard[] = (guards && guards.length > 0) ? guards : (import.meta.env.DEV ? sampleGuards : []);
+
   type Guard = { id?: string; name?: string | null; phone?: string | null; guardId?: string | null; [k: string]: any };
   let selectedGuard: Guard | null = null;
   let error: string | null = null;
   // accordion state: which guard row is expanded
   let expandedId: string | null = null;
 
-  function toggleExpand(id: string | number) {
+  function toggleExpand(id?: string | number) {
+    // guard.id may be undefined for sample or partial records; ignore if missing
+    if (id == null) return;
     const sid = String(id);
     expandedId = expandedId === sid ? null : sid;
   }
@@ -30,7 +42,6 @@
   // toast state for delete success
   let showToast = false;
   let toastProgress = 0; // 0..100
-
   onMount(() => {
     try {
       const url = new URL(window.location.href);
@@ -95,7 +106,7 @@
       </div>
     </div>
   <h3>Guards List</h3>
-  {#if guards.length > 0}
+  {#if displayedGuards.length > 0}
     <table class="guard-table">
       <thead>
         <tr>
@@ -122,7 +133,7 @@
             </div>
           </td></tr>
         {/if}
-        {#each guards as guard}
+        {#each displayedGuards as guard}
           <tr class="guard-summary" on:click={() => toggleExpand(guard.id)}>
             <td data-label="Name">{guard.name ?? '-'}</td>
             <td data-label="Phone">{guard.phone ?? '-'}</td>
@@ -156,28 +167,7 @@
   </div>
 </div>
 
-<!-- page-level tweaks (most styles come from subpage.css) -->
-<style>
-.guard-table { margin-top: 1rem; }
-.guard-table th, .guard-table td { padding: 0.9rem 1rem; }
-
-/* Make table responsive: stack rows on small screens */
-@media (max-width: 900px) {
-  .guard-table thead { display: none; }
-  .guard-table, .guard-table tbody, .guard-table tr, .guard-table td { display:block; width:100%; }
-  .guard-table tr { margin-bottom: 0.75rem; border:1px solid #eef2ff; border-radius:8px; padding:0.75rem; }
-  .guard-table td { padding:0.25rem 0; border:none; }
-  .guard-table td::before { content: attr(data-label); display:block; font-weight:600; color:#374151; margin-bottom:0.25rem; }
-
-/* Accordion summary/detail tweaks */
-.guard-summary { cursor: pointer; }
-.guard-details { background: #fff; border-top: 1px solid #eef2f7; }
-}
-
-/* Edit card tweaks */
-.edit-card .edit-form label { display:block; margin-bottom:0.75rem; }
-.edit-card .edit-form input { width:100%; padding:0.5rem; border-radius:6px; border:1px solid #d1d5db; }
-</style>
+<!-- guard styles moved to subpage.css -->
 
 {#if showToast}
   <div class="toast-wrap" role="status" aria-live="polite">

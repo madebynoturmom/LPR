@@ -34,6 +34,13 @@
 	"/admin/dashboard/guests/[id]/extend": [
 		"src/routes/admin/dashboard/guests/[id]/extend/+server.ts"
 	],
+	"/admin/dashboard/manage": [
+		"src/routes/admin/dashboard/+layout.server.ts"
+	],
+	"/admin/dashboard/manage/system-overview": [
+		"src/routes/admin/dashboard/manage/system-overview/+page.server.ts",
+		"src/routes/admin/dashboard/+layout.server.ts"
+	],
 	"/admin/dashboard/residents": [
 		"src/routes/admin/dashboard/residents/+page.server.ts",
 		"src/routes/admin/dashboard/+layout.server.ts"
@@ -86,6 +93,7 @@
 	"/logout": [
 		"src/routes/logout/+page.server.ts"
 	],
+	"/theme-test": [],
 	"/user/dashboard": [
 		"src/routes/user/dashboard/+page.server.ts",
 		"src/routes/user/dashboard/+layout.server.ts",
@@ -109,6 +117,13 @@
 	],
 	"/user/dashboard/history": [
 		"src/routes/user/dashboard/history/+page.server.ts",
+		"src/routes/user/dashboard/+layout.server.ts"
+	],
+	"/user/dashboard/manage": [
+		"src/routes/user/dashboard/+layout.server.ts"
+	],
+	"/user/dashboard/manage/system-overview": [
+		"src/routes/user/dashboard/manage/system-overview/+page.server.ts",
 		"src/routes/user/dashboard/+layout.server.ts"
 	],
 	"/user/dashboard/profile": [

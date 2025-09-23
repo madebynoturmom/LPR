@@ -36,8 +36,4 @@
   </div>
 </div>
 
-<style>
-.resident-form label { display: block; margin-bottom: 1rem; }
-.resident-form input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #bdbdbd; border-radius: 4px; }
-.btn-update { background: #1976d2; color: #fff; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.3rem; cursor: pointer; }
-</style>
+<!-- styles moved to subpage.css -->

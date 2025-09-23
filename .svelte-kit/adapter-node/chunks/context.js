@@ -54,9 +54,9 @@ function get_parent_context(ssr_context2) {
 }
 export {
   safe_not_equal as a,
-  safe_equals as b,
-  set_ssr_context as c,
-  ssr_context as d,
+  ssr_context as b,
+  safe_equals as c,
+  set_ssr_context as d,
   equals as e,
   pop as f,
   getContext as g,

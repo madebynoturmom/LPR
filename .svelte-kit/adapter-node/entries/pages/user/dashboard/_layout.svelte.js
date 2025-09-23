@@ -1,4 +1,4 @@
-import { V as store_get, W as attr_class, X as ensure_array_like, Y as slot, Z as unsubscribe_stores } from "../../../../chunks/index2.js";
+import { V as store_get, W as attr_class, Y as ensure_array_like, X as slot, Z as unsubscribe_stores } from "../../../../chunks/index2.js";
 import { p as page } from "../../../../chunks/stores.js";
 import { w as writable } from "../../../../chunks/index.js";
 import { a as attr } from "../../../../chunks/attributes.js";

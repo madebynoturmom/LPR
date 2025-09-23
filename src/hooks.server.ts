@@ -73,26 +73,39 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 			   const res = await resolve(event);
 
-			   try {
-				   // Set CORS headers only when Origin present. We echo the origin so
-				   // browsers will accept credentialed responses.
-				   if (origin) {
-					   res.headers.set('access-control-allow-origin', origin);
-					   res.headers.set('access-control-allow-credentials', 'true');
-				   }
+			   // Build a fresh Headers object merging existing response headers so
+			   // we can reliably set/override security headers even when the
+			   // original response headers are immutable in some environments.
+			   const headers = new Headers(res.headers);
 
-				   // Conservative CSP: allow scripts from self, permit eval (required by
-				   // SvelteKit de/serialization), disallow objects, and enable common
-				   // navigational sources. Adjust as needed for production.
-				   res.headers.set(
-					   'content-security-policy',
-					   "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';"
-				   );
-			   } catch (e) {
-				   // Some response types may not allow header mutation; ignore in that case
+			   // Set CORS headers only when Origin present. We echo the origin so
+			   // browsers will accept credentialed responses.
+			   if (origin) {
+				   headers.set('access-control-allow-origin', origin);
+				   headers.set('access-control-allow-credentials', 'true');
 			   }
 
-			   return res;
+				// Conservative CSP: allow scripts from self, permit eval (required by
+				// SvelteKit de/serialization), disallow objects, and enable common
+				// navigational sources. For local development we also allow data:
+				// for images and relax style rules so HMR/injected styles and data:image
+				// SVGs are not blocked. Tighten this in production if needed.
+				const isDev = process.env.NODE_ENV !== 'production';
+				const baseCsp = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'none'; base-uri 'self';";
+				// Explicitly include style-src-elem and style-src-attr in development so
+				// injected/link stylesheet elements and style attributes are permitted.
+				// 'unsafe-hashes' helps with some build-time hashed inline styles.
+				const devExtras = " img-src 'self' data:; style-src 'self' 'unsafe-inline' 'unsafe-hashes' data:; style-src-elem 'self' 'unsafe-inline' data:; style-src-attr 'self' 'unsafe-inline' data:;";
+				headers.set('content-security-policy', isDev ? baseCsp + devExtras : baseCsp);
+
+			   // Return a new Response preserving the original body/status but with
+			   // our merged headers. This avoids issues where res.headers cannot be
+			   // mutated directly (which previously caused the CSP to be absent).
+			   return new Response(res.body, {
+				   status: res.status,
+				   statusText: res.statusText,
+				   headers
+			   });
 };
 
 export const handle: Handle = sequence(handleParaglide, handleAuth);

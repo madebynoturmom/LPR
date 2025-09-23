@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import Card from '$lib/ui/Card.svelte';
 
   let username = '';
   let otp = '';
@@ -274,7 +275,17 @@
 
   onMount(() => {
     document.addEventListener('keydown', onKeydown);
-    return () => document.removeEventListener('keydown', onKeydown);
+    // Prevent the page from scrolling while the login page is mounted
+    const prevOverflow = document.documentElement.style.overflow || document.body.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKeydown);
+      // restore previous overflow style
+      document.documentElement.style.overflow = prevOverflow;
+      document.body.style.overflow = prevOverflow;
+    };
   });
 
   // Ask server which role this username belongs to. This lets us
@@ -298,7 +309,8 @@
 
 <section class="login-viewport">
   <div class="login-container">
-    <div class="login-section">
+  <!-- use shared Card component for consistent visuals -->
+  <svelte:component this={Card} className="login-section" padding="2.25rem">
       <div class="brand">
         <div class="logo">RAMS</div>
         <div class="title">Residence Access Management System</div>
@@ -332,7 +344,7 @@
       {/if}
     {/if}
   </div>
-    </div>
+  </svelte:component>
   </div>
 </section>
 
@@ -340,12 +352,13 @@
 /* Page layout */
 /* Centered viewport */
 .login-viewport{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:2rem;
+  position:fixed;
+  inset:0; /* top:0; right:0; bottom:0; left:0 */
+  display:grid;
+  place-items:center; /* reliably center both axes */
+  padding:1.5rem;
   background: linear-gradient(180deg,#f4f7fb,#eef4fb);
+  -webkit-overflow-scrolling: touch;
 }
 
 .login-container{
@@ -379,15 +392,7 @@
   text-align:center;
 }
 
-.login-section{
-  max-width:420px;
-  margin:0;
-  padding:2.25rem;
-  background: #ffffff;
-  border-radius:18px;
-  box-shadow: 0 12px 36px rgba(2,6,23,0.08);
-  border: 1px solid rgba(16,24,40,0.04);
-}
+/* visual card styles moved to shared Card component */
 
 .login-form{display:flex;flex-direction:column;gap:1rem}
 .login-form h2{margin:0 0 .25rem 0;font-size:1.5rem;color:#0f1724}
@@ -404,6 +409,8 @@
   font-size:0.95rem;
   color:#0b1220;
   transition: box-shadow .12s ease, transform .06s ease;
+  width:100%;
+  box-sizing: border-box;
 }
 .login-form input:focus{outline:none; box-shadow: 0 6px 24px rgba(25,118,210,0.12); transform: translateY(-1px); border-color: rgba(25,118,210,0.35)}
 
@@ -419,6 +426,8 @@
   cursor:pointer;
   box-shadow: 0 6px 18px rgba(25,118,210,0.14);
   transition: transform .08s ease, box-shadow .12s ease, opacity .12s ease;
+  width:100%;
+  box-sizing: border-box;
 }
 .login-btn:active{transform: translateY(1px)}
 .login-btn[disabled]{opacity:0.6; cursor:not-allowed; box-shadow:none}
@@ -429,7 +438,12 @@
 
 /* Responsive tweaks */
 @media (max-width:520px){
-  .login-section{margin:2rem 1rem;padding:1.2rem;border-radius:12px}
+  .login-viewport{padding:1rem}
   .login-form h2{font-size:1.25rem}
+  /* ensure inputs and buttons are easily tappable */
+  .login-form input{font-size:1rem;padding:0.75rem}
+  .login-btn{padding:0.85rem}
 }
+
+/* Card styles live in $lib/ui/Card.svelte */
 </style>

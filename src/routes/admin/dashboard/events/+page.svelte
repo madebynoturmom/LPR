@@ -2,6 +2,15 @@
 <script>
   export let data;
   let events = data?.events ?? [];
+
+  // sample events for development preview
+  const sampleEvents = [
+    { type: 'login', userName: 'Admin', details: 'Signed in', time: '2025-09-22 09:12' },
+    { type: 'guest_pass_issued', userName: 'Alice', details: 'Issued 1 guest pass', time: '2025-09-22 10:01' },
+    { type: 'vehicle_registered', userName: 'Bob', details: 'Plate R123', time: '2025-09-21 14:32' }
+  ];
+
+  const displayedEvents = (events && events.length > 0) ? events : (import.meta.env.DEV ? sampleEvents : []);
 </script>
 
  
@@ -14,7 +23,7 @@
         <h2 class="subpage-title">Event Logs</h2>
       </div>
     </div>
-  {#if events.length > 0}
+  {#if displayedEvents.length > 0}
     <table class="event-table">
       <thead>
         <tr>
@@ -25,7 +34,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each events as event}
+        {#each displayedEvents as event}
           <tr>
             <td>{event.type}</td>
             <td>{event.userName}</td>
@@ -41,30 +50,4 @@
   </div>
 </div>
 
-<style>
-.back-btn {
-  margin-bottom: 1rem;
-  background: #eee;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.back-btn:hover {
-  background: #ddd;
-}
-.event-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 2rem;
-}
-.event-table th, .event-table td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-.event-table th {
-  background: #f7f8fa;
-  font-weight: 600;
-}
-</style>
+<!-- styles moved to subpage.css -->

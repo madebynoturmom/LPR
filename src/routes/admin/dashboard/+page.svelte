@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Chart from 'chart.js/auto';
-  import { page } from '$app/stores';
 
   export let data: {
     residents: number;
@@ -19,11 +18,23 @@
     adminProfilePic?: string;
   };
 
-  let chart: Chart;
-  let chartCanvas: HTMLCanvasElement;
+  let chart: Chart | null = null;
+  let chartCanvas: HTMLCanvasElement | null = null;
+  let issuedChart: Chart | null = null;
+  let issuedCanvas: HTMLCanvasElement | null = null;
+  const dateString = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  interface QuickAction {
+    title: string;
+    description: string;
+    link: string;
+    color?: string;
+    iconSvg?: string;
+    iconPath?: string;
+  }
 
   onMount(() => {
-    if (data.guestStats && chartCanvas) {
+    if (data?.guestStats && chartCanvas) {
       if (chart) chart.destroy();
       chart = new Chart(chartCanvas, {
         type: 'line',
@@ -68,109 +79,125 @@
           }
         }
       });
+
+      onDestroy(() => {
+        if (chart) {
+          chart.destroy();
+        }
+      });
     }
   });
 
   const stats = [
-    {
-      label: 'Residents',
-      value: data.residents,
-      link: '/admin/dashboard/residents',
-      icon: '👥',
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'bg-blue-50',
-      textColor: 'text-blue-600'
-    },
-    {
-      label: 'Guards',
-      value: data.guards,
-      link: '/admin/dashboard/guards',
-      icon: '🛡️',
-      color: 'from-green-500 to-green-600',
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-600'
-    },
-    {
-      label: 'Vehicles',
-      value: data.vehicles,
-      link: '/admin/dashboard/vehicles',
-      icon: '🚗',
-      color: 'from-purple-500 to-purple-600',
-      bgColor: 'bg-purple-50',
-      textColor: 'text-purple-600'
-    },
-    {
-      label: 'Admins',
-      value: data.admins,
-      link: '/admin/dashboard/admins',
-      icon: '👑',
-      color: 'from-orange-500 to-orange-600',
-      bgColor: 'bg-orange-50',
-      textColor: 'text-orange-600'
-    },
-    {
-      label: 'Guests',
-      value: data.guests,
-      link: '/admin/dashboard/guests',
-      icon: '🎫',
-      color: 'from-pink-500 to-pink-600',
-      bgColor: 'bg-pink-50',
-      textColor: 'text-pink-600'
-    },
-    {
-      label: 'Events',
-      value: data.events,
-      link: '/admin/dashboard/events',
-      icon: '📊',
-      color: 'from-indigo-500 to-indigo-600',
-      bgColor: 'bg-indigo-50',
-      textColor: 'text-indigo-600'
-    }
+    { label: 'Residents', value: data.residents, link: '/admin/dashboard/residents', icon: '👥' },
+    { label: 'Guards', value: data.guards, link: '/admin/dashboard/guards', icon: '🛡️' },
+    { label: 'Vehicles', value: data.vehicles, link: '/admin/dashboard/vehicles', icon: '🚗' },
+    { label: 'Admins', value: data.admins, link: '/admin/dashboard/admins', icon: '👑' },
+    { label: 'Guests', value: data.guests, link: '/admin/dashboard/guests', icon: '🎟️' },
+    { label: 'Events', value: data.events, link: '/admin/dashboard/events', icon: '📈' }
   ];
 
-  const quickActions = [
-    {
-      title: 'Add Resident',
-      description: 'Register a new resident',
-      link: '/admin/dashboard/residents/create',
-      icon: '➕',
-      color: 'bg-blue-500 hover:bg-blue-600'
-    },
-    {
-      title: 'Issue Guest Pass',
-      description: 'Create a new guest pass',
-      link: '/admin/dashboard/guests/create',
-      icon: '🎫',
-      color: 'bg-green-500 hover:bg-green-600'
-    },
-    {
-      title: 'Register Vehicle',
-      description: 'Add a new vehicle',
-      link: '/admin/dashboard/vehicles/create',
-      icon: '🚗',
-      color: 'bg-purple-500 hover:bg-purple-600'
-    },
-    {
-      title: 'View Reports',
-      description: 'Access system reports',
-      link: '/admin/dashboard/events',
-      icon: '📈',
-      color: 'bg-orange-500 hover:bg-orange-600'
-    }
+  // Use SVG placeholders instead of emoji so icons are consistent across platforms
+  const placeholderSvg = (stroke = '#ffffff') => `
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+      <path d="M8 12h8" stroke="${stroke}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>`;
+
+  const quickActions: QuickAction[] = [
+    // Using static SVG paths under /static/icons/ (dummy placeholders created)
+    { title: 'Add Resident', description: 'Register a new resident', link: '/admin/dashboard/residents/create', iconPath: '/icons/add-resident.svg', color: 'bg-blue-500' },
+    { title: 'Issue Guest Pass', description: 'Create a new guest pass', link: '/admin/dashboard/guests/create', iconPath: '/icons/issue-guest.svg', color: 'bg-green-500' },
+    { title: 'Register Vehicle', description: 'Add a new vehicle', link: '/admin/dashboard/vehicles/create', iconPath: '/icons/register-vehicle.svg', color: 'bg-purple-500' },
+    { title: 'View Reports', description: 'Access system reports', link: '/admin/dashboard/events', iconPath: '/icons/view-reports.svg', color: 'bg-orange-500' }
   ];
+
+  // Total issued guest passes in the provided guestStats (last N days)
+  const issuedCount = data?.guestStats ? data.guestStats.reduce((s, g) => s + (g.count || 0), 0) : 0;
+  // initialize issued sparkline
+  // We'll initialize both charts in the same onMount and clean both up in a single onDestroy
+  onMount(() => {
+    // main chart (Guests Issued over time)
+    if (data?.guestStats && chartCanvas) {
+      if (chart) chart.destroy();
+      chart = new Chart(chartCanvas, {
+        type: 'line',
+        data: {
+          labels: data.guestStats.map(g => g.date),
+          datasets: [{
+            label: 'Guests Issued',
+            data: data.guestStats.map(g => g.count),
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#6366f1',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#fff',
+              bodyColor: '#fff'
+            }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Date', color: '#6b7280' }, grid: { display: false }, ticks: { color: '#6b7280' } },
+            y: { title: { display: true, text: 'Guests', color: '#6b7280' }, beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { color: '#6b7280' } }
+          }
+        }
+      });
+    }
+
+    // issued sparkline (small inline chart)
+    if (issuedCanvas && data?.guestStats) {
+      if (issuedChart) issuedChart.destroy();
+      issuedChart = new Chart(issuedCanvas, {
+        type: 'line',
+        data: {
+          labels: data.guestStats.map(g => g.date),
+          datasets: [{ data: data.guestStats.map(g => g.count), borderColor: '#6366f1', backgroundColor: 'transparent', tension: 0.3, pointRadius: 0 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { display: false } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+      });
+    }
+  });
+
+  onDestroy(() => {
+    if (chart) chart.destroy();
+    if (issuedChart) issuedChart.destroy();
+  });
 </script>
 
 <div class="dashboard-container">
-  <!-- Welcome Header -->
-  <div class="welcome-section">
-    <div class="welcome-content">
-      <h1 class="dashboard-title">Welcome back, Admin! 👋</h1>
-      <p class="dashboard-subtitle">Here's what's happening in your community today</p>
+  <!-- Compact Header (replaces large gradient hero) -->
+  <div class="compact-header">
+    <div class="compact-left">
+      <h1 class="compact-title">Welcome back, Admin! 👋</h1>
+      <p class="compact-subtitle">Here's what's happening in your community today</p>
     </div>
-    <div class="date-display">
-      <div class="date">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+    <div class="compact-right">
+      <div class="date">{dateString}</div>
     </div>
   </div>
+
+  <!-- Issued Guest Passes (summary) -->
+  <section class="issued-section">
+    <div class="issued-card">
+      <div class="issued-left">
+        <div class="issued-label">Issued Guest Passes (7d)</div>
+        <div class="issued-value">{issuedCount}</div>
+      </div>
+      <canvas bind:this={issuedCanvas} class="issued-canvas" aria-hidden="true"></canvas>
+    </div>
+  </section>
 
   <!-- Quick Actions -->
   <section class="quick-actions-section">
@@ -178,7 +205,16 @@
     <div class="quick-actions-grid">
       {#each quickActions as action}
         <a href={action.link} class="quick-action-card">
-          <div class="action-icon {action.color}">{action.icon}</div>
+          <div class="action-icon {action.color}">
+            {#if action.iconSvg}
+              {@html action.iconSvg}
+            {:else if action.iconPath}
+              <img src={action.iconPath} alt="" width="24" height="24" />
+            {:else}
+              <!-- fallback square -->
+              {@html placeholderSvg()}
+            {/if}
+          </div>
           <div class="action-content">
             <h3 class="action-title">{action.title}</h3>
             <p class="action-description">{action.description}</p>
@@ -189,116 +225,35 @@
     </div>
   </section>
 
-  <!-- Statistics Overview -->
-  <section class="stats-section">
-    <h2 class="section-title">System Overview</h2>
-    <div class="stats-grid">
-      {#each stats as stat}
-        <a href={stat.link} class="stat-card">
-          <div class="stat-header">
-            <div class="stat-icon">{stat.icon}</div>
-            <div class="stat-value">{stat.value}</div>
-          </div>
-          <div class="stat-label">{stat.label}</div>
-          <div class="stat-link">View Details →</div>
-        </a>
-      {/each}
-    </div>
-  </section>
-
-  <!-- Charts and Activity -->
-  <div class="charts-activity-row">
-    <!-- Guest Statistics Chart -->
-    <section class="chart-section">
-      <div class="chart-card">
-        <div class="chart-header">
-          <h3 class="chart-title">Guest Passes Trend</h3>
-          <p class="chart-subtitle">Last 7 days activity</p>
-        </div>
-        <div class="chart-container">
-          <canvas bind:this={chartCanvas}></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recent Activity -->
-    <section class="activity-section">
-      <div class="activity-card">
-        <div class="activity-header">
-          <h3 class="activity-title">Recent Activity</h3>
-          <p class="activity-subtitle">Live updates</p>
-        </div>
-        <div class="activity-list">
-          <div class="activity-item">
-            <div class="activity-icon bg-green-100 text-green-600">🎫</div>
-            <div class="activity-content">
-              <p class="activity-text"><strong>{data.activeGuestPasses}</strong> active guest passes</p>
-              <p class="activity-time">Currently valid</p>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon bg-blue-100 text-blue-600">🍕</div>
-            <div class="activity-content">
-              <p class="activity-text"><strong>{data.activeFoodDeliveryPasses}</strong> food delivery passes</p>
-              <p class="activity-time">Active today</p>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon bg-purple-100 text-purple-600">🚗</div>
-            <div class="activity-content">
-              <p class="activity-text">Recent vehicle access</p>
-              <p class="activity-time">{data.recentCarAccess}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+  <!-- Note: System Overview moved to Manage → System Overview subpage -->
 </div>
 
 <style>
   .dashboard-container {
-    padding: 2rem;
+    /* Reduce top padding so welcome card sits higher in the viewport */
+    padding: 1rem 2rem 2rem 2rem;
     max-width: 1400px;
     margin: 0 auto;
     background: #f8fafc;
-    min-height: 100vh;
   }
 
-  /* Welcome Section */
-  .welcome-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2rem;
+  /* Compact header (lighter alternative to the large hero) */
+  .compact-header {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: white;
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+    color: #0f172a;
+    box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+    border: 1px solid #eef6fb;
   }
 
-  .welcome-content h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .welcome-content p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    margin: 0;
-  }
-
-  .date-display {
-    text-align: right;
-  }
-
-  .date {
-    font-size: 1.1rem;
-    font-weight: 500;
-    opacity: 0.9;
-  }
+  .compact-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem 0; }
+  .compact-subtitle { margin: 0; color: #6b7280; }
+  .compact-right .date { font-size: 0.95rem; color: #374151; font-weight: 600; }
 
   /* Section Titles */
   .section-title {
@@ -313,32 +268,14 @@
     margin-bottom: 3rem;
   }
 
-  .quick-actions-grid {
-    display: grid;
-    /* use auto-fit so cards wrap responsively and avoid horizontal overflow */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    align-items: start;
-  }
+  .issued-section { margin-bottom: 1.5rem; }
+  .issued-card { display:inline-flex; align-items:center; justify-content:space-between; background:white; padding:0.8rem 1rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.04); border:1px solid #e5e7eb; max-width:360px; }
+  .issued-label { color:#6b7280; font-weight:600; }
+  .issued-value { font-weight:700; font-size:1.25rem; color:#1f2937; }
+  .issued-left { display:flex; flex-direction:column; gap:0.125rem; }
+  .issued-canvas { width: min(28%, 140px); height: auto; aspect-ratio: 5 / 2; margin-left:0.75rem; display:block; max-width: 160px; }
 
-  .quick-action-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
-  }
-
-  .quick-action-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
+  /* quick-action styles are provided by shared subpage.css to ensure consistent sizing */
 
   .action-icon {
     width: 48px;
@@ -351,6 +288,7 @@
     color: white;
     flex-shrink: 0;
   }
+  .action-icon img, .action-icon :global(svg) { width: 24px; height: 24px; display: block; }
 
   .quick-action-card {
     /* allow cards to shrink on small screens instead of forcing overflow */
@@ -379,6 +317,9 @@
     color: #9ca3af;
     transition: color 0.2s;
   }
+
+  /* place arrow at the end of the card (bottom-right) when card is column layout */
+  .action-arrow { align-self: flex-end; }
 
   .quick-action-card:hover .action-arrow {
     color: #6366f1;
@@ -587,19 +528,11 @@
       padding: 1rem;
     }
 
-    .welcome-section {
-      flex-direction: column;
-      text-align: center;
-      gap: 1rem;
-      padding: 1.5rem;
-    }
+    /* welcome-section removed in favor of compact-header; selectors cleaned up */
 
-    .welcome-content h1 {
-      font-size: 2rem;
-    }
-
+    /* keep quick actions two columns on smaller screens per request */
     .quick-actions-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
     }
 
     .stats-grid {
@@ -626,18 +559,32 @@
   }
 
   @media (max-width: 480px) {
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
+    .stats-grid { grid-template-columns: 1fr; }
+    /* keep two columns on very small screens; reduce card padding to fit */
+    .quick-actions-grid { gap: 0.5rem; }
+    .quick-action-card { padding: 0.75rem 0.75rem; }
+    .action-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+  }
 
-    .quick-action-card {
-      padding: 1rem;
+  /* Mobile compact tweaks: clamp descriptions, reduce title size, and tighten spacing */
+  @media (max-width: 420px) {
+    .quick-action-card { padding: 0.6rem 0.6rem; gap: 0.6rem; min-height: 56px; }
+    .action-icon { width: 32px; height: 32px; font-size: 1rem; }
+    .action-title { font-size: 0.98rem; margin-bottom: 0.125rem; }
+    .action-description {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin: 0;
+  /* clamp to one line with ellipsis */
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
     }
-
-    .action-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 1.2rem;
-    }
+    .action-content { gap: 0.125rem; }
+    .action-arrow { font-size: 1rem; }
   }
 </style>

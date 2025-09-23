@@ -13,7 +13,7 @@ type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends 
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 type PageServerParentData = Omit<EnsureDefined<import('../../$types.js').LayoutServerData>, keyof LayoutServerData> & EnsureDefined<LayoutServerData>;
 type PageParentData = Omit<EnsureDefined<import('../../$types.js').LayoutData>, keyof LayoutData> & EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/user/dashboard" | "/user/dashboard/food-delivery" | "/user/dashboard/food-delivery/create" | "/user/dashboard/guests" | "/user/dashboard/guests/create" | "/user/dashboard/history" | "/user/dashboard/profile" | "/user/dashboard/vehicles" | "/user/dashboard/vehicles/[id]/delete" | "/user/dashboard/vehicles/[id]/edit" | "/user/dashboard/vehicles/create"
+type LayoutRouteId = RouteId | "/user/dashboard" | "/user/dashboard/food-delivery" | "/user/dashboard/food-delivery/create" | "/user/dashboard/guests" | "/user/dashboard/guests/create" | "/user/dashboard/history" | "/user/dashboard/manage" | "/user/dashboard/manage/system-overview" | "/user/dashboard/profile" | "/user/dashboard/vehicles" | "/user/dashboard/vehicles/[id]/delete" | "/user/dashboard/vehicles/[id]/edit" | "/user/dashboard/vehicles/create"
 type LayoutParams = RouteParams & { id?: string }
 type LayoutServerParentData = EnsureDefined<import('../../$types.js').LayoutServerData>;
 type LayoutParentData = EnsureDefined<import('../../$types.js').LayoutData>;

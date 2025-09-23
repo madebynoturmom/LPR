@@ -1,17 +1,18 @@
-import { X as ensure_array_like, $ as bind_props } from "../../../../../chunks/index2.js";
+import { Y as ensure_array_like, $ as bind_props } from "../../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../../chunks/escaping.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let data = $$props["data"];
     let events = data?.events ?? [];
-    $$renderer2.push(`<div class="subpage-container"><div class="subpage-card"><div class="subpage-header"><div><button type="button" class="back-btn svelte-swm1bl">← Back</button> <h2 class="subpage-title">Event Logs</h2></div></div> `);
-    if (events.length > 0) {
+    const displayedEvents = events && events.length > 0 ? events : [];
+    $$renderer2.push(`<div class="subpage-container"><div class="subpage-card"><div class="subpage-header"><div><button type="button" class="back-btn">← Back</button> <h2 class="subpage-title">Event Logs</h2></div></div> `);
+    if (displayedEvents.length > 0) {
       $$renderer2.push("<!--[-->");
-      $$renderer2.push(`<table class="event-table svelte-swm1bl"><thead><tr><th class="svelte-swm1bl">Type</th><th class="svelte-swm1bl">User</th><th class="svelte-swm1bl">Details</th><th class="svelte-swm1bl">Timestamp</th></tr></thead><tbody><!--[-->`);
-      const each_array = ensure_array_like(events);
+      $$renderer2.push(`<table class="event-table"><thead><tr><th>Type</th><th>User</th><th>Details</th><th>Timestamp</th></tr></thead><tbody><!--[-->`);
+      const each_array = ensure_array_like(displayedEvents);
       for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
         let event = each_array[$$index];
-        $$renderer2.push(`<tr><td class="svelte-swm1bl">${escape_html(event.type)}</td><td class="svelte-swm1bl">${escape_html(event.userName)}</td><td class="svelte-swm1bl">${escape_html(event.details)}</td><td class="svelte-swm1bl">${escape_html(event.time)}</td></tr>`);
+        $$renderer2.push(`<tr><td>${escape_html(event.type)}</td><td>${escape_html(event.userName)}</td><td>${escape_html(event.details)}</td><td>${escape_html(event.time)}</td></tr>`);
       }
       $$renderer2.push(`<!--]--></tbody></table>`);
     } else {

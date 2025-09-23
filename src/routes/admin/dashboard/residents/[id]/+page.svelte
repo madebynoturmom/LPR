@@ -28,7 +28,4 @@
   </div>
 </div>
 
-<style>
-.resident-detail-list { list-style: none; padding: 0; }
-.resident-detail-list li { margin-bottom: 1rem; font-size: 1.1rem; }
-</style>
+<!-- styles moved to subpage.css -->

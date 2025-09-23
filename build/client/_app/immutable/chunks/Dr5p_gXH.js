@@ -1,1 +1,0 @@
-import{as as a}from"./D6_VZFDO.js";a();

@@ -1,5 +1,5 @@
 function _page($$renderer) {
-  $$renderer.push(`<section class="admin-section svelte-1a11tfj"><button type="button" class="back-btn svelte-1a11tfj">← Back</button> <h2>Add Guard</h2> `);
+  $$renderer.push(`<section class="admin-section"><button type="button" class="back-btn">← Back</button> <h2>Add Guard</h2> `);
   {
     $$renderer.push("<!--[!-->");
   }
@@ -7,7 +7,7 @@ function _page($$renderer) {
   {
     $$renderer.push("<!--[!-->");
   }
-  $$renderer.push(`<!--]--> <form method="POST" class="resident-form svelte-1a11tfj" enctype="multipart/form-data"><label class="svelte-1a11tfj">Guard Name<input name="name" required class="svelte-1a11tfj"/></label> <label class="svelte-1a11tfj">Phone Number<input name="phone" required class="svelte-1a11tfj"/></label> <label class="svelte-1a11tfj">Guard ID<input name="guardId" required class="svelte-1a11tfj"/></label> <label class="svelte-1a11tfj">Profile Picture <input type="file" name="profilePic" accept="image/*" class="svelte-1a11tfj"/></label> <button type="submit" class="btn btn-update svelte-1a11tfj">Add Guard</button></form></section>`);
+  $$renderer.push(`<!--]--> <form method="POST" class="resident-form" enctype="multipart/form-data"><label>Guard Name<input name="name" required/></label> <label>Phone Number<input name="phone" required/></label> <label>Guard ID<input name="guardId" required/></label> <label>Profile Picture <input type="file" name="profilePic" accept="image/*"/></label> <button type="submit" class="btn btn-update">Add Guard</button></form></section>`);
 }
 export {
   _page as default

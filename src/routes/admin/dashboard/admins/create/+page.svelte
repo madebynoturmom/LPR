@@ -68,33 +68,4 @@
   </form>
 </section>
 
-<style>
-.admin-section {
-  max-width: 620px;
-  margin: 4.5rem auto 2.5rem auto; /* move card further down */
-  padding: 2rem;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(16,24,40,0.06);
-}
-.back-btn {
-  margin-bottom: 1rem;
-  background: #f1f5f9;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.back-btn:hover { background: #e2e8f0; }
-.admin-title { font-size: 2rem; margin: 0 0 1rem 0; font-weight: 800; color: #0f172a; text-align: left; }
-.form-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
-.text-input { padding: 0.6rem 0.8rem; border-radius: 10px; border: 1px solid #e6eef8; background: #f8fafc; }
-.profile-upload input[type="file"] { margin-top: 0.5rem; }
-.avatar-preview { margin: 1rem 0; display:flex; justify-content:center; }
-.avatar-preview img { width:120px; height:120px; border-radius:9999px; object-fit:cover; border: 3px solid #1976d2; box-shadow: 0 8px 24px rgba(16,24,40,0.06); }
-.primary-cta { display:block; width:54%; margin: 0.5rem 0 0 0; padding: 0.9rem 1.2rem; border-radius: 12px; font-size:1.05rem; }
-.btn-create { background: linear-gradient(90deg,#1976d2,#1565c0); color:#fff; border:none; font-weight:700; cursor:pointer; }
-.btn-create:disabled { opacity:0.6; cursor:not-allowed; }
-.error { color: #c00; margin-bottom: 1rem; }
-</style>
+<!-- styles moved to subpage.css -->
