@@ -7,7 +7,7 @@ import * as table from '$lib/server/db/schema';
 import { sendEmail } from './email';
 
 
-const DAY_IN_MS = 1000 * 60 * 60 * 24;
+export const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
 export const sessionCookieName = 'auth-session';
 
@@ -17,9 +17,9 @@ export function generateSessionToken() {
 	return token;
 }
 
-export async function createSession(token: string, userId: string) {
+export async function createSession(token: string, userId: string, ttlMs: number = DAY_IN_MS * 30) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+	const expiresAt = new Date(Date.now() + ttlMs);
 	const session: table.Session = {
 		id: sessionId,
 		userId,

@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Card from '$lib/ui/Card.svelte';
+  import './login.css';
 
   let username = '';
   let otp = '';
@@ -10,6 +11,7 @@
   let message: string | null = null;
   let otpSent = false;
   let loading = false;
+  let remember = false;
   let identifiedRole: string | null = null;
 
   async function sendOtp() {
@@ -29,6 +31,7 @@
     try {
       const form = new FormData();
       form.append('username', username.trim());
+      form.append('remember', remember ? '1' : '0');
       // Use an explicit same-origin URL so failures are easier to diagnose
       const url = new URL('/login', location.origin).toString();
       const res = await fetch(url, { method: 'POST', body: form, headers: { Accept: 'application/json' }, credentials: 'same-origin' });
@@ -124,6 +127,7 @@
       const form = new FormData();
       form.append('username', username.trim());
       form.append('password', password.trim());
+  form.append('remember', remember ? '1' : '0');
       const url = new URL('/login', location.origin).toString();
       const res = await fetch(url, { method: 'POST', body: form, headers: { Accept: 'application/json' }, credentials: 'same-origin' });
       if (res.redirected) {
@@ -195,6 +199,7 @@
       const form = new FormData();
       form.append('username', username.trim());
       form.append('otp', otp.trim());
+  form.append('remember', remember ? '1' : '0');
       const url = new URL('/login', location.origin).toString();
       const res = await fetch(url, { method: 'POST', body: form, headers: { Accept: 'application/json' }, credentials: 'same-origin' });
       // If server responds with redirect, follow it
@@ -328,6 +333,14 @@
       <input name="username" bind:value={username} autocomplete="username" on:blur={() => identifyUser()} />
     </label>
 
+    <div class="login-helpers">
+      <label class="remember-label" for="remember">
+        <input id="remember" type="checkbox" bind:checked={remember} aria-label="Remember me" />
+        <span class="remember-text">Remember me</span>
+      </label>
+      <a href="/login/forgot" class="forgot-link">Forgot password?</a>
+    </div>
+
     {#if identifiedRole === 'guard'}
       <label>Password
         <input name="password" bind:value={password} type="password" autocomplete="current-password" />
@@ -348,102 +361,4 @@
   </div>
 </section>
 
-<style>
-/* Page layout */
-/* Centered viewport */
-.login-viewport{
-  position:fixed;
-  inset:0; /* top:0; right:0; bottom:0; left:0 */
-  display:grid;
-  place-items:center; /* reliably center both axes */
-  padding:1.5rem;
-  background: linear-gradient(180deg,#f4f7fb,#eef4fb);
-  -webkit-overflow-scrolling: touch;
-}
-
-.login-container{
-  width:100%;
-  max-width:520px;
-  display:block;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto;
-}
-
-.brand{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:0.25rem;
-  margin-bottom:0.6rem;
-}
-.brand .logo{
-  font-weight:800;
-  font-size:28px;
-  background:linear-gradient(90deg,#1976d2,#60a5fa);
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-.brand .title{
-  font-size:13px;
-  color:#475569;
-  opacity:0.95;
-  text-align:center;
-}
-
-/* visual card styles moved to shared Card component */
-
-.login-form{display:flex;flex-direction:column;gap:1rem}
-.login-form h2{margin:0 0 .25rem 0;font-size:1.5rem;color:#0f1724}
-
-/* Inputs */
-.login-form label{display:flex;flex-direction:column;font-size:0.9rem;color:#334155}
-.login-form input{
-  margin-top:0.5rem;
-  padding:0.65rem 0.75rem;
-  border-radius:10px;
-  border:1px solid rgba(16,24,40,0.08);
-  background: #fff;
-  box-shadow: 0 1px 0 rgba(16,24,40,0.02);
-  font-size:0.95rem;
-  color:#0b1220;
-  transition: box-shadow .12s ease, transform .06s ease;
-  width:100%;
-  box-sizing: border-box;
-}
-.login-form input:focus{outline:none; box-shadow: 0 6px 24px rgba(25,118,210,0.12); transform: translateY(-1px); border-color: rgba(25,118,210,0.35)}
-
-/* Primary button */
-.login-btn{
-  background: linear-gradient(180deg,#1976d2,#125ea8);
-  color:#fff;
-  padding:.7rem;
-  border-radius:12px;
-  border:0;
-  font-weight:600;
-  letter-spacing:0.2px;
-  cursor:pointer;
-  box-shadow: 0 6px 18px rgba(25,118,210,0.14);
-  transition: transform .08s ease, box-shadow .12s ease, opacity .12s ease;
-  width:100%;
-  box-sizing: border-box;
-}
-.login-btn:active{transform: translateY(1px)}
-.login-btn[disabled]{opacity:0.6; cursor:not-allowed; box-shadow:none}
-
-/* Messages */
-.error{color:#b91c1c;background:rgba(185,28,28,0.06);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.9rem}
-.message{color:#065f46;background:rgba(6,95,70,0.06);padding:0.5rem 0.75rem;border-radius:8px;font-size:0.9rem}
-
-/* Responsive tweaks */
-@media (max-width:520px){
-  .login-viewport{padding:1rem}
-  .login-form h2{font-size:1.25rem}
-  /* ensure inputs and buttons are easily tappable */
-  .login-form input{font-size:1rem;padding:0.75rem}
-  .login-btn{padding:0.85rem}
-}
-
-/* Card styles live in $lib/ui/Card.svelte */
-</style>
+<!-- styles moved to src/routes/login/login.css to avoid inline styles -->

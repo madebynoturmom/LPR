@@ -9,6 +9,21 @@
       "_environment.js"
     ]
   },
+  "_Card.DyLEl-H6.css": {
+    "file": "_app/immutable/assets/Card.DyLEl-H6.css",
+    "src": "_Card.DyLEl-H6.css"
+  },
+  "_Card.js": {
+    "file": "chunks/Card.js",
+    "name": "Card",
+    "imports": [
+      "_index2.js",
+      "_utils2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Card.DyLEl-H6.css"
+    ]
+  },
   "_attributes.js": {
     "file": "chunks/attributes.js",
     "name": "attributes",
@@ -26,7 +41,10 @@
   },
   "_context.js": {
     "file": "chunks/context.js",
-    "name": "context"
+    "name": "context",
+    "imports": [
+      "_utils2.js"
+    ]
   },
   "_email.js": {
     "file": "chunks/email.js",
@@ -57,7 +75,6 @@
     "name": "index",
     "imports": [
       "_attributes.js",
-      "_utils2.js",
       "_context.js",
       "_escaping.js"
     ]
@@ -70,9 +87,9 @@
     "file": "chunks/internal.js",
     "name": "internal",
     "imports": [
-      "_index2.js",
-      "_utils2.js",
       "_context.js",
+      "_utils2.js",
+      "_index2.js",
       "_environment.js"
     ],
     "dynamicImports": [
@@ -184,7 +201,7 @@
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.C1Et6Wgn.css"
+      "_app/immutable/assets/_layout.DGPIY_Kh.css"
     ]
   },
   "src/routes/+page.server.ts": {
@@ -236,7 +253,7 @@
       "_attributes.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.D-oqgQCU.css"
+      "_app/immutable/assets/_page.DKP8ldcA.css"
     ]
   },
   "src/routes/admin/dashboard/admins/+page.server.ts": {
@@ -502,12 +519,32 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
-      "_stores.js",
+      "_stores.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Dw4ZzkHd.css"
+    ]
+  },
+  "src/routes/admin/dashboard/settings/account/+page.svelte": {
+    "file": "entries/pages/admin/dashboard/settings/account/_page.svelte.js",
+    "name": "entries/pages/admin/dashboard/settings/account/_page.svelte",
+    "src": "src/routes/admin/dashboard/settings/account/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
       "_exports.js",
       "_utils.js",
       "_attributes.js",
-      "_state.svelte.js",
-      "_escaping.js"
+      "_state.svelte.js"
+    ]
+  },
+  "src/routes/admin/dashboard/settings/privacy/+page.svelte": {
+    "file": "entries/pages/admin/dashboard/settings/privacy/_page.svelte.js",
+    "name": "entries/pages/admin/dashboard/settings/privacy/_page.svelte",
+    "src": "src/routes/admin/dashboard/settings/privacy/+page.svelte",
+    "isEntry": true,
+    "css": [
+      "_app/immutable/assets/_page.DXbsKM_H.css"
     ]
   },
   "src/routes/admin/dashboard/vehicles/+page.server.ts": {
@@ -549,8 +586,12 @@
     "isEntry": true,
     "imports": [
       "_index2.js",
+      "_utils2.js",
       "_attributes.js",
       "_escaping.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.4FvRc58U.css"
     ]
   },
   "src/routes/api/food-delivery/create/+server.ts": {
@@ -660,11 +701,24 @@
       "_exports.js",
       "_utils.js",
       "_state.svelte.js",
-      "_index2.js",
-      "_utils2.js"
+      "_Card.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.B7EyBuCr.css"
+      "_app/immutable/assets/_page.BbxfV8j9.css"
+    ]
+  },
+  "src/routes/login/forgot/+page.svelte": {
+    "file": "entries/pages/login/forgot/_page.svelte.js",
+    "name": "entries/pages/login/forgot/_page.svelte",
+    "src": "src/routes/login/forgot/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_attributes.js",
+      "_escaping.js",
+      "_Card.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Bq6PXEO8.css"
     ]
   },
   "src/routes/login/identify/+server.ts": {
@@ -674,6 +728,22 @@
     "isEntry": true,
     "imports": [
       "_index3.js"
+    ]
+  },
+  "src/routes/login/reset/[token]/+page.svelte": {
+    "file": "entries/pages/login/reset/_token_/_page.svelte.js",
+    "name": "entries/pages/login/reset/_token_/_page.svelte",
+    "src": "src/routes/login/reset/[token]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_attributes.js",
+      "_index.js",
+      "_escaping.js",
+      "_stores.js",
+      "_Card.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.C3IEc4D7.css"
     ]
   },
   "src/routes/logout/+page.server.ts": {

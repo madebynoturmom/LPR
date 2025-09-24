@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { encodeHexLowerCase } from "@oslojs/encoding";
 import { eq, desc } from "drizzle-orm";
-import { g as generateSessionToken, c as createSession, s as setSessionTokenCookie } from "../../../chunks/auth.js";
+import { g as generateSessionToken, c as createSession, s as setSessionTokenCookie, D as DAY_IN_MS } from "../../../chunks/auth.js";
 import { s as sendEmail } from "../../../chunks/email.js";
 const actions = {
   default: async (event) => {
@@ -60,8 +60,10 @@ const actions = {
         console.log("🔐 Guard password mismatch for user:", username);
         return fail(401, { error: "Invalid password." });
       }
+      const rememberFlag = form.get("remember")?.toString() === "1";
+      const ttlMs = rememberFlag ? DAY_IN_MS * 30 : 1e3 * 60 * 60 * 8;
       const sessionToken = generateSessionToken();
-      const session = await createSession(sessionToken, found.id);
+      const session = await createSession(sessionToken, found.id, ttlMs);
       setSessionTokenCookie(event, sessionToken, session.expiresAt);
       const redirectUrl = "/guard/dashboard";
       const accept = request.headers.get("accept") || "";
@@ -126,15 +128,22 @@ const actions = {
       console.log("🔐 OTP verified successfully");
       await db.delete(otp).where(eq(otp.id, latestOtp.id));
       console.log("🔐 OTP deleted from DB");
+      const rememberFlag = form.get("remember")?.toString() === "1";
+      const ttlMs = rememberFlag ? DAY_IN_MS * 30 : 1e3 * 60 * 60 * 8;
       const sessionToken = generateSessionToken();
-      const session = await createSession(sessionToken, found.id);
+      const session = await createSession(sessionToken, found.id, ttlMs);
       setSessionTokenCookie(event, sessionToken, session.expiresAt);
       const redirectUrl = userRole === "admin" ? "/admin/dashboard" : userRole === "guard" ? "/guard/dashboard" : userRole === "resident" ? "/user/dashboard" : "/";
       return { success: true, redirect: redirectUrl };
     }
   }
 };
-const load = async () => {
+const load = async ({ locals }) => {
+  const user2 = locals.user;
+  if (user2) {
+    const redirectUrl = user2.role === "admin" ? "/admin/dashboard" : user2.role === "guard" ? "/guard/dashboard" : user2.role === "resident" ? "/user/dashboard" : "/";
+    throw redirect(303, redirectUrl);
+  }
   return {};
 };
 export {

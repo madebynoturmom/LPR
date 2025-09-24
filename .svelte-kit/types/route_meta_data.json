@@ -64,6 +64,12 @@
 		"src/routes/admin/dashboard/settings/+page.server.ts",
 		"src/routes/admin/dashboard/+layout.server.ts"
 	],
+	"/admin/dashboard/settings/account": [
+		"src/routes/admin/dashboard/+layout.server.ts"
+	],
+	"/admin/dashboard/settings/privacy": [
+		"src/routes/admin/dashboard/+layout.server.ts"
+	],
 	"/admin/dashboard/vehicles": [
 		"src/routes/admin/dashboard/vehicles/+page.server.ts",
 		"src/routes/admin/dashboard/+layout.server.ts"
@@ -87,9 +93,11 @@
 	"/login": [
 		"src/routes/login/+page.server.ts"
 	],
+	"/login/forgot": [],
 	"/login/identify": [
 		"src/routes/login/identify/+server.ts"
 	],
+	"/login/reset/[token]": [],
 	"/logout": [
 		"src/routes/logout/+page.server.ts"
 	],

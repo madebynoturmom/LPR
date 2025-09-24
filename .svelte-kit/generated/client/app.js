@@ -42,7 +42,11 @@ export const nodes = [
 	() => import('./nodes/36'),
 	() => import('./nodes/37'),
 	() => import('./nodes/38'),
-	() => import('./nodes/39')
+	() => import('./nodes/39'),
+	() => import('./nodes/40'),
+	() => import('./nodes/41'),
+	() => import('./nodes/42'),
+	() => import('./nodes/43')
 ];
 
 export const server_loads = [2,4];
@@ -63,26 +67,30 @@ export const dictionary = {
 		"/admin/dashboard/residents/[id]": [~16,[2]],
 		"/admin/dashboard/residents/[id]/edit": [~17,[2]],
 		"/admin/dashboard/settings": [~19,[2]],
-		"/admin/dashboard/vehicles": [~20,[2]],
-		"/admin/dashboard/vehicles/create": [~21,[2]],
-		"/guard/dashboard": [~22,[3]],
-		"/guard/dashboard/settings": [~23,[3]],
-		"/login": [~24],
-		"/logout": [~25],
-		"/theme-test": [26],
-		"/user/dashboard": [~27,[4]],
-		"/user/dashboard/food-delivery": [~28,[4]],
-		"/user/dashboard/food-delivery/create": [~29,[4]],
-		"/user/dashboard/guests": [~30,[4]],
-		"/user/dashboard/guests/create": [~31,[4]],
-		"/user/dashboard/history": [~32,[4]],
-		"/user/dashboard/manage": [33,[4]],
-		"/user/dashboard/manage/system-overview": [~34,[4]],
-		"/user/dashboard/profile": [~35,[4]],
-		"/user/dashboard/vehicles": [~36,[4]],
-		"/user/dashboard/vehicles/create": [~39,[4]],
-		"/user/dashboard/vehicles/[id]/delete": [~37,[4]],
-		"/user/dashboard/vehicles/[id]/edit": [~38,[4]]
+		"/admin/dashboard/settings/account": [20,[2]],
+		"/admin/dashboard/settings/privacy": [21,[2]],
+		"/admin/dashboard/vehicles": [~22,[2]],
+		"/admin/dashboard/vehicles/create": [~23,[2]],
+		"/guard/dashboard": [~24,[3]],
+		"/guard/dashboard/settings": [~25,[3]],
+		"/login": [~26],
+		"/login/forgot": [27],
+		"/login/reset/[token]": [28],
+		"/logout": [~29],
+		"/theme-test": [30],
+		"/user/dashboard": [~31,[4]],
+		"/user/dashboard/food-delivery": [~32,[4]],
+		"/user/dashboard/food-delivery/create": [~33,[4]],
+		"/user/dashboard/guests": [~34,[4]],
+		"/user/dashboard/guests/create": [~35,[4]],
+		"/user/dashboard/history": [~36,[4]],
+		"/user/dashboard/manage": [37,[4]],
+		"/user/dashboard/manage/system-overview": [~38,[4]],
+		"/user/dashboard/profile": [~39,[4]],
+		"/user/dashboard/vehicles": [~40,[4]],
+		"/user/dashboard/vehicles/create": [~43,[4]],
+		"/user/dashboard/vehicles/[id]/delete": [~41,[4]],
+		"/user/dashboard/vehicles/[id]/edit": [~42,[4]]
 	};
 
 export const hooks = {

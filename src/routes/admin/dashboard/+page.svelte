@@ -22,6 +22,17 @@
   let chartCanvas: HTMLCanvasElement | null = null;
   let issuedChart: Chart | null = null;
   let issuedCanvas: HTMLCanvasElement | null = null;
+  // Chart range selection: '7d' | '1m' | '3m'
+  let selectedRange: '7d' | '1m' | '3m' = '7d';
+
+  const rangeToDays = (r: typeof selectedRange) => (r === '7d' ? 7 : r === '1m' ? 30 : 90);
+
+  const getFilteredStats = (r: typeof selectedRange) => {
+    if (!data?.guestStats || !data.guestStats.length) return [] as { date: string; count: number }[];
+    const days = rangeToDays(r);
+    // take last N entries (assumes guestStats is chronological)
+    return data.guestStats.slice(Math.max(0, data.guestStats.length - days));
+  };
   const dateString = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   interface QuickAction {
@@ -107,7 +118,8 @@
   const quickActions: QuickAction[] = [
     // Using static SVG paths under /static/icons/ (dummy placeholders created)
     { title: 'Add Resident', description: 'Register a new resident', link: '/admin/dashboard/residents/create', iconPath: '/icons/add-resident.svg', color: 'bg-blue-500' },
-    { title: 'Issue Guest Pass', description: 'Create a new guest pass', link: '/admin/dashboard/guests/create', iconPath: '/icons/issue-guest.svg', color: 'bg-green-500' },
+  // the guests page includes an inline create form (POST ?/create), so link to it
+  { title: 'Issue Guest Pass', description: 'Create a new guest pass', link: '/admin/dashboard/guests', iconPath: '/icons/issue-guest.svg', color: 'bg-green-500' },
     { title: 'Register Vehicle', description: 'Add a new vehicle', link: '/admin/dashboard/vehicles/create', iconPath: '/icons/register-vehicle.svg', color: 'bg-purple-500' },
     { title: 'View Reports', description: 'Access system reports', link: '/admin/dashboard/events', iconPath: '/icons/view-reports.svg', color: 'bg-orange-500' }
   ];
@@ -156,46 +168,90 @@
       });
     }
 
-    // issued sparkline (small inline chart)
-    if (issuedCanvas && data?.guestStats) {
-      if (issuedChart) issuedChart.destroy();
-      issuedChart = new Chart(issuedCanvas, {
-        type: 'line',
-        data: {
-          labels: data.guestStats.map(g => g.date),
-          datasets: [{ data: data.guestStats.map(g => g.count), borderColor: '#6366f1', backgroundColor: 'transparent', tension: 0.3, pointRadius: 0 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { display: false } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
-      });
-    }
+    // issued chart is created reactively below based on `selectedRange`.
   });
 
   onDestroy(() => {
     if (chart) chart.destroy();
     if (issuedChart) issuedChart.destroy();
   });
+
+  // Re-create issuedChart whenever the selected range or data changes
+  $: if (issuedCanvas && data?.guestStats) {
+    const filtered = getFilteredStats(selectedRange);
+    if (issuedChart) {
+      issuedChart.destroy();
+      issuedChart = null;
+    }
+    // graceful fallback when no data
+    const labels = filtered.length ? filtered.map(g => g.date) : (data.guestStats || []).map(g => g.date).slice(-7);
+    const values = filtered.length ? filtered.map(g => g.count) : (data.guestStats || []).map(g => g.count).slice(-7);
+
+    issuedChart = new Chart(issuedCanvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Guests Issued',
+          data: values,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.12)',
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#6366f1',
+          pointRadius: 2,
+          pointHoverRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          x: { display: true, grid: { display: false }, ticks: { color: '#6b7280' } },
+          y: { display: true, grid: { color: '#f3f4f6' }, ticks: { color: '#6b7280' }, beginAtZero: true }
+        }
+      }
+    });
+  }
 </script>
 
 <div class="dashboard-container">
   <!-- Compact Header (replaces large gradient hero) -->
-  <div class="compact-header">
-    <div class="compact-left">
-      <h1 class="compact-title">Welcome back, Admin! 👋</h1>
-      <p class="compact-subtitle">Here's what's happening in your community today</p>
+  <header class="dashboard-overview">
+    <div class="overview-left">
+      <div class="overview-text">
+        <h1 class="overview-title">Dashboard Overview</h1>
+        <div class="overview-date">{dateString}</div>
+      </div>
     </div>
-    <div class="compact-right">
-      <div class="date">{dateString}</div>
+    <div class="overview-right">
+      <a href="/admin/dashboard/settings" class="overview-avatar-link" aria-label="Account settings">
+        <img class="overview-avatar" src={data.adminProfilePic ?? '/default-profile.png'} alt="Profile" width="48" height="48" />
+      </a>
     </div>
-  </div>
+  </header>
 
   <!-- Issued Guest Passes (summary) -->
   <section class="issued-section">
     <div class="issued-card">
-      <div class="issued-left">
-        <div class="issued-label">Issued Guest Passes (7d)</div>
-        <div class="issued-value">{issuedCount}</div>
+      <div style="display:flex; align-items:center; gap:1rem; width:100%; justify-content:space-between;">
+        <div>
+          <div class="issued-label">Issued Guest Passes</div>
+          <div class="issued-value">{issuedCount}</div>
+        </div>
+        <div class="issued-range">
+          <button class:active={selectedRange === '7d'} on:click={() => (selectedRange = '7d')}>7D</button>
+          <button class:active={selectedRange === '1m'} on:click={() => (selectedRange = '1m')}>1M</button>
+          <button class:active={selectedRange === '3m'} on:click={() => (selectedRange = '3m')}>3M</button>
+        </div>
       </div>
-      <canvas bind:this={issuedCanvas} class="issued-canvas" aria-hidden="true"></canvas>
+      <div class="issued-chart-wrapper">
+        <canvas bind:this={issuedCanvas} class="issued-canvas" aria-label="Issued guest passes chart"></canvas>
+      </div>
     </div>
   </section>
 
@@ -219,45 +275,40 @@
             <h3 class="action-title">{action.title}</h3>
             <p class="action-description">{action.description}</p>
           </div>
-          <div class="action-arrow">→</div>
         </a>
       {/each}
     </div>
   </section>
-
-  <!-- Note: System Overview moved to Manage → System Overview subpage -->
 </div>
 
 <style>
-  .dashboard-container {
-    /* Reduce top padding so welcome card sits higher in the viewport */
-    padding: 1rem 2rem 2rem 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-    background: #f8fafc;
-  }
+  /* dashboard container spacing is handled globally in subpage.css */
 
-  /* Compact header (lighter alternative to the large hero) */
-  .compact-header {
-    background: #fff;
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #0f172a;
-    box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-    border: 1px solid #eef6fb;
+  /* Dashboard overview header */
+  .dashboard-overview {
+    /* blend header into the page: no background, border, or shadow */
+    background: transparent;
+    border-radius: 0;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    display:flex;
+    align-items:center;
+    box-shadow: none;
+    border: none;
   }
-
-  .compact-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem 0; }
-  .compact-subtitle { margin: 0; color: #6b7280; }
-  .compact-right .date { font-size: 0.95rem; color: #374151; font-weight: 600; }
+  .overview-left { display:flex; align-items:center; gap:0.75rem }
+  .overview-text{ display:flex; flex-direction:column }
+  .overview-title { font-size:1.25rem; font-weight:800; margin:0; color:#0b1220 }
+  .overview-date { font-size:0.85rem; color:#6b7280 }
+  .overview-right { margin-left:auto; display:flex; align-items:center }
+  .overview-avatar{ width:64px; height:64px; border-radius:9999px; object-fit:cover; display:block; border:3px solid rgba(16,24,40,0.06); box-shadow:0 4px 12px rgba(16,24,40,0.06) }
+  .overview-avatar-link { display:inline-block; line-height:0; border-radius:9999px; }
+  .overview-avatar-link:hover .overview-avatar { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 30px rgba(2,6,23,0.08); }
+  .overview-avatar { transition: transform 140ms cubic-bezier(.2,.9,.3,1), box-shadow 140ms cubic-bezier(.2,.9,.3,1); cursor: pointer; }
 
   /* Section Titles */
   .section-title {
-    font-size: 1.5rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: #1f2937;
     margin: 0 0 1.5rem 0;
@@ -269,22 +320,41 @@
   }
 
   .issued-section { margin-bottom: 1.5rem; }
-  .issued-card { display:inline-flex; align-items:center; justify-content:space-between; background:white; padding:0.8rem 1rem; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.04); border:1px solid #e5e7eb; max-width:360px; }
+  .issued-card { display:flex; flex-direction:column; gap:0.75rem; background:transparent; padding:0.6rem 1rem; border-radius:12px; border:none; max-width:760px; }
   .issued-label { color:#6b7280; font-weight:600; }
   .issued-value { font-weight:700; font-size:1.25rem; color:#1f2937; }
   .issued-left { display:flex; flex-direction:column; gap:0.125rem; }
-  .issued-canvas { width: min(28%, 140px); height: auto; aspect-ratio: 5 / 2; margin-left:0.75rem; display:block; max-width: 160px; }
+  .issued-chart-wrapper { width:100%; height:140px; }
+  .issued-canvas { width:100%; height:100%; display:block; }
+
+  .issued-range { display:flex; gap:0.5rem; }
+  .issued-range button {
+    background: transparent;
+    border: 1px solid #e6eefc;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    color: #374151;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+  .issued-range button:hover { background: rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.12); }
+  .issued-range button.active, .issued-range button.active:hover {
+    background: #6366f1;
+    color: #fff;
+    border-color: #6366f1;
+  }
 
   /* quick-action styles are provided by shared subpage.css to ensure consistent sizing */
 
   .action-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1rem;
     color: white;
     flex-shrink: 0;
   }
@@ -300,26 +370,27 @@
   }
 
   .action-title {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 600; /* match global subpage.css */
     color: #1f2937;
-    margin: 0 0 0.25rem 0;
+    margin: 0;
   }
 
   .action-description {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #6b7280;
     margin: 0;
   }
 
   .action-arrow {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     color: #9ca3af;
     transition: color 0.2s;
+    align-self: center; /* vertically center in row layout */
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: center;
   }
-
-  /* place arrow at the end of the card (bottom-right) when card is column layout */
-  .action-arrow { align-self: flex-end; }
 
   .quick-action-card:hover .action-arrow {
     color: #6366f1;

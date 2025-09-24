@@ -10,9 +10,9 @@ function generateSessionToken() {
   const token = encodeBase64url(bytes);
   return token;
 }
-async function createSession(token, userId) {
+async function createSession(token, userId, ttlMs = DAY_IN_MS * 30) {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-  const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+  const expiresAt = new Date(Date.now() + ttlMs);
   const session$1 = {
     id: sessionId,
     userId,
@@ -115,6 +115,7 @@ function deleteSessionTokenCookie(event) {
   });
 }
 export {
+  DAY_IN_MS as D,
   sessionCookieName as a,
   createSession as c,
   deleteSessionTokenCookie as d,

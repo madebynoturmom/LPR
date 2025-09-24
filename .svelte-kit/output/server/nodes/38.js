@@ -1,10 +1,10 @@
-import * as server from '../entries/pages/user/dashboard/vehicles/_id_/edit/_page.server.ts.js';
+import * as server from '../entries/pages/user/dashboard/manage/system-overview/_page.server.ts.js';
 
 export const index = 38;
 let component_cache;
-export const component = async () => component_cache ??= (await import('../entries/pages/user/dashboard/vehicles/_id_/edit/_page.svelte.js')).default;
+export const component = async () => component_cache ??= (await import('../entries/pages/user/dashboard/manage/system-overview/_page.svelte.js')).default;
 export { server };
-export const server_id = "src/routes/user/dashboard/vehicles/[id]/edit/+page.server.ts";
-export const imports = ["_app/immutable/nodes/38.BnJEGypi.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/i9DHmAX1.js","_app/immutable/chunks/MgvKJ5Oe.js","_app/immutable/chunks/tNEdk8z3.js","_app/immutable/chunks/DANlTl3y.js","_app/immutable/chunks/TZ4K4ZOd.js","_app/immutable/chunks/uYRH7WDe.js","_app/immutable/chunks/STPvjbMu.js","_app/immutable/chunks/5UxS6Hio.js","_app/immutable/chunks/CdEA5IGF.js","_app/immutable/chunks/mO3J0t2N.js","_app/immutable/chunks/BifvwZtI.js","_app/immutable/chunks/BIazggEA.js","_app/immutable/chunks/BzyUH8j5.js"];
-export const stylesheets = ["_app/immutable/assets/38.BXnW_C-f.css"];
+export const server_id = "src/routes/user/dashboard/manage/system-overview/+page.server.ts";
+export const imports = ["_app/immutable/nodes/38.D2Xitgjm.js","_app/immutable/chunks/DsnmJJEf.js","_app/immutable/chunks/DsPuBiMm.js","_app/immutable/chunks/N5lxWZGS.js","_app/immutable/chunks/B135_YsI.js","_app/immutable/chunks/Dx3h8YKD.js","_app/immutable/chunks/UGtQv9Vd.js","_app/immutable/chunks/DrWauV8B.js","_app/immutable/chunks/DSP_IF8R.js","_app/immutable/chunks/BnZ110ug.js","_app/immutable/chunks/GYy9D8cv.js","_app/immutable/chunks/Bc0xGMnQ.js","_app/immutable/chunks/BBnkIoAR.js","_app/immutable/chunks/CkJi4ZpE.js","_app/immutable/chunks/Ctr7oTW1.js"];
+export const stylesheets = ["_app/immutable/assets/38.DeoBA-yU.css"];
 export const fonts = [];

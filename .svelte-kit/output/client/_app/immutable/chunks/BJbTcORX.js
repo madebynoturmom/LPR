@@ -1,0 +1,1 @@
+import{ab as b,ac as t,u as S,S as c,ad as d}from"./N5lxWZGS.js";function u(r,a){return r===a||r?.[d]===a}function T(r={},a,f,h){return b(()=>{var i,s;return t(()=>{i=s,s=[],S(()=>{r!==f(...s)&&(a(r,...s),i&&u(f(...i),r)&&a(null,...i))})}),()=>{c(()=>{s&&u(f(...s),r)&&a(null,...s)})}}),r}export{T as b};

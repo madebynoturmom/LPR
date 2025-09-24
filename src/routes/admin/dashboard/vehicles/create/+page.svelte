@@ -1,8 +1,10 @@
 <script>
+  import CustomSelect from '$lib/CustomSelect.svelte';
   export let data;
   let users = data?.users ?? [];
   let error = null;
   let success = null;
+  let required = true;
 </script>
 
  
@@ -28,12 +30,7 @@
     </label>
     <label>
       Owner (Resident):
-      <select name="ownerId" required>
-        <option value="">Select owner</option>
-        {#each users as user}
-          <option value={user.id}>{user.name} ({user.houseAddress})</option>
-        {/each}
-      </select>
+      <CustomSelect name="ownerId" placeholder="Select owner" {required} options={users.map(u => ({ value: u.id, label: `${u.name} (${u.houseAddress})` }))} />
     </label>
     <label>
       Car Model:

@@ -1,4 +1,4 @@
-import { $ as bind_props } from "../../../../../../chunks/index2.js";
+import { f as bind_props } from "../../../../../../chunks/index2.js";
 import "@sveltejs/kit/internal";
 import "../../../../../../chunks/exports.js";
 import "../../../../../../chunks/utils.js";

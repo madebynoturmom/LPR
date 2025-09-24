@@ -4,7 +4,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { v4 as uuidv4 } from 'uuid';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeHexLowerCase } from '@oslojs/encoding';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { eq, desc } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
 import { sendEmail } from '$lib/server/email';
@@ -76,9 +76,11 @@ export const actions: Actions = {
       }
 
       // Create session for guard
-      const sessionToken = auth.generateSessionToken();
-      const session = await auth.createSession(sessionToken, found.id);
-      auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+        const rememberFlag = form.get('remember')?.toString() === '1';
+        const ttlMs = rememberFlag ? auth.DAY_IN_MS * 30 : 1000 * 60 * 60 * 8; // 30 days vs 8 hours
+        const sessionToken = auth.generateSessionToken();
+        const session = await auth.createSession(sessionToken, found.id, ttlMs);
+        auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
       const redirectUrl = '/guard/dashboard';
       const accept = request.headers.get('accept') || '';
       if (accept.includes('application/json')) return { success: true, redirect: redirectUrl };
@@ -153,10 +155,12 @@ export const actions: Actions = {
       await db.delete(otp).where(eq(otp.id, latestOtp.id));
       console.log('🔐 OTP deleted from DB');
 
-      // Create session
-      const sessionToken = auth.generateSessionToken();
-      const session = await auth.createSession(sessionToken, found.id);
-      auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+  // Create session
+  const rememberFlag = form.get('remember')?.toString() === '1';
+  const ttlMs = rememberFlag ? auth.DAY_IN_MS * 30 : 1000 * 60 * 60 * 8; // 30 days vs 8 hours
+  const sessionToken = auth.generateSessionToken();
+  const session = await auth.createSession(sessionToken, found.id, ttlMs);
+  auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
       // Determine redirect URL based on role
       const redirectUrl = userRole === 'admin'
         ? '/admin/dashboard'
@@ -177,6 +181,20 @@ export const actions: Actions = {
 
 // Lucia login logic will be implemented here
 
-export const load = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+  // If the user already has a valid session (handled in hooks.server),
+  // redirect them to the appropriate dashboard. This makes "Remember me"
+  // behave as expected by skipping the login form when a cookie exists.
+  const user = locals.user as { id: string; username: string; role: string } | null;
+  if (user) {
+    const redirectUrl = user.role === 'admin'
+      ? '/admin/dashboard'
+      : user.role === 'guard'
+      ? '/guard/dashboard'
+      : user.role === 'resident'
+      ? '/user/dashboard'
+      : '/';
+    throw redirect(303, redirectUrl);
+  }
   return {};
 };

@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/guard/dashboard/+page.svelte";
+export { default as component } from "../../../../src/routes/admin/dashboard/vehicles/+page.svelte";

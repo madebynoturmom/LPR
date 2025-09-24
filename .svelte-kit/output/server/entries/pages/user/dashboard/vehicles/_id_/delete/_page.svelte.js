@@ -1,4 +1,4 @@
-import { $ as bind_props } from "../../../../../../../chunks/index2.js";
+import { f as bind_props } from "../../../../../../../chunks/index2.js";
 import { e as escape_html } from "../../../../../../../chunks/escaping.js";
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {

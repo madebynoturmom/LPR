@@ -1,5 +1,5 @@
-import { Y as ensure_array_like, W as attr_class, _ as stringify, $ as bind_props } from "../../../../chunks/index2.js";
-import { b as ssr_context } from "../../../../chunks/context.js";
+import { a as attr_class, c as ensure_array_like, d as stringify, f as bind_props } from "../../../../chunks/index2.js";
+import { U as ssr_context } from "../../../../chunks/context.js";
 import "chart.js/auto";
 import { e as escape_html } from "../../../../chunks/escaping.js";
 import { a as attr } from "../../../../chunks/attributes.js";
@@ -15,6 +15,7 @@ function onDestroy(fn) {
 function _page($$renderer, $$props) {
   $$renderer.component(($$renderer2) => {
     let data = $$props["data"];
+    let selectedRange = "7d";
     const dateString = (/* @__PURE__ */ new Date()).toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
@@ -73,10 +74,11 @@ function _page($$renderer, $$props) {
         iconPath: "/icons/add-resident.svg",
         color: "bg-blue-500"
       },
+      // the guests page includes an inline create form (POST ?/create), so link to it
       {
         title: "Issue Guest Pass",
         description: "Create a new guest pass",
-        link: "/admin/dashboard/guests/create",
+        link: "/admin/dashboard/guests",
         iconPath: "/icons/issue-guest.svg",
         color: "bg-green-500"
       },
@@ -98,7 +100,7 @@ function _page($$renderer, $$props) {
     const issuedCount = data?.guestStats ? data.guestStats.reduce((s, g) => s + (g.count || 0), 0) : 0;
     onDestroy(() => {
     });
-    $$renderer2.push(`<div class="dashboard-container svelte-169czl3"><div class="compact-header svelte-169czl3"><div class="compact-left"><h1 class="compact-title svelte-169czl3">Welcome back, Admin! 👋</h1> <p class="compact-subtitle svelte-169czl3">Here's what's happening in your community today</p></div> <div class="compact-right svelte-169czl3"><div class="date svelte-169czl3">${escape_html(dateString)}</div></div></div> <section class="issued-section svelte-169czl3"><div class="issued-card svelte-169czl3"><div class="issued-left svelte-169czl3"><div class="issued-label svelte-169czl3">Issued Guest Passes (7d)</div> <div class="issued-value svelte-169czl3">${escape_html(issuedCount)}</div></div> <canvas class="issued-canvas svelte-169czl3" aria-hidden="true"></canvas></div></section> <section class="quick-actions-section svelte-169czl3"><h2 class="section-title svelte-169czl3">Quick Actions</h2> <div class="quick-actions-grid svelte-169czl3"><!--[-->`);
+    $$renderer2.push(`<div class="dashboard-container svelte-169czl3"><header class="dashboard-overview svelte-169czl3"><div class="overview-left svelte-169czl3"><div class="overview-text svelte-169czl3"><h1 class="overview-title svelte-169czl3">Dashboard Overview</h1> <div class="overview-date svelte-169czl3">${escape_html(dateString)}</div></div></div> <div class="overview-right svelte-169czl3"><a href="/admin/dashboard/settings" class="overview-avatar-link svelte-169czl3" aria-label="Account settings"><img class="overview-avatar svelte-169czl3"${attr("src", data.adminProfilePic ?? "/default-profile.png")} alt="Profile" width="48" height="48"/></a></div></header> <section class="issued-section svelte-169czl3"><div class="issued-card svelte-169czl3"><div style="display:flex; align-items:center; gap:1rem; width:100%; justify-content:space-between;"><div><div class="issued-label svelte-169czl3">Issued Guest Passes</div> <div class="issued-value svelte-169czl3">${escape_html(issuedCount)}</div></div> <div class="issued-range svelte-169czl3"><button${attr_class("svelte-169czl3", void 0, { "active": selectedRange === "7d" })}>7D</button> <button${attr_class("svelte-169czl3", void 0, { "active": selectedRange === "1m" })}>1M</button> <button${attr_class("svelte-169czl3", void 0, { "active": selectedRange === "3m" })}>3M</button></div></div> <div class="issued-chart-wrapper svelte-169czl3"><canvas class="issued-canvas svelte-169czl3" aria-label="Issued guest passes chart"></canvas></div></div></section> <section class="quick-actions-section svelte-169czl3"><h2 class="section-title svelte-169czl3">Quick Actions</h2> <div class="quick-actions-grid svelte-169czl3"><!--[-->`);
     const each_array = ensure_array_like(quickActions);
     for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
       let action = each_array[$$index];
@@ -117,7 +119,7 @@ function _page($$renderer, $$props) {
         }
         $$renderer2.push(`<!--]-->`);
       }
-      $$renderer2.push(`<!--]--></div> <div class="action-content svelte-169czl3"><h3 class="action-title svelte-169czl3">${escape_html(action.title)}</h3> <p class="action-description svelte-169czl3">${escape_html(action.description)}</p></div> <div class="action-arrow svelte-169czl3">→</div></a>`);
+      $$renderer2.push(`<!--]--></div> <div class="action-content svelte-169czl3"><h3 class="action-title svelte-169czl3">${escape_html(action.title)}</h3> <p class="action-description svelte-169czl3">${escape_html(action.description)}</p></div></a>`);
     }
     $$renderer2.push(`<!--]--></div></section></div>`);
     bind_props($$props, { data });
